@@ -24,6 +24,7 @@ assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, copie de l'e-mail, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
+assets/img/og-image.jpg         Image d'aperçu pour les réseaux sociaux (1200 × 630 px)
 assets/img/terrain/             Photos des stages et du bénévolat (grand format + miniatures « -min » de 440 px de haut)
 assets/docs/                    Documents consultables (attestation, poster de L3)
 assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
@@ -56,6 +57,10 @@ Lancez un petit serveur local (en ouvrant directement `index.html`, le navigateu
 python3 -m http.server 8000
 # puis ouvrez http://localhost:8000
 ```
+
+## Aperçu sur les réseaux sociaux
+
+Lorsqu'un lien vers le site est partagé, LinkedIn, Facebook, WhatsApp ou Discord affichent `assets/img/og-image.jpg`. Les balises `og:url` et `og:image` en haut de `index.html` contiennent l'adresse complète du site (`https://ludivinecodoner.github.io/`) : si l'adresse change, il faut les mettre à jour. Après une modification, l'outil [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) permet de rafraîchir l'aperçu mis en cache.
 
 ## Mise en ligne avec GitHub Pages
 
