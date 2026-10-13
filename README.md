@@ -8,6 +8,7 @@ Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours uni
 - **Stage M1** (2 mois, 2025) — comportement d'agrégation de *Mytilus edulis*, LOG UMR 8187, Station Marine de Wimereux
 - **Stage L3** (2 mois, 2024) — attraction des pollinisateurs par les traits floraux de *Silene dioica*, laboratoire EEP (UMR 8198)
 - **Stages L2/L3** (2 × 1 mois) — inventaire faune/flore et Atlas de la Biodiversité Communale, Service Nature en Ville d'Armentières
+- **Bénévolat humanitaire** — Penàguila, province d'Alicante (Espagne)
 
 Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et propose un thème clair et un thème sombre.
 
