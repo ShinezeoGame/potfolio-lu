@@ -29,9 +29,26 @@
 
   /* ---------- En-tête au défilement ---------- */
 
-  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+  const toTop = document.querySelector('.to-top');
+
+  const onScroll = () => {
+    header.classList.toggle('is-scrolled', window.scrollY > 8);
+    // La flèche apparaît une fois l'écran titre dépassé
+    if (toTop) toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.6);
+  };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  if (toTop) {
+    toTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+      // Le focus revient en haut de page pour la navigation au clavier
+      const brand = document.querySelector('.brand');
+      if (brand) brand.focus({ preventScroll: true });
+    });
+  }
 
   /* ---------- Apparition des blocs ---------- */
 
