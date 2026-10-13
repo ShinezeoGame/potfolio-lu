@@ -123,30 +123,88 @@
     });
   });
 
-  /* ---------- Visionneuse des photos de terrain ---------- */
+  /* ---------- Carrousels de photos ---------- */
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector('.carousel__track');
+    const slides = [...track.children];
+    const dotsWrap = carousel.querySelector('.carousel__dots');
+    const counter = carousel.querySelector('.carousel__counter');
+    let current = 0;
+
+    const goTo = (index) => {
+      const target = (index + slides.length) % slides.length;
+      track.scrollTo({ left: target * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+
+    const dots = slides.map((_, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel__dot';
+      dot.setAttribute('aria-label', `Afficher la photo ${index + 1}`);
+      dot.addEventListener('click', () => goTo(index));
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+
+    const update = (index) => {
+      current = index;
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+      if (counter) counter.textContent = `${index + 1} / ${slides.length}`;
+    };
+
+    let ticking = false;
+    track.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const index = Math.round(track.scrollLeft / track.clientWidth);
+        if (index !== current) update(Math.min(Math.max(index, 0), slides.length - 1));
+        ticking = false;
+      });
+    }, { passive: true });
+
+    carousel.querySelector('[data-carousel-prev]').addEventListener('click', () => goTo(current - 1));
+    carousel.querySelector('[data-carousel-next]').addEventListener('click', () => goTo(current + 1));
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    });
+
+    update(0);
+  });
+
+  /* ---------- Visionneuse plein écran ---------- */
 
   const lightbox = document.querySelector('.lightbox');
-  const galleryLinks = [...document.querySelectorAll('[data-gallery] a')];
 
   // Sans <dialog> (navigateur ancien), les liens ouvrent simplement la photo
-  if (lightbox && typeof lightbox.showModal === 'function' && galleryLinks.length) {
+  if (lightbox && typeof lightbox.showModal === 'function') {
     const image = lightbox.querySelector('.lightbox__img');
     const caption = lightbox.querySelector('.lightbox__caption');
+    let items = [];
     let current = 0;
 
     const show = (index) => {
-      current = (index + galleryLinks.length) % galleryLinks.length;
-      const link = galleryLinks[current];
+      current = (index + items.length) % items.length;
+      const link = items[current];
       image.src = link.href;
       image.alt = link.querySelector('img').alt;
       caption.textContent = link.dataset.caption || '';
     };
 
-    galleryLinks.forEach((link, index) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        show(index);
-        lightbox.showModal();
+    // La navigation reste dans le carrousel d'où la photo a été ouverte
+    document.querySelectorAll('[data-gallery]').forEach((gallery) => {
+      const links = [...gallery.querySelectorAll('a[data-caption]')];
+      links.forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          items = links;
+          show(index);
+          lightbox.showModal();
+        });
       });
     });
 
