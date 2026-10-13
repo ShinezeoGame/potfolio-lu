@@ -799,6 +799,8 @@ article[id] {
 }
 
 .interests__list strong {
+  display: block;
+  margin-bottom: 2px;
   color: var(--text);
   font-weight: 600;
 }
@@ -1063,17 +1065,6 @@ article[id] {
   margin-top: clamp(40px, 6vw, 64px);
 }
 
-.stage__more {
-  display: inline-block;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.stage__more:hover {
-  text-decoration: underline;
-}
-
 .stages--compact {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   gap: 20px;
@@ -1166,6 +1157,92 @@ article[id] {
   margin: 16px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.project {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 28px);
+  margin-top: 20px;
+  padding: clamp(22px, 4vw, 36px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--leaf) 12%, transparent), transparent 55%),
+    var(--surface);
+}
+
+.project__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--leaf) 16%, transparent);
+  color: var(--leaf);
+}
+
+.project__icon svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.project__label {
+  margin-bottom: 6px;
+  color: var(--leaf);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.project h3 {
+  margin-bottom: 12px;
+  font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+}
+
+.project p:not(.project__label) {
+  max-width: 62em;
+  color: var(--muted);
+}
+
+.project__steps {
+  margin: 0;
+}
+
+.project__steps li {
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.project__steps li:not(:last-child)::after {
+  content: none;
+}
+
+.project__steps li + li {
+  position: relative;
+  margin-left: 22px;
+}
+
+.project__steps li + li::before {
+  content: "→";
+  position: absolute;
+  left: -22px;
+  width: 22px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .project {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (min-width: 1000px) {
