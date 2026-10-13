@@ -123,7 +123,7 @@ h3 {
 }
 
 p {
-  margin: 0 0 1em;
+  margin: 0 0 1.15em;
 }
 
 /* Paragraphes justifiés, avec césure pour éviter les grands espaces */
@@ -569,40 +569,14 @@ article[id] {
   object-fit: cover;
 }
 
-.hero__badge {
-  position: absolute;
-  bottom: 22px;
-  left: -28px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 290px;
-  padding: 10px 16px 10px 10px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
-  box-shadow: var(--shadow-lg);
+/* Légende de la photo d'accueil, simple et sans cadre */
+.hero__caption {
+  margin-top: 30px;
   color: var(--muted);
-  font-size: 0.85rem;
-  line-height: 1.35;
-}
-
-.hero__badge-icons {
-  display: flex;
-  flex: none;
-}
-
-.hero__badge-icons svg {
-  width: 34px;
-  height: 34px;
-  padding: 5px;
-  border: 2px solid var(--surface);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
-}
-
-.hero__badge-icons svg + svg {
-  margin-left: -8px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  text-align: center;
 }
 
 /* Invitation à descendre, au-dessus des dunes */
@@ -768,13 +742,6 @@ article[id] {
     width: min(100% - 28px, 320px);
     margin-top: 12px;
   }
-
-  .hero__badge {
-    left: 12px;
-    right: 12px;
-    bottom: 14px;
-    max-width: none;
-  }
 }
 
 /* ---------- Icônes des terrains (héritent de --accent) ---------- */
@@ -815,7 +782,7 @@ article[id] {
 /* ---------- Sections ---------- */
 
 .section {
-  padding-block: clamp(72px, 10vw, 120px);
+  padding-block: clamp(88px, 12vw, 156px);
 }
 
 .section--alt {
@@ -824,11 +791,11 @@ article[id] {
 
 .section-head {
   max-width: 720px;
-  margin-bottom: clamp(36px, 5vw, 56px);
+  margin-bottom: clamp(48px, 7vw, 80px);
 }
 
 .section-head__intro {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   color: var(--muted);
   font-size: 1.1rem;
 }
@@ -839,7 +806,7 @@ article[id] {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(32px, 6vw, 72px);
+  gap: clamp(40px, 7vw, 96px);
 }
 
 .about__text p {
@@ -860,11 +827,11 @@ article[id] {
 
 .facts {
   display: grid;
-  gap: 14px;
+  gap: 18px;
 }
 
 .fact {
-  padding: 20px 22px;
+  padding: 22px 26px;
   border: 1px solid var(--line);
   border-left: 4px solid var(--primary);
   border-radius: var(--radius-sm);
@@ -888,32 +855,30 @@ article[id] {
 }
 
 .interests {
-  margin-top: clamp(40px, 6vw, 64px);
-  padding-top: clamp(28px, 4vw, 40px);
+  margin-top: clamp(64px, 9vw, 104px);
+  padding-top: clamp(40px, 5vw, 56px);
   border-top: 1px solid var(--line);
 }
 
 .interests__title {
-  margin-bottom: 18px;
-  font-size: 1.15rem;
+  margin-bottom: 28px;
+  font-size: 1.2rem;
 }
 
 .interests__list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 12px;
+  gap: 22px;
 }
 
 .interests__list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
+  position: relative;
+  padding: 22px 22px 22px;
   border-radius: var(--radius-sm);
   background: var(--bg-alt);
   color: var(--muted);
   font-size: 0.95rem;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .interests__list strong {
@@ -923,15 +888,25 @@ article[id] {
   font-weight: 600;
 }
 
-.interests__list svg {
-  width: 22px;
-  height: 22px;
-  flex: none;
+.interests__list strong {
+  padding-right: 34px;
+}
+
+/* L'icône devient un filigrane posé sur le coin, qui déborde légèrement du cadre */
+.interests__icon {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  width: 52px;
+  height: 52px;
   fill: none;
   stroke: var(--primary);
-  stroke-width: 1.8;
+  stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
+  opacity: 0.32;
+  transform: rotate(-8deg);
+  pointer-events: none;
 }
 
 @media (max-width: 860px) {
@@ -945,7 +920,7 @@ article[id] {
 .timeline {
   position: relative;
   display: grid;
-  gap: 28px;
+  gap: clamp(32px, 4vw, 44px);
   padding-left: 44px;
 }
 
@@ -977,7 +952,7 @@ article[id] {
 }
 
 .timeline__card {
-  padding: clamp(22px, 3.5vw, 32px);
+  padding: clamp(26px, 4.5vw, 48px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -988,20 +963,32 @@ article[id] {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 14px;
-  margin-bottom: 12px;
+  gap: 8px 12px;
+  margin-bottom: 18px;
   color: var(--muted);
   font-size: 0.92rem;
 }
 
+.timeline__level {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timeline__card h3 {
+  font-size: clamp(1.35rem, 2.6vw, 1.7rem);
+}
+
 .timeline__sub {
-  margin: 6px 0 16px;
+  margin: 8px 0 10px;
   text-align: left;
   color: var(--primary);
   font-weight: 500;
 }
 
-.timeline__card > p:not(.timeline__sub) {
+.timeline__card > p:not([class]) {
   color: var(--muted);
 }
 
@@ -1009,7 +996,7 @@ article[id] {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
 }
 
 .steps li {
@@ -1026,10 +1013,28 @@ article[id] {
   color: var(--muted);
 }
 
+/* Stages associés : regroupés en pied de fiche */
+.timeline__links {
+  display: grid;
+  gap: 6px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--line);
+}
+
+.timeline__links-label {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
 .timeline__link {
   display: block;
   width: fit-content;
-  margin-top: 4px;
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
@@ -1043,16 +1048,16 @@ article[id] {
 
 .stages {
   display: grid;
-  gap: 24px;
+  gap: clamp(28px, 4vw, 40px);
 }
 
 .stage {
   position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: clamp(18px, 3vw, 32px);
+  gap: clamp(20px, 3.5vw, 40px);
   overflow: hidden;
-  padding: clamp(22px, 4vw, 40px);
+  padding: clamp(26px, 4.5vw, 52px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -1087,23 +1092,64 @@ article[id] {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 14px;
-  margin-bottom: 12px;
+  gap: 8px 12px;
+  margin-bottom: 18px;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
 }
 
 .stage h3 {
-  margin-bottom: 14px;
-  font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  margin-bottom: 12px;
+  font-size: clamp(1.35rem, 2.6vw, 1.7rem);
 }
 
 .stage p {
+  max-width: 72ch;
   color: var(--muted);
 }
 
+/* Structure d'accueil ou lieu : sous le titre, avec une petite icône */
+.stage .stage__org,
+.timeline__card .stage__org {
+  color: var(--text);
+}
+
+.stage__org {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Respiration entre la structure d'accueil et le contenu de la fiche */
+.stage__org + :not(.stage__org) {
+  margin-top: 20px;
+}
+
+.stage__org svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.timeline__card .stage__org svg {
+  stroke: var(--primary);
+}
+
 .stage__highlight {
-  padding: 14px 18px;
+  margin-top: 4px;
+  padding: 18px 22px;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
@@ -1116,7 +1162,18 @@ article[id] {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 18px;
+  margin-top: 16px;
+}
+
+/* Encadrement et thématiques : informations secondaires, en pied de fiche */
+.stage__footer {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--line);
+}
+
+.stage__footer .tags:first-child {
+  margin-top: 0;
 }
 
 .tags li {
@@ -1130,7 +1187,7 @@ article[id] {
 .stage__people {
   margin: 0;
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 
 .stage__people span {
@@ -1145,8 +1202,8 @@ article[id] {
 
 .stage__list {
   display: grid;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
   color: var(--muted);
 }
 
@@ -1167,7 +1224,7 @@ article[id] {
 }
 
 .subhead {
-  margin: 0 0 18px;
+  margin: 0 0 24px;
   color: var(--muted);
   font-family: var(--font-sans);
   font-size: 0.85rem;
@@ -1177,14 +1234,14 @@ article[id] {
 }
 
 .stages + .subhead {
-  margin-top: clamp(40px, 6vw, 64px);
+  margin-top: clamp(64px, 9vw, 104px);
 }
 
 .doc-link {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 24px;
   padding: 10px 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -1232,7 +1289,7 @@ article[id] {
 
 /* Bandeau de photos : une ligne qui défile horizontalement */
 .strip {
-  margin-top: 26px;
+  margin-top: 34px;
 }
 
 .strip__head {
@@ -1524,11 +1581,11 @@ body:has(.lightbox[open]) {
 .skills {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
 .skill {
-  padding: 26px;
+  padding: 30px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -1591,8 +1648,8 @@ body:has(.lightbox[open]) {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(18px, 3vw, 28px);
-  margin-top: 20px;
-  padding: clamp(22px, 4vw, 36px);
+  margin-top: 32px;
+  padding: clamp(26px, 4.5vw, 44px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:

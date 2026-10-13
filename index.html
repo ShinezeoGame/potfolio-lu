@@ -89,12 +89,7 @@
             <img src="assets/img/ludivine-codoner.jpg" width="360" height="480"
                  alt="Ludivine Codoner sur le terrain, observant des fleurs roses de silène dioïque (Silene dioica) cultivées en pots.">
           </div>
-          <figcaption class="hero__badge">
-            <span class="hero__badge-icons accent-rose" aria-hidden="true">
-              <svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
-            </span>
-            <span>Sur le terrain, avec le silène dioïque (<em>Silene dioica</em>)</span>
-          </figcaption>
+          <figcaption class="hero__caption">Sur le terrain, avec le silène dioïque</figcaption>
         </figure>
       </div>
 
@@ -168,19 +163,19 @@
           <h3 class="interests__title">En dehors du terrain</h3>
           <ul class="interests__list">
             <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Zm0 0 8-8"/></svg>
+              <svg class="interests__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Zm0 0 8-8"/></svg>
               <span><strong>Bénévole à l'INPN</strong>Inventaire National du Patrimoine Naturel</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>
+              <svg class="interests__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>
               <span><strong>Jeux de société</strong>Création en cours d'un jeu de société sur l'écologie, pour sensibiliser tout en jouant</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg>
+              <svg class="interests__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg>
               <span><strong>Photographie macro</strong>La faune et les pollinisateurs</span>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4ZM13.5 6.5l4 4"/></svg>
+              <svg class="interests__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4ZM13.5 6.5l4 4"/></svg>
               <span><strong>Écriture de nouvelles</strong>Participation au concours de nouvelles étudiant organisé par le Crous, sur le thème « Fierté »</span>
             </li>
           </ul>
@@ -206,10 +201,11 @@
             <article class="timeline__card">
               <div class="timeline__meta">
                 <span class="pill">2024 – 2026</span>
-                <span>Bac+5 · Université de Lille</span>
+                <span class="timeline__level">Bac+5</span>
               </div>
               <h3>Master Biodiversité, Écologie, Évolution (BEE)</h3>
               <p class="timeline__sub">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</p>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Université de Lille</span></p>
               <ol class="steps">
                 <li>Master 1 BEE</li>
                 <li>Master 2 FOGEM</li>
@@ -219,8 +215,11 @@
                 à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi
                 de la biodiversité.
               </p>
-              <a class="timeline__link" href="#exp-m1">Stage de M1 : agrégation de la moule commune →</a>
-              <a class="timeline__link" href="#exp-m2">Stage de M2 : diversité des communautés dunaires →</a>
+              <div class="timeline__links">
+                <p class="timeline__links-label">Stages associés</p>
+                <a class="timeline__link" href="#exp-m1">Stage de M1 : agrégation de la moule commune →</a>
+                <a class="timeline__link" href="#exp-m2">Stage de M2 : diversité des communautés dunaires →</a>
+              </div>
             </article>
           </li>
 
@@ -229,10 +228,11 @@
             <article class="timeline__card">
               <div class="timeline__meta">
                 <span class="pill">2021 – 2024</span>
-                <span>Bac+3 · Université de Lille</span>
+                <span class="timeline__level">Bac+3</span>
               </div>
               <h3>Licence Sciences de la Vie (SV)</h3>
               <p class="timeline__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Université de Lille</span></p>
               <ol class="steps">
                 <li>Portail Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</li>
                 <li>Sciences de la Vie (SV)</li>
@@ -242,8 +242,11 @@
                 Des bases solides en biologie des organismes, écologie et évolution, avec une
                 orientation vers l'étude des populations et de leurs interactions avec le milieu.
               </p>
-              <a class="timeline__link" href="#exp-armentieres">Stages de L2/L3 : inventaires et Atlas de la Biodiversité Communale →</a>
-              <a class="timeline__link" href="#exp-l3">Stage de L3 : pollinisation de <em>Silene dioica</em> →</a>
+              <div class="timeline__links">
+                <p class="timeline__links-label">Stages associés</p>
+                <a class="timeline__link" href="#exp-armentieres">Stages de L2/L3 : inventaires et Atlas de la Biodiversité Communale →</a>
+                <a class="timeline__link" href="#exp-l3">Stage de L3 : pollinisation de <em>Silene dioica</em> →</a>
+              </div>
             </article>
           </li>
         </ol>
@@ -274,9 +277,9 @@
               <div class="stage__meta">
                 <span class="pill pill--accent">Master 2 · 2026</span>
                 <span>6 mois</span>
-                <span>UMR BIOGECO · INRAE – Université de Bordeaux</span>
               </div>
               <h3>Corrélation entre diversité spécifique et diversité génétique des communautés végétales dunaires</h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>UMR BIOGECO · INRAE – Université de Bordeaux</span></p>
               <p>
                 Les dunes littorales de Nouvelle-Aquitaine abritent des communautés végétales
                 adaptées à des conditions difficiles : sable mobile, embruns, sécheresse. Ce stage
@@ -289,17 +292,19 @@
                 <strong>Cœur du projet :</strong> un important travail d'analyse biostatistique,
                 de la structuration des jeux de données à l'interprétation des résultats.
               </p>
-              <p class="stage__people">
-                <span>Encadrement</span>
-                Marie-Lise Benot, Maya Gonzalez et Olivier Lepais
-              </p>
-              <ul class="tags" aria-label="Thématiques">
-                <li>Biostatistiques</li>
-                <li>Diversité génétique</li>
-                <li>Écologie des communautés</li>
-                <li>Écosystèmes dunaires</li>
-                <li>Conservation</li>
-              </ul>
+              <div class="stage__footer">
+                <p class="stage__people">
+                  <span>Encadrement</span>
+                  Marie-Lise Benot, Maya Gonzalez et Olivier Lepais
+                </p>
+                <ul class="tags" aria-label="Thématiques">
+                  <li>Biostatistiques</li>
+                  <li>Diversité génétique</li>
+                  <li>Écologie des communautés</li>
+                  <li>Écosystèmes dunaires</li>
+                  <li>Conservation</li>
+                </ul>
+              </div>
               <a class="doc-link" href="https://stagem2-lcodoner-ae45e9.pages-forge.inrae.fr/" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>
                 <span>Mes scripts R du stage <small>(forge INRAE)</small></span>
@@ -363,25 +368,27 @@
               <div class="stage__meta">
                 <span class="pill pill--accent">Master 1 · 2025</span>
                 <span>2 mois</span>
-                <span>Laboratoire d'Océanologie et de Géosciences (LOG, UMR 8187) · Station Marine de Wimereux</span>
               </div>
               <h3>Comportement d'agrégation de la moule commune (<em>Mytilus edulis</em>) en période de reproduction</h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire d'Océanologie et de Géosciences (LOG, UMR 8187) · Station Marine de Wimereux</span></p>
               <p>
                 Bien que fixées par leur byssus, les moules sont capables de se déplacer pour
                 se regrouper en agrégats. Ce stage d'écologie comportementale portait sur ce
                 comportement d'agrégation chez la moule commune et sur ses variations au cours
                 des périodes de reproduction, un moment clé pour la dynamique de ses populations.
               </p>
-              <p class="stage__people">
-                <span>Encadrement</span>
-                Marine Uguen
-              </p>
-              <ul class="tags" aria-label="Thématiques">
-                <li>Écologie comportementale</li>
-                <li>Agrégation</li>
-                <li>Reproduction</li>
-                <li>Écosystèmes marins</li>
-              </ul>
+              <div class="stage__footer">
+                <p class="stage__people">
+                  <span>Encadrement</span>
+                  Marine Uguen
+                </p>
+                <ul class="tags" aria-label="Thématiques">
+                  <li>Écologie comportementale</li>
+                  <li>Agrégation</li>
+                  <li>Reproduction</li>
+                  <li>Écosystèmes marins</li>
+                </ul>
+              </div>
               <!-- photos:m1 -->
               <div class="strip" data-strip data-gallery role="region" aria-label="Photos du stage de M1">
                 <div class="strip__head">
@@ -453,9 +460,9 @@
               <div class="stage__meta">
                 <span class="pill pill--accent">Licence 3 · 2024</span>
                 <span>2 mois</span>
-                <span>Laboratoire Écologie, Évolution et Paléontologie (EEP, UMR 8198 CNRS) · Université de Lille</span>
               </div>
               <h3>Dimorphisme sexuel et taux de visite des pollinisateurs chez <em>Silene dioica</em></h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire Écologie, Évolution et Paléontologie (EEP, UMR 8198 CNRS) · Université de Lille</span></p>
               <p>
                 Comme son nom l'indique, le silène dioïque (<em>Silene dioica</em>) est une plante
                 dioïque : les fleurs mâles et femelles sont portées par des individus différents, et
@@ -470,16 +477,18 @@
                 montrent une nette préférence pour les plantes mâles, alors que les syrphes visitent
                 indifféremment les deux sexes.
               </p>
-              <p class="stage__people">
-                <span>Encadrement</span>
-                Nina Joffard et Isabelle De Cauwer
-              </p>
-              <ul class="tags" aria-label="Thématiques">
-                <li>Écologie de la pollinisation</li>
-                <li>Dimorphisme sexuel</li>
-                <li>Traits floraux</li>
-                <li>Statistiques sous R</li>
-              </ul>
+              <div class="stage__footer">
+                <p class="stage__people">
+                  <span>Encadrement</span>
+                  Nina Joffard et Isabelle De Cauwer
+                </p>
+                <ul class="tags" aria-label="Thématiques">
+                  <li>Écologie de la pollinisation</li>
+                  <li>Dimorphisme sexuel</li>
+                  <li>Traits floraux</li>
+                  <li>Statistiques sous R</li>
+                </ul>
+              </div>
               <a class="doc-link doc-link--thumb" href="assets/docs/poster-l3-silene-dioica.webp" target="_blank" rel="noopener">
                 <img src="assets/img/poster-l3-miniature.webp" width="40" height="57" alt="">
                 <span>Voir le poster scientifique <small>(image)</small></span>
@@ -570,15 +579,18 @@
                 <span class="pill pill--accent">Licence 2 / 3 · 2023 – 2024</span>
                 <span>2 stages d'un mois</span>
               </div>
-              <h3>Service Nature en Ville — Ville d'Armentières</h3>
+              <h3>Service Nature en Ville</h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Ville d'Armentières</span></p>
               <ul class="stage__list">
                 <li>Inventaire de la faune et de la flore d'un site de la commune</li>
                 <li>Lancement de l'Atlas de la Biodiversité Communale, outil de connaissance de la biodiversité locale au service des politiques de la ville</li>
               </ul>
-              <p class="stage__people">
-                <span>Encadrement</span>
-                Lionel Chapelain
-              </p>
+              <div class="stage__footer">
+                <p class="stage__people">
+                  <span>Encadrement</span>
+                  Lionel Chapelain
+                </p>
+              </div>
               <!-- photos:armentieres -->
               <div class="strip" data-strip data-gallery role="region" aria-label="Photos des stages au Service Nature en Ville d'Armentières">
                 <div class="strip__head">
@@ -674,7 +686,8 @@
                 <span class="pill pill--accent">2022 – 2023</span>
                 <span>2 mois</span>
               </div>
-              <h3>Animatrice écologie et environnement — Centre de loisirs d'Armentières</h3>
+              <h3>Animatrice écologie et environnement</h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Centre de loisirs d'Armentières</span></p>
               <ul class="stage__list">
                 <li>Sensibilisation des enfants à l'écologie et à l'environnement</li>
                 <li>Création de supports pédagogiques</li>
@@ -693,9 +706,10 @@
               <div class="stage__meta">
                 <span class="pill pill--accent">Bénévolat international · 2026</span>
                 <span>Du 1<sup>er</sup> au 16 septembre</span>
-                <span>Corps européen de solidarité · Solidarités Jeunesses</span>
               </div>
-              <h3>Chantier « Green Beats » — Penàguila, province d'Alicante (Espagne)</h3>
+              <h3>Chantier « Green Beats »</h3>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span>Penàguila, province d'Alicante (Espagne)</span></p>
+              <p class="stage__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Corps européen de solidarité · Solidarités Jeunesses</span></p>
               <p>
                 Chantier de volontariat international consacré à la renaissance naturelle et
                 culturelle de Penàguila, village de l'arrière-pays d'Alicante, aux côtés de
@@ -706,12 +720,14 @@
                 <li>Remise en état du mobilier et des équipements publics, réalisation de fresques murales</li>
                 <li>Activités intergénérationnelles chaque semaine avec les résidents du centre pour personnes âgées du village</li>
               </ul>
-              <ul class="tags" aria-label="Thématiques">
-                <li>Restauration écologique</li>
-                <li>Espèces locales</li>
-                <li>Volontariat européen</li>
-                <li>Vie locale</li>
-              </ul>
+              <div class="stage__footer">
+                <ul class="tags" aria-label="Thématiques">
+                  <li>Restauration écologique</li>
+                  <li>Espèces locales</li>
+                  <li>Volontariat européen</li>
+                  <li>Vie locale</li>
+                </ul>
+              </div>
               <a class="doc-link" href="assets/docs/attestation-chantier-green-beats-2026.pdf" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
                 <span>Attestation de participation <small>(PDF)</small></span>
