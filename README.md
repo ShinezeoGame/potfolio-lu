@@ -11,7 +11,7 @@ Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours uni
 - **Bénévolat international** — chantier « Green Beats » (Corps européen de solidarité, Solidarités Jeunesses), Penàguila, province d'Alicante (Espagne)
 - **Projet en cours** — écriture d'un livre de statistiques appliquées (contexte, méthode adaptée, code R)
 
-Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et utilise une palette sobre : fond crème et beige, texte brun, un seul accent vert.
+Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et utilise une palette sobre : fond crème et beige, texte brun, un accent vert et quelques touches de rose (celui du silène dioïque).
 
 Le site ne dépose aucun cookie, n'enregistre rien dans le navigateur et ne fait appel à aucun service tiers (polices hébergées sur le site, pas de mesure d'audience) : aucun bandeau de consentement n'est donc nécessaire. Si un outil de statistiques ou un contenu externe (vidéo, carte…) est ajouté un jour, il faudra mettre à jour `mentions-legales.html` et, selon l'outil, demander le consentement des visiteurs.
 
@@ -24,7 +24,7 @@ assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, copie de l'e-mail, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
-assets/img/terrain/             Photos des stages L3, M1 et M2 (grand format + miniatures « -min » de 440 px de haut)
+assets/img/terrain/             Photos des stages et du bénévolat (grand format + miniatures « -min » de 440 px de haut)
 assets/docs/                    Documents consultables (attestation, poster de L3)
 assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
 ```

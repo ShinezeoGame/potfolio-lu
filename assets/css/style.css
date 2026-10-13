@@ -1,7 +1,8 @@
 /* ==========================================================================
    Portfolio — feuille de style
    Palette volontairement réduite : neutres crème et beige, texte brun,
-   un seul accent vert (celui du logo).
+   un accent vert (celui du logo) et, par petites touches, le rose du
+   silène dioïque.
    ========================================================================== */
 
 :root {
@@ -21,6 +22,9 @@
   --primary-soft: #e4e7d1;
   --accent: var(--primary);
   --on-accent: #fffaf1;
+
+  /* Touche ponctuelle : le rose du silène dioïque */
+  --rose: #b4436c;
 
   /* Vagues de l'accueil, en dégradé de beige */
   --wave-1: #ece2ce;
@@ -58,6 +62,15 @@
 }
 
 /* ---------- Base ---------- */
+
+/* Éléments ponctués de rose (icônes du silène, cœur de l'engagement) */
+.accent-rose {
+  --accent: var(--rose);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--rose) 22%, transparent);
+}
 
 *,
 *::before,
@@ -482,7 +495,7 @@ article[id] {
   overflow: hidden;
   padding: clamp(56px, 10vw, 120px) 0 clamp(140px, 16vw, 200px);
   background:
-    radial-gradient(60% 60% at 85% 10%, color-mix(in srgb, var(--sand) 22%, transparent), transparent 70%),
+    radial-gradient(60% 60% at 85% 10%, color-mix(in srgb, var(--rose) 9%, transparent), transparent 70%),
     radial-gradient(50% 50% at 5% 30%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%),
     var(--bg);
 }
@@ -540,9 +553,9 @@ article[id] {
   content: "";
   position: absolute;
   inset: 0;
-  border: 2px solid var(--sand);
+  border: 2px solid var(--rose);
   border-radius: 999px 999px var(--radius) var(--radius);
-  opacity: 0.55;
+  opacity: 0.45;
   transform: translate(14px, 14px);
 }
 
