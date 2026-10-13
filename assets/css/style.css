@@ -1385,8 +1385,9 @@ body:has(.lightbox[open]) {
   }
 }
 
+/* Cartes secondaires en pleine largeur, pour laisser la place aux photos */
 .stages--compact {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
