@@ -2,7 +2,7 @@
 
 Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours universitaire, stages et compétences.
 
-- **Licence SVTE**, parcours Biologie des Organismes et des Populations (BOP) — Université de Lille, 2021–2024
+- **Licence Sciences de la Vie (SV)**, parcours Biologie des Organismes et des Populations (BOP), après le portail SVTE — Université de Lille, 2021–2024
 - **Master Biodiversité, Écologie, Évolution (BEE)**, parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM) — Université de Lille, 2024–2026
 - **Stage M2** (6 mois, 2026) — diversité spécifique et diversité génétique des communautés végétales dunaires, UMR BIOGECO (INRAE – Université de Bordeaux)
 - **Stage M1** (2 mois, 2025) — comportement d'agrégation de *Mytilus edulis*, LOG UMR 8187, Station Marine de Wimereux
@@ -24,6 +24,7 @@ assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, copie de l'e-mail, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
+assets/img/terrain/             Photos des sorties de terrain (grand format + miniatures « -min »)
 assets/docs/                    Documents consultables (attestation, poster de L3)
 assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
 ```

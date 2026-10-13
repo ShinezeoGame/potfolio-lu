@@ -123,6 +123,46 @@
     });
   });
 
+  /* ---------- Visionneuse des photos de terrain ---------- */
+
+  const lightbox = document.querySelector('.lightbox');
+  const galleryLinks = [...document.querySelectorAll('[data-gallery] a')];
+
+  // Sans <dialog> (navigateur ancien), les liens ouvrent simplement la photo
+  if (lightbox && typeof lightbox.showModal === 'function' && galleryLinks.length) {
+    const image = lightbox.querySelector('.lightbox__img');
+    const caption = lightbox.querySelector('.lightbox__caption');
+    let current = 0;
+
+    const show = (index) => {
+      current = (index + galleryLinks.length) % galleryLinks.length;
+      const link = galleryLinks[current];
+      image.src = link.href;
+      image.alt = link.querySelector('img').alt;
+      caption.textContent = link.dataset.caption || '';
+    };
+
+    galleryLinks.forEach((link, index) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(index);
+        lightbox.showModal();
+      });
+    });
+
+    lightbox.querySelector('.lightbox__close').addEventListener('click', () => lightbox.close());
+    lightbox.querySelector('.lightbox__prev').addEventListener('click', () => show(current - 1));
+    lightbox.querySelector('.lightbox__next').addEventListener('click', () => show(current + 1));
+    lightbox.addEventListener('click', (e) => {
+      // Un clic en dehors de la photo et des boutons ferme la visionneuse
+      if (e.target === lightbox || e.target.classList.contains('lightbox__figure')) lightbox.close();
+    });
+    lightbox.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  }
+
   /* ---------- Année du pied de page ---------- */
 
   const year = document.querySelector('[data-year]');

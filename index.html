@@ -214,12 +214,12 @@
                 <span class="pill">2021 – 2024</span>
                 <span>Bac+3 · Université de Lille</span>
               </div>
-              <h3>Licence Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</h3>
+              <h3>Licence Sciences de la Vie (SV)</h3>
               <p class="timeline__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
               <ol class="steps">
-                <li>Portail Sciences de la Vie (SV)</li>
-                <li>Licence SVTE</li>
-                <li>Parcours BOP</li>
+                <li>Portail Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</li>
+                <li>Sciences de la Vie (SV)</li>
+                <li>Biologie des Organismes et des Populations (BOP)</li>
               </ol>
               <p>
                 Des bases solides en biologie des organismes, écologie et évolution, avec une
@@ -287,6 +287,36 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>
                 <span>Mes scripts R du stage <small>(forge INRAE)</small></span>
               </a>
+              <div class="gallery" data-gallery>
+                <p class="gallery__title">Sorties de terrain</p>
+                <ul class="gallery__grid">
+                  <li class="gallery__item gallery__item--tall">
+                    <a href="assets/img/terrain/m2-dune-ocean.webp" data-caption="Sur la dune, face à l'océan">
+                      <img src="assets/img/terrain/m2-dune-ocean-min.webp" width="480" height="1041" loading="lazy" alt="Ludivine Codoner, bras levés, sur le sable au pied de la dune, avec l'océan en arrière-plan">
+                    </a>
+                  </li>
+                  <li class="gallery__item">
+                    <a href="assets/img/terrain/m2-flore-equipe.webp" data-caption="Identification de la flore dunaire en équipe">
+                      <img src="assets/img/terrain/m2-flore-equipe-min.webp" width="640" height="361" loading="lazy" alt="Six personnes accroupies ou debout sur une dune à végétation basse, observant des plantes et prenant des notes">
+                    </a>
+                  </li>
+                  <li class="gallery__item">
+                    <a href="assets/img/terrain/m2-dune-oyats.webp" data-caption="Dune littorale couverte d'oyats, entre l'océan et le village">
+                      <img src="assets/img/terrain/m2-dune-oyats-min.webp" width="640" height="361" loading="lazy" alt="Dune de sable couverte de touffes d'oyats, avec l'océan à gauche et un village bordé de forêt à droite">
+                    </a>
+                  </li>
+                  <li class="gallery__item">
+                    <a href="assets/img/terrain/m2-maisons-ensablees.webp" data-caption="Habitations gagnées par le sable">
+                      <img src="assets/img/terrain/m2-maisons-ensablees-min.webp" width="640" height="361" loading="lazy" alt="Maisons aux toits de tuiles dont les murs sont en partie recouverts par le sable de la dune">
+                    </a>
+                  </li>
+                  <li class="gallery__item">
+                    <a href="assets/img/terrain/m2-station-meteo.webp" data-caption="Station météorologique installée sur la dune">
+                      <img src="assets/img/terrain/m2-station-meteo-min.webp" width="640" height="361" loading="lazy" alt="Deux personnes en gilet orange travaillant au pied d'une station météorologique installée sur la dune, face à l'océan">
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </article>
 
@@ -590,6 +620,23 @@
       </nav>
     </div>
   </footer>
+
+  <!-- Visionneuse des photos de terrain -->
+  <dialog class="lightbox" aria-label="Photo agrandie">
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" src="data:," alt="">
+      <figcaption class="lightbox__caption"></figcaption>
+    </figure>
+    <button class="lightbox__btn lightbox__close" type="button" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+    <button class="lightbox__btn lightbox__prev" type="button" aria-label="Photo précédente">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+    </button>
+    <button class="lightbox__btn lightbox__next" type="button" aria-label="Photo suivante">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+    </button>
+  </dialog>
 
   <!-- Icônes réutilisables -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
