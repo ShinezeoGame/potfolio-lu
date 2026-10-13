@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- À PERSONNALISER : remplacez « Prénom Nom » partout dans ce fichier -->
+  <title>Prénom Nom — Écologue · Portfolio</title>
+  <meta name="description" content="Portfolio de Prénom Nom, écologue titulaire d'un master Biodiversité, Écologie, Évolution (spécialité FOGEM) de l'Université de Lille : parcours, stages de recherche et compétences en biostatistiques.">
+  <meta property="og:title" content="Prénom Nom — Écologue">
+  <meta property="og:description" content="Biodiversité, écosystèmes marins et côtiers, biostatistiques : découvrez mon parcours et mes stages de recherche.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1d6b74">
+
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Applique le thème choisi avant l'affichage pour éviter un flash -->
+  <script>
+    document.documentElement.classList.add('js');
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <!-- ============ EN-TÊTE ============ -->
+  <header class="site-header">
+    <div class="container header__inner">
+      <a class="brand" href="#accueil" aria-label="Retour à l'accueil">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="15" class="brand__bg"/>
+          <path d="M16 6c-4 4-5 9-2 13M16 6c4 4 5 9 2 13" class="brand__leaf"/>
+          <path d="M5 21c2.2-1.6 4.4-1.6 6.6 0s4.4 1.6 6.6 0 4.4-1.6 6.6 0" class="brand__wave"/>
+          <path d="M7 25c2-1.4 4-1.4 6 0s4 1.4 6 0 4-1.4 6 0" class="brand__wave brand__wave--2"/>
+        </svg>
+        <span class="brand__name">Prénom Nom</span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Navigation principale">
+        <ul class="nav__list">
+          <li><a href="#apropos">À propos</a></li>
+          <li><a href="#parcours">Parcours</a></li>
+          <li><a href="#stages">Stages</a></li>
+          <li><a href="#competences">Compétences</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Changer de thème">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+        </button>
+        <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Ouvrir le menu">
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <!-- ============ ACCUEIL ============ -->
+    <section class="hero" id="accueil">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <p class="eyebrow">Biodiversité · Écologie · Évolution</p>
+          <h1 class="hero__title">Prénom Nom</h1>
+          <p class="hero__role">Écologue — écosystèmes marins &amp; côtiers, analyse de données</p>
+          <p class="hero__lead">
+            Des fleurs du compagnon rouge aux dunes de Nouvelle-Aquitaine, en passant par
+            le comportement des moules : mon parcours explore les liens entre organismes,
+            populations et écosystèmes, avec les biostatistiques comme fil conducteur.
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#parcours">Découvrir mon parcours</a>
+            <a class="btn btn--ghost" href="#contact">Me contacter</a>
+          </div>
+        </div>
+
+        <aside class="hero__card" aria-label="Mes terrains d'étude">
+          <p class="hero__card-title">Trois stages, trois terrains d'étude</p>
+          <ul class="terrains">
+            <li>
+              <a href="#stage-l3" style="--accent: var(--campion)">
+                <span class="terrains__icon">
+                  <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg>
+                </span>
+                <span>
+                  <strong>Pollinisation</strong>
+                  <small><em>Silene dioica</em> · Licence 3</small>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="#stage-m1" style="--accent: var(--sea)">
+                <span class="terrains__icon">
+                  <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-mussel"/></svg>
+                </span>
+                <span>
+                  <strong>Comportement</strong>
+                  <small>Moules · Master 1</small>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="#stage-m2" style="--accent: var(--leaf)">
+                <span class="terrains__icon">
+                  <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-dune"/></svg>
+                </span>
+                <span>
+                  <strong>Diversité</strong>
+                  <small>Dunes de Nouvelle-Aquitaine · Master 2</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="hero__waves" aria-hidden="true">
+        <svg viewBox="0 0 1440 160" preserveAspectRatio="none">
+          <path class="wave wave--1" d="M0 70 C 180 30 360 30 540 62 S 900 110 1080 74 S 1320 30 1440 52 V160 H0 Z"/>
+          <path class="wave wave--2" d="M0 98 C 200 70 380 74 560 98 S 920 132 1100 104 S 1340 72 1440 90 V160 H0 Z"/>
+          <path class="wave wave--3" d="M0 124 C 220 106 420 110 620 126 S 980 146 1180 128 S 1380 112 1440 120 V160 H0 Z"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ À PROPOS ============ -->
+    <section class="section" id="apropos">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">À propos</p>
+          <h2>Comprendre le vivant, de l'organisme à l'écosystème</h2>
+        </div>
+
+        <div class="about">
+          <div class="about__text reveal">
+            <p>
+              Mon parcours en biologie s'est construit autour d'une question : comment les
+              organismes et les populations interagissent-ils avec leur environnement, et
+              qu'est-ce que cela nous apprend du fonctionnement des écosystèmes&nbsp;?
+            </p>
+            <p>
+              Après une licence en Biologie des Organismes et des Populations à l'Université
+              de Lille, j'ai poursuivi en master Biodiversité, Écologie, Évolution, spécialité
+              <strong>Fonctionnement et Gestion des Écosystèmes Marins</strong> (FOGEM).
+            </p>
+            <p>
+              Au fil de trois stages de recherche, j'ai abordé cette question dans des milieux
+              et à des échelles très différents : les interactions entre une plante et ses
+              pollinisateurs, le comportement reproducteur d'un bivalve marin, puis les liens
+              entre diversité spécifique et diversité génétique des communautés végétales
+              dunaires. Ce dernier projet, centré sur un important travail d'analyse de données,
+              m'a permis de développer de solides compétences en <strong>biostatistiques</strong>.
+            </p>
+          </div>
+
+          <ul class="facts reveal">
+            <li class="fact">
+              <span class="fact__value">Bac+5</span>
+              <span class="fact__label">Master BEE, spécialité FOGEM</span>
+            </li>
+            <li class="fact">
+              <span class="fact__value">3</span>
+              <span class="fact__label">stages de recherche, de la L3 au M2</span>
+            </li>
+            <li class="fact">
+              <span class="fact__value">Terre&nbsp;&amp;&nbsp;Mer</span>
+              <span class="fact__label">des écosystèmes terrestres aux écosystèmes marins et côtiers</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PARCOURS ============ -->
+    <section class="section section--alt" id="parcours">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Formation</p>
+          <h2>Mon parcours universitaire</h2>
+          <p class="section-head__intro">
+            Une spécialisation progressive : des sciences de la vie en général vers l'écologie
+            des populations, puis le fonctionnement et la gestion des écosystèmes marins.
+          </p>
+        </div>
+
+        <ol class="timeline">
+          <li class="timeline__item reveal">
+            <span class="timeline__marker" aria-hidden="true"></span>
+            <article class="timeline__card">
+              <div class="timeline__meta">
+                <span class="pill">Bac+3</span>
+                <span>Université de Lille</span>
+                <!-- À PERSONNALISER : ajoutez les années, ex. <span>2019 – 2022</span> -->
+              </div>
+              <h3>Licence Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</h3>
+              <p class="timeline__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
+              <ol class="steps">
+                <li>Portail Sciences de la Vie (SV)</li>
+                <li>Licence SVTE</li>
+                <li>Parcours BOP</li>
+              </ol>
+              <p>
+                Des bases solides en biologie des organismes, écologie et évolution, avec une
+                orientation vers l'étude des populations et de leurs interactions avec le milieu.
+              </p>
+              <a class="timeline__link" href="#stage-l3">Stage de L3 : pollinisation de <em>Silene dioica</em> →</a>
+            </article>
+          </li>
+
+          <li class="timeline__item reveal">
+            <span class="timeline__marker" aria-hidden="true"></span>
+            <article class="timeline__card">
+              <div class="timeline__meta">
+                <span class="pill">Bac+5</span>
+                <span>Université de Lille</span>
+                <!-- À PERSONNALISER : ajoutez les années, ex. <span>2022 – 2024</span> -->
+              </div>
+              <h3>Master Biodiversité, Écologie, Évolution (BEE)</h3>
+              <p class="timeline__sub">Spécialité Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</p>
+              <ol class="steps">
+                <li>Master 1 BEE</li>
+                <li>Master 2 FOGEM</li>
+              </ol>
+              <p>
+                Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et
+                à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi
+                de la biodiversité.
+              </p>
+              <a class="timeline__link" href="#stage-m1">Stage de M1 : écologie comportementale des moules →</a>
+              <a class="timeline__link" href="#stage-m2">Stage de M2 : diversité des communautés dunaires →</a>
+            </article>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ STAGES ============ -->
+    <section class="section" id="stages">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Expériences de recherche</p>
+          <h2>Trois stages, trois échelles du vivant</h2>
+          <p class="section-head__intro">
+            Des traits d'un individu au comportement d'une espèce, puis à la diversité de
+            communautés entières.
+          </p>
+        </div>
+
+        <div class="stages">
+          <!-- Stage L3 -->
+          <article class="stage reveal" id="stage-l3" style="--accent: var(--campion)">
+            <div class="stage__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
+            </div>
+            <div class="stage__body">
+              <div class="stage__meta">
+                <span class="pill pill--accent">Stage de Licence 3</span>
+                <span>Laboratoire Écologie, Évolution et Paléontologie (EEP) · Université de Lille</span>
+                <!-- À PERSONNALISER : durée / dates, ex. <span>2 mois · 2022</span> -->
+              </div>
+              <h3>Attraction des pollinisateurs par les traits morphologiques de <em>Silene dioica</em></h3>
+              <p>
+                Le compagnon rouge (<em>Silene dioica</em>) est une plante dioïque : les fleurs
+                mâles et femelles sont portées par des individus différents, et sa reproduction
+                dépend donc entièrement des pollinisateurs qui transportent le pollen de l'un à
+                l'autre. Ce stage portait sur le rôle des traits morphologiques de la plante dans
+                l'attraction de ces pollinisateurs.
+              </p>
+              <ul class="tags" aria-label="Thématiques">
+                <li>Écologie de la pollinisation</li>
+                <li>Interactions plantes–pollinisateurs</li>
+                <li>Traits morphologiques</li>
+                <li>Biologie végétale</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Stage M1 -->
+          <article class="stage reveal" id="stage-m1" style="--accent: var(--sea)">
+            <div class="stage__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><use href="#icon-mussel"/></svg>
+            </div>
+            <div class="stage__body">
+              <div class="stage__meta">
+                <span class="pill pill--accent">Stage de Master 1</span>
+                <!-- À PERSONNALISER : structure d'accueil, ex. <span>Nom du laboratoire · Ville</span> -->
+              </div>
+              <h3>Écologie comportementale des moules en période de reproduction</h3>
+              <p>
+                Organismes fixés et en apparence peu actifs, les moules n'en ajustent pas moins
+                leur comportement au fil de leur cycle de vie. Ce stage s'intéressait à
+                l'écologie comportementale de ces bivalves pendant les périodes de reproduction,
+                un moment clé pour la dynamique de leurs populations.
+              </p>
+              <ul class="tags" aria-label="Thématiques">
+                <li>Écologie comportementale</li>
+                <li>Bivalves marins</li>
+                <li>Reproduction</li>
+                <li>Écosystèmes marins</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Stage M2 -->
+          <article class="stage reveal" id="stage-m2" style="--accent: var(--leaf)">
+            <div class="stage__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><use href="#icon-dune"/></svg>
+            </div>
+            <div class="stage__body">
+              <div class="stage__meta">
+                <span class="pill pill--accent">Stage de Master 2</span>
+                <span>Nouvelle-Aquitaine</span>
+                <!-- À PERSONNALISER : structure d'accueil, durée, ex. <span>6 mois · 2024</span> -->
+              </div>
+              <h3>Corrélation entre diversité spécifique et diversité génétique des communautés végétales dunaires</h3>
+              <p>
+                Les dunes littorales de Nouvelle-Aquitaine abritent des communautés végétales
+                adaptées à des conditions difficiles : sable mobile, embruns, sécheresse. Ce stage
+                visait à déterminer si la diversité des espèces au sein des communautés et la
+                diversité génétique au sein des populations varient de concert — une question
+                centrale pour comprendre et préserver la biodiversité à ses différents niveaux
+                d'organisation.
+              </p>
+              <p class="stage__highlight">
+                <strong>Cœur du projet :</strong> un important travail d'analyse biostatistique,
+                de la structuration des jeux de données à l'interprétation des résultats.
+              </p>
+              <ul class="tags" aria-label="Thématiques">
+                <li>Biostatistiques</li>
+                <li>Diversité génétique</li>
+                <li>Écologie des communautés</li>
+                <li>Écosystèmes dunaires</li>
+                <li>Conservation</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COMPÉTENCES ============ -->
+    <!-- À PERSONNALISER : ajustez les compétences et logiciels selon votre expérience réelle -->
+    <section class="section section--alt" id="competences">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Compétences</p>
+          <h2>Ce que j'apporte à une équipe</h2>
+        </div>
+
+        <div class="skills">
+          <article class="skill skill--featured reveal">
+            <p class="skill__badge">Point fort</p>
+            <h3>Biostatistiques &amp; analyse de données</h3>
+            <ul class="chips">
+              <li>Statistiques descriptives et tests</li>
+              <li>Analyses de corrélation</li>
+              <li>Modélisation statistique</li>
+              <li>Analyses multivariées</li>
+              <li>Visualisation de données</li>
+              <li>R</li>
+            </ul>
+          </article>
+
+          <article class="skill reveal">
+            <h3>Écologie &amp; biodiversité</h3>
+            <ul class="chips">
+              <li>Écologie des communautés</li>
+              <li>Écologie comportementale</li>
+              <li>Écologie de la pollinisation</li>
+              <li>Diversité génétique</li>
+              <li>Écosystèmes marins et côtiers</li>
+            </ul>
+          </article>
+
+          <article class="skill reveal">
+            <h3>Démarche scientifique</h3>
+            <ul class="chips">
+              <li>Formulation d'hypothèses</li>
+              <li>Protocoles expérimentaux</li>
+              <li>Recueil de données</li>
+              <li>Recherche bibliographique</li>
+            </ul>
+          </article>
+
+          <article class="skill reveal">
+            <h3>Communication &amp; travail en équipe</h3>
+            <ul class="chips">
+              <li>Rédaction scientifique</li>
+              <li>Présentations orales</li>
+              <li>Travail en laboratoire de recherche</li>
+              <li>Français · Anglais scientifique</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact reveal">
+          <div class="contact__text">
+            <p class="eyebrow eyebrow--light">Contact</p>
+            <h2>Travaillons ensemble</h2>
+            <p>
+              À l'écoute d'opportunités en écologie, en gestion des écosystèmes marins et côtiers
+              et en analyse de données environnementales. N'hésitez pas à me contacter.
+            </p>
+          </div>
+          <!-- À PERSONNALISER : adresse e-mail, profil LinkedIn et CV (déposez votre CV dans assets/cv.pdf) -->
+          <ul class="contact__links">
+            <li>
+              <a class="contact__link" href="mailto:votre.email@exemple.fr">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+                <span>votre.email@exemple.fr</span>
+              </a>
+            </li>
+            <li>
+              <a class="contact__link" href="https://www.linkedin.com/in/votre-profil" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V17M8 7.5v.01M12 17v-6.5M12 13.5c0-1.8 1.2-3 2.6-3S17 11.6 17 13.3V17"/></svg>
+                <span>LinkedIn</span>
+              </a>
+            </li>
+            <li>
+              <a class="contact__link" href="assets/cv.pdf" download>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>
+                <span>Télécharger mon CV</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer__inner">
+      <p>© <span data-year>2026</span> Prénom Nom</p>
+      <a href="#accueil">Retour en haut ↑</a>
+    </div>
+  </footer>
+
+  <!-- Icônes réutilisables -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- Fleur de Silene : cinq pétales bilobés -->
+      <symbol id="icon-flower" viewBox="0 0 48 48">
+        <g transform="translate(24 24)" class="ico-fill">
+          <path id="silene-petal" d="M0-3C-4-6-6.5-12-4.5-18.5-3-20.5-1.2-20 0-17c1.2-3 3-3.5 4.5-1.5C6.5-12 4-6 0-3Z"/>
+          <use href="#silene-petal" transform="rotate(72)"/>
+          <use href="#silene-petal" transform="rotate(144)"/>
+          <use href="#silene-petal" transform="rotate(216)"/>
+          <use href="#silene-petal" transform="rotate(288)"/>
+        </g>
+        <circle cx="24" cy="24" r="3.4" class="ico-core"/>
+      </symbol>
+      <!-- Moule -->
+      <symbol id="icon-mussel" viewBox="0 0 48 48">
+        <path class="ico-fill" d="M8 41C6 35 9 24 17 16 24 9 33 5 38 6c5 1 5 7 1 13-6 9-17 18-31 22Z"/>
+        <!-- stries de croissance concentriques autour du crochet -->
+        <path class="ico-line" d="M14.5 23C19.8 18 26 15.1 29.6 15.8c3.6.7 3.6 5 .7 9.4C26 31.6 21 35.5 15.5 38M12 29.8c3.2-3.2 7.2-5 9.5-4.5 2.3.4 2.3 3.1.5 5.8-2 3-4.5 5.5-7.7 7.6"/>
+      </symbol>
+      <!-- Dune et oyats -->
+      <symbol id="icon-dune" viewBox="0 0 48 48">
+        <path class="ico-fill" d="M3 40c6-8 13-12 20-12s12 4 22 12Z"/>
+        <path class="ico-line ico-line--strong" d="M18 30c-.5-6-2.5-11-6-15M21 29.5c0-7 .5-13 3-19M25 30c1.5-5.5 4.5-9.5 8.5-12M28.5 31c2-3 4.5-5 7.5-6"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
