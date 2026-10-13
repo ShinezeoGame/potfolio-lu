@@ -140,44 +140,70 @@
     });
   });
 
-  /* ---------- Bandeaux de photos ---------- */
+  /* ---------- Bandeaux de photos (défilement en boucle) ---------- */
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   document.querySelectorAll('[data-strip]').forEach((strip) => {
     const track = strip.querySelector('.strip__track');
-    const prev = strip.querySelector('[data-strip-prev]');
-    const next = strip.querySelector('[data-strip-next]');
+    const originals = [...track.children];
+    originals.forEach((item, index) => { item.querySelector('a').dataset.index = index; });
 
-    const update = () => {
-      const max = track.scrollWidth - track.clientWidth;
-      strip.classList.toggle('is-scrollable', max > 1);
-      strip.classList.toggle('at-end', track.scrollLeft >= max - 1);
-      prev.disabled = track.scrollLeft <= 1;
-      next.disabled = track.scrollLeft >= max - 1;
+    // Pas de boucle si toutes les photos tiennent déjà à l'écran
+    if (track.scrollWidth - track.clientWidth <= 1) return;
+    strip.classList.add('is-scrollable');
+
+    // Une copie des photos avant et après : arrivé au bout, on repart naturellement au début
+    const makeClone = (item) => {
+      const clone = item.cloneNode(true);
+      clone.classList.add('strip__item--clone');
+      clone.setAttribute('aria-hidden', 'true');
+      clone.querySelector('a').tabIndex = -1;
+      return clone;
     };
+    track.prepend(...originals.map(makeClone));
+    track.append(...originals.map(makeClone));
+
+    // Largeur d'une série complète de photos (espacements compris)
+    const setWidth = () => originals[0].offsetLeft - track.firstElementChild.offsetLeft;
+    let animating = false;
+
+    // Ramène discrètement la position dans la série du milieu
+    const recenter = (towards = 0) => {
+      const w = setWidth();
+      if (towards > 0 && track.scrollLeft > w) track.scrollLeft -= w;
+      else if (towards < 0 && track.scrollLeft < w) track.scrollLeft += w;
+      else if (track.scrollLeft < w * 0.5) track.scrollLeft += w;
+      else if (track.scrollLeft > w * 1.5) track.scrollLeft -= w;
+    };
+
+    track.scrollLeft = setWidth();
+
+    track.addEventListener('scroll', () => { if (!animating) recenter(); }, { passive: true });
 
     const page = (direction) => {
+      recenter(direction);
+      animating = !reduceMotion;
       track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: reduceMotion ? 'auto' : 'smooth' });
+      if (animating) {
+        const done = () => { animating = false; recenter(); };
+        if ('onscrollend' in window) track.addEventListener('scrollend', done, { once: true });
+        else setTimeout(done, 600);
+      }
     };
 
-    prev.addEventListener('click', () => page(-1));
-    next.addEventListener('click', () => page(1));
+    strip.querySelector('[data-strip-prev]').addEventListener('click', () => page(-1));
+    strip.querySelector('[data-strip-next]').addEventListener('click', () => page(1));
 
     // Au-dessus de la ligne de photos, la molette la fait défiler, sans jamais faire bouger la page
     track.addEventListener('wheel', (e) => {
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      const max = track.scrollWidth - track.clientWidth;
-      if (max <= 1) return;
       e.preventDefault();
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? track.clientWidth : 1;
       track.scrollLeft += e.deltaY * unit;
     }, { passive: false });
 
-    track.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    track.querySelectorAll('img').forEach((img) => img.addEventListener('load', update));
-    update();
+    window.addEventListener('resize', () => recenter());
   });
 
   /* ---------- Visionneuse plein écran ---------- */
@@ -199,14 +225,15 @@
       caption.textContent = link.dataset.caption || '';
     };
 
-    // La navigation reste dans le carrousel d'où la photo a été ouverte
+    // La navigation reste dans la ligne de photos d'où la photo a été ouverte
     document.querySelectorAll('[data-gallery]').forEach((gallery) => {
-      const links = [...gallery.querySelectorAll('a[data-caption]')];
-      links.forEach((link, index) => {
+      const all = [...gallery.querySelectorAll('a[data-caption]')];
+      const originals = all.filter((link) => !link.closest('.strip__item--clone'));
+      all.forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          items = links;
-          show(index);
+          items = originals;
+          show(link.dataset.index !== undefined ? Number(link.dataset.index) : originals.indexOf(link));
           lightbox.showModal();
         });
       });

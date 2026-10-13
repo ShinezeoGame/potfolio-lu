@@ -63,7 +63,7 @@
 
 /* ---------- Base ---------- */
 
-/* Éléments ponctués de rose (fleur de silène de l'accueil, cœur de l'engagement) */
+/* Éléments ponctués de rose (fleur de silène de l'accueil, carte de l'engagement) */
 .accent-rose {
   --accent: var(--rose);
 }
@@ -1165,14 +1165,9 @@ article[id] {
   transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
-.strip__btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.strip__btn:disabled {
-  opacity: 0.35;
-  cursor: default;
+.strip__btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .strip__btn svg {
@@ -1208,10 +1203,10 @@ article[id] {
   outline-offset: 4px;
 }
 
-/* Fondu à droite tant qu'il reste des photos à voir */
-.js .strip.is-scrollable:not(.at-end) .strip__track {
-  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
-  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+/* Fondu sur les bords : la ligne de photos continue (en boucle) des deux côtés */
+.js .strip.is-scrollable .strip__track {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 32px, #000 calc(100% - 48px), transparent);
 }
 
 .strip__item {
