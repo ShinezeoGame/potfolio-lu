@@ -287,62 +287,53 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>
                 <span>Mes scripts R du stage <small>(forge INRAE)</small></span>
               </a>
-              <div class="carousel" data-carousel data-gallery role="region" aria-roledescription="carrousel" aria-label="Photos des sorties de terrain du stage de M2">
-                <p class="carousel__title">Sorties de terrain</p>
-                <ul class="carousel__track" tabindex="0">
-                    <li class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="1 sur 5">
-                      <figure>
-                        <a class="carousel__media" href="assets/img/terrain/m2-dune-oyats.webp" data-caption="Dune littorale couverte d'oyats, entre l'océan et le village" title="Agrandir la photo">
-                          <img src="assets/img/terrain/m2-dune-oyats.webp" srcset="assets/img/terrain/m2-dune-oyats-min.webp 640w, assets/img/terrain/m2-dune-oyats.webp 1600w" sizes="(max-width: 600px) 92vw, 820px" width="1600" height="902" alt="Dune de sable couverte de touffes d'oyats, avec l'océan à gauche et un village bordé de forêt à droite">
-                        </a>
-                        <figcaption>Dune littorale couverte d'oyats, entre l'océan et le village</figcaption>
-                      </figure>
-                    </li>
-                    <li class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="2 sur 5">
-                      <figure>
-                        <a class="carousel__media" href="assets/img/terrain/m2-flore-equipe.webp" data-caption="Identification de la flore dunaire en équipe" title="Agrandir la photo">
-                          <img src="assets/img/terrain/m2-flore-equipe.webp" srcset="assets/img/terrain/m2-flore-equipe-min.webp 640w, assets/img/terrain/m2-flore-equipe.webp 1600w" sizes="(max-width: 600px) 92vw, 820px" width="1600" height="902" loading="lazy" alt="Six personnes accroupies ou debout sur une dune à végétation basse, observant des plantes et prenant des notes">
-                        </a>
-                        <figcaption>Identification de la flore dunaire en équipe</figcaption>
-                      </figure>
-                    </li>
-                    <li class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="3 sur 5">
-                      <figure>
-                        <a class="carousel__media" href="assets/img/terrain/m2-dune-ocean.webp" data-caption="Sur la dune, face à l'océan" title="Agrandir la photo">
-                          <img src="assets/img/terrain/m2-dune-ocean.webp" srcset="assets/img/terrain/m2-dune-ocean-min.webp 480w, assets/img/terrain/m2-dune-ocean.webp 738w" sizes="(max-width: 600px) 92vw, 820px" width="738" height="1600" loading="lazy" alt="Ludivine Codoner, bras levés, sur le sable au pied de la dune, avec l'océan en arrière-plan">
-                        </a>
-                        <figcaption>Sur la dune, face à l'océan</figcaption>
-                      </figure>
-                    </li>
-                    <li class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="4 sur 5">
-                      <figure>
-                        <a class="carousel__media" href="assets/img/terrain/m2-maisons-ensablees.webp" data-caption="Habitations gagnées par le sable" title="Agrandir la photo">
-                          <img src="assets/img/terrain/m2-maisons-ensablees.webp" srcset="assets/img/terrain/m2-maisons-ensablees-min.webp 640w, assets/img/terrain/m2-maisons-ensablees.webp 1600w" sizes="(max-width: 600px) 92vw, 820px" width="1600" height="902" loading="lazy" alt="Maisons aux toits de tuiles dont les murs sont en partie recouverts par le sable de la dune">
-                        </a>
-                        <figcaption>Habitations gagnées par le sable</figcaption>
-                      </figure>
-                    </li>
-                    <li class="carousel__slide" role="group" aria-roledescription="diapositive" aria-label="5 sur 5">
-                      <figure>
-                        <a class="carousel__media" href="assets/img/terrain/m2-station-meteo.webp" data-caption="Station météorologique installée sur la dune" title="Agrandir la photo">
-                          <img src="assets/img/terrain/m2-station-meteo.webp" srcset="assets/img/terrain/m2-station-meteo-min.webp 640w, assets/img/terrain/m2-station-meteo.webp 1600w" sizes="(max-width: 600px) 92vw, 820px" width="1600" height="902" loading="lazy" alt="Deux personnes en gilet orange travaillant au pied d'une station météorologique installée sur la dune, face à l'océan">
-                        </a>
-                        <figcaption>Station météorologique installée sur la dune</figcaption>
-                      </figure>
-                    </li>
-                </ul>
-                <div class="carousel__controls">
-                  <button class="carousel__btn" type="button" data-carousel-prev aria-label="Photo précédente">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
-                  </button>
-                  <div class="carousel__dots"></div>
-                  <button class="carousel__btn" type="button" data-carousel-next aria-label="Photo suivante">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-                  </button>
-                  <span class="carousel__counter" aria-live="polite">1 / 5</span>
+              <!-- photos:m2 -->
+              <div class="strip" data-strip data-gallery role="region" aria-label="Photos des sorties de terrain du stage de M2">
+                <div class="strip__head">
+                  <p class="strip__title">Sorties de terrain</p>
+                  <div class="strip__nav">
+                    <button class="strip__btn" type="button" data-strip-prev aria-label="Faire défiler les photos vers la gauche">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+                    </button>
+                    <button class="strip__btn" type="button" data-strip-next aria-label="Faire défiler les photos vers la droite">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+                    </button>
+                  </div>
                 </div>
+                <ul class="strip__track" tabindex="0">
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/m2-dune-oyats.webp" data-caption="Dune littorale couverte d'oyats, entre l'océan et le village">
+                      <img src="assets/img/terrain/m2-dune-oyats-min.webp" width="780" height="440" loading="lazy" alt="Dune de sable couverte de touffes d'oyats, avec l'océan à gauche et un village bordé de forêt à droite">
+                      <span class="strip__caption" aria-hidden="true">Dune littorale couverte d'oyats, entre l'océan et le village</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/m2-flore-equipe.webp" data-caption="Identification de la flore dunaire en équipe">
+                      <img src="assets/img/terrain/m2-flore-equipe-min.webp" width="781" height="440" loading="lazy" alt="Six personnes accroupies ou debout sur une dune à végétation basse, observant des plantes et prenant des notes">
+                      <span class="strip__caption" aria-hidden="true">Identification de la flore dunaire en équipe</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/m2-dune-ocean.webp" data-caption="Sur la dune, face à l'océan">
+                      <img src="assets/img/terrain/m2-dune-ocean-min.webp" width="203" height="440" loading="lazy" alt="Ludivine Codoner, bras levés, sur le sable au pied de la dune, avec l'océan en arrière-plan">
+                      <span class="strip__caption" aria-hidden="true">Sur la dune, face à l'océan</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/m2-maisons-ensablees.webp" data-caption="Habitations gagnées par le sable">
+                      <img src="assets/img/terrain/m2-maisons-ensablees-min.webp" width="780" height="440" loading="lazy" alt="Maisons aux toits de tuiles dont les murs sont en partie recouverts par le sable de la dune">
+                      <span class="strip__caption" aria-hidden="true">Habitations gagnées par le sable</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/m2-station-meteo.webp" data-caption="Station météorologique installée sur la dune">
+                      <img src="assets/img/terrain/m2-station-meteo-min.webp" width="781" height="440" loading="lazy" alt="Deux personnes en gilet orange travaillant au pied d'une station météorologique installée sur la dune, face à l'océan">
+                      <span class="strip__caption" aria-hidden="true">Station météorologique installée sur la dune</span>
+                    </a>
+                  </li>
+                </ul>
               </div>
-              </div>
+              <!-- /photos:m2 -->
             </div>
           </article>
 
@@ -422,6 +413,77 @@
                 <img src="assets/img/poster-l3-miniature.webp" width="40" height="57" alt="">
                 <span>Voir le poster scientifique <small>(image)</small></span>
               </a>
+              <!-- photos:l3 -->
+              <div class="strip" data-strip data-gallery role="region" aria-label="Photos du stage de L3">
+                <div class="strip__head">
+                  <p class="strip__title">Sur le terrain et au laboratoire</p>
+                  <div class="strip__nav">
+                    <button class="strip__btn" type="button" data-strip-prev aria-label="Faire défiler les photos vers la gauche">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+                    </button>
+                    <button class="strip__btn" type="button" data-strip-next aria-label="Faire défiler les photos vers la droite">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <ul class="strip__track" tabindex="0">
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-tente-silenes.webp" data-caption="Entretien des plants de silène dioïque dans une tente expérimentale">
+                      <img src="assets/img/terrain/l3-tente-silenes-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner penchée sur des plants de silène dioïque en fleurs, disposés en rangées dans une tente">
+                      <span class="strip__caption" aria-hidden="true">Entretien des plants de silène dioïque dans une tente expérimentale</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-releves-tente.webp" data-caption="Relevés au milieu des silènes, sous tente">
+                      <img src="assets/img/terrain/l3-releves-tente-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner tenant une feuille de relevés parmi les plants de silène dioïque dans une tente expérimentale">
+                      <span class="strip__caption" aria-hidden="true">Relevés au milieu des silènes, sous tente</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-colonie-bourdons.webp" data-caption="Colonie de bourdons utilisée pour l'expérience">
+                      <img src="assets/img/terrain/l3-colonie-bourdons-min.webp" width="782" height="440" loading="lazy" alt="Boîte d'élevage transparente vue de dessus, contenant une colonie de bourdons">
+                      <span class="strip__caption" aria-hidden="true">Colonie de bourdons utilisée pour l'expérience</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-capture-filet.webp" data-caption="Capture de pollinisateurs au filet entomologique">
+                      <img src="assets/img/terrain/l3-capture-filet-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner en sous-bois, tenant un filet entomologique et une boîte de capture">
+                      <span class="strip__caption" aria-hidden="true">Capture de pollinisateurs au filet entomologique</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-capture-filet-equipe.webp" data-caption="Capture au filet en sous-bois, en équipe">
+                      <img src="assets/img/terrain/l3-capture-filet-equipe-min.webp" width="330" height="440" loading="lazy" alt="Deux personnes de dos dans un sous-bois, munies de filets entomologiques">
+                      <span class="strip__caption" aria-hidden="true">Capture au filet en sous-bois, en équipe</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-devant-tentes.webp" data-caption="Devant les tentes d'expérimentation, sous la pluie">
+                      <img src="assets/img/terrain/l3-devant-tentes-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner souriante, capuche sur la tête, devant une tente d'expérimentation sous un filet">
+                      <span class="strip__caption" aria-hidden="true">Devant les tentes d'expérimentation, sous la pluie</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-labo-manip.webp" data-caption="Manipulations au laboratoire">
+                      <img src="assets/img/terrain/l3-labo-manip-min.webp" width="331" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche, manipulant une pipette à une paillasse de laboratoire">
+                      <span class="strip__caption" aria-hidden="true">Manipulations au laboratoire</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-microscope.webp" data-caption="Observation au microscope">
+                      <img src="assets/img/terrain/l3-microscope-min.webp" width="584" height="440" loading="lazy" alt="Personne en blouse devant un microscope relié à un écran d'ordinateur">
+                      <span class="strip__caption" aria-hidden="true">Observation au microscope</span>
+                    </a>
+                  </li>
+                  <li class="strip__item">
+                    <a href="assets/img/terrain/l3-microscope-equipe.webp" data-caption="Travail au microscope et sur ordinateur, à deux">
+                      <img src="assets/img/terrain/l3-microscope-equipe-min.webp" width="587" height="440" loading="lazy" alt="Ludivine Codoner debout en blouse à côté d'une personne assise devant un microscope et un ordinateur">
+                      <span class="strip__caption" aria-hidden="true">Travail au microscope et sur ordinateur, à deux</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /photos:l3 -->
             </div>
           </article>
         </div>

@@ -123,57 +123,45 @@
     });
   });
 
-  /* ---------- Carrousels de photos ---------- */
+  /* ---------- Bandeaux de photos ---------- */
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
-    const track = carousel.querySelector('.carousel__track');
-    const slides = [...track.children];
-    const dotsWrap = carousel.querySelector('.carousel__dots');
-    const counter = carousel.querySelector('.carousel__counter');
-    let current = 0;
+  document.querySelectorAll('[data-strip]').forEach((strip) => {
+    const track = strip.querySelector('.strip__track');
+    const prev = strip.querySelector('[data-strip-prev]');
+    const next = strip.querySelector('[data-strip-next]');
 
-    const goTo = (index) => {
-      const target = (index + slides.length) % slides.length;
-      track.scrollTo({ left: target * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      strip.classList.toggle('is-scrollable', max > 1);
+      strip.classList.toggle('at-end', track.scrollLeft >= max - 1);
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= max - 1;
     };
 
-    const dots = slides.map((_, index) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'carousel__dot';
-      dot.setAttribute('aria-label', `Afficher la photo ${index + 1}`);
-      dot.addEventListener('click', () => goTo(index));
-      dotsWrap.appendChild(dot);
-      return dot;
-    });
-
-    const update = (index) => {
-      current = index;
-      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
-      if (counter) counter.textContent = `${index + 1} / ${slides.length}`;
+    const page = (direction) => {
+      track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: reduceMotion ? 'auto' : 'smooth' });
     };
 
-    let ticking = false;
-    track.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const index = Math.round(track.scrollLeft / track.clientWidth);
-        if (index !== current) update(Math.min(Math.max(index, 0), slides.length - 1));
-        ticking = false;
-      });
-    }, { passive: true });
+    prev.addEventListener('click', () => page(-1));
+    next.addEventListener('click', () => page(1));
 
-    carousel.querySelector('[data-carousel-prev]').addEventListener('click', () => goTo(current - 1));
-    carousel.querySelector('[data-carousel-next]').addEventListener('click', () => goTo(current + 1));
-    track.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
-    });
+    // La molette fait défiler la ligne de photos ; aux extrémités, la page reprend la main
+    track.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      const max = track.scrollWidth - track.clientWidth;
+      if (max <= 1) return;
+      if ((e.deltaY < 0 && track.scrollLeft <= 0) || (e.deltaY > 0 && track.scrollLeft >= max - 1)) return;
+      e.preventDefault();
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? track.clientWidth : 1;
+      track.scrollLeft += e.deltaY * unit;
+    }, { passive: false });
 
-    update(0);
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    track.querySelectorAll('img').forEach((img) => img.addEventListener('load', update));
+    update();
   });
 
   /* ---------- Visionneuse plein écran ---------- */

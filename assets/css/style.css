@@ -1105,13 +1105,21 @@ article[id] {
   font-weight: 500;
 }
 
-/* Carrousel de photos (défilement natif + boutons, points et compteur) */
-.carousel {
+/* Bandeau de photos : une ligne qui défile horizontalement */
+.strip {
   margin-top: 26px;
 }
 
-.carousel__title {
+.strip__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
+}
+
+.strip__title {
+  margin: 0;
   color: var(--muted);
   font-size: 0.8rem;
   font-weight: 600;
@@ -1120,95 +1128,43 @@ article[id] {
   text-transform: uppercase;
 }
 
-.carousel__track {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-}
-
-.carousel__track::-webkit-scrollbar {
+/* Les boutons n'apparaissent qu'avec JavaScript, et seulement s'il y a de quoi défiler */
+.strip__nav {
   display: none;
+  gap: 6px;
 }
 
-.carousel__track:focus-visible {
-  outline-offset: 4px;
-}
-
-.carousel__slide {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
-}
-
-.carousel__slide figure {
-  margin: 0;
-}
-
-.carousel__media {
-  display: block;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 14px;
-  background: var(--bg-alt);
-  cursor: zoom-in;
-}
-
-.carousel__media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.carousel__slide figcaption {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
-.carousel__controls {
+.js .strip.is-scrollable .strip__nav {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
 }
 
-/* Sans JavaScript : défilement au doigt ou à la molette uniquement */
-.carousel__btn,
-.carousel__counter {
-  display: none;
-}
-
-.js .carousel__btn {
+.strip__btn {
   display: grid;
-}
-
-.js .carousel__counter {
-  display: inline;
-}
-
-.carousel__btn {
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
-.carousel__btn:hover {
+.strip__btn:hover:not(:disabled) {
   border-color: var(--primary);
   color: var(--primary);
 }
 
-.carousel__btn svg {
-  width: 18px;
-  height: 18px;
+.strip__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.strip__btn svg {
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -1216,33 +1172,83 @@ article[id] {
   stroke-linejoin: round;
 }
 
-.carousel__dots {
+.strip__track {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  gap: 10px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
 
-.carousel__dot {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
+.strip__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.strip__track::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: var(--line);
-  cursor: pointer;
-  transition: width 0.2s ease, background-color 0.2s ease;
 }
 
-.carousel__dot[aria-current="true"] {
-  width: 22px;
-  background: var(--primary);
+.strip__track:focus-visible {
+  outline-offset: 4px;
 }
 
-.carousel__counter {
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 0.85rem;
-  font-variant-numeric: tabular-nums;
+/* Fondu à droite tant qu'il reste des photos à voir */
+.js .strip.is-scrollable:not(.at-end) .strip__track {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+}
+
+.strip__item {
+  flex: 0 0 auto;
+}
+
+.strip__item a {
+  position: relative;
+  display: block;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-alt);
+  cursor: zoom-in;
+}
+
+.strip__item img {
+  display: block;
+  width: auto;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+.strip__item a:hover img {
+  transform: scale(1.04);
+}
+
+.strip__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 22px 10px 8px;
+  background: linear-gradient(to top, rgba(38, 31, 22, 0.78), transparent);
+  color: #fffaf1;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.strip__item a:hover .strip__caption,
+.strip__item a:focus-visible .strip__caption {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .strip__item a {
+    height: 150px;
+  }
 }
 
 .lightbox {
