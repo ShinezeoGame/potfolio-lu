@@ -13,15 +13,19 @@ Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours uni
 
 Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et propose un thème clair et un thème sombre.
 
+Le site ne dépose aucun cookie et ne fait appel à aucun service tiers (polices hébergées sur le site, pas de mesure d'audience) : aucun bandeau de consentement n'est donc nécessaire. Si un outil de statistiques ou un contenu externe (vidéo, carte…) est ajouté un jour, il faudra mettre à jour `mentions-legales.html` et, selon l'outil, demander le consentement des visiteurs.
+
 ## Structure
 
 ```
 index.html                      Contenu de la page (toutes les sections)
+mentions-legales.html           Mentions légales, cookies et données personnelles
 assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, thème clair/sombre, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
 assets/docs/                    Documents téléchargeables (attestations)
+assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
 ```
 
 ## Modifier le contenu
