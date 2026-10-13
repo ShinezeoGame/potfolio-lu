@@ -1,6 +1,6 @@
 /* ==========================================================================
    Portfolio — feuille de style
-   Palette inspirée des trois terrains d'étude :
+   Palette inspirée des terrains d'étude :
    rose du compagnon rouge, bleu de la mer, vert des dunes, beige du sable.
    ========================================================================== */
 
@@ -19,6 +19,7 @@
   --leaf: #4c7d41;
   --campion: #b5305d;
   --sand: #c8a669;
+  --ochre: #8f6420;
 
   --wave-1: #cfe2df;
   --wave-2: #9cc7c4;
@@ -53,6 +54,7 @@
     --leaf: #97c487;
     --campion: #ec7fa2;
     --sand: #d9bd85;
+  --ochre: #dcb46e;
 
     --wave-1: #15302f;
     --wave-2: #1b4243;
@@ -80,6 +82,7 @@
   --leaf: #97c487;
   --campion: #ec7fa2;
   --sand: #d9bd85;
+  --ochre: #dcb46e;
 
   --wave-1: #15302f;
   --wave-2: #1b4243;
@@ -490,7 +493,7 @@ article[id] {
 }
 
 .hero__title {
-  font-size: clamp(2.8rem, 8vw, 5rem);
+  font-size: clamp(2.6rem, 6.4vw, 4.25rem);
   font-weight: 700;
   letter-spacing: -0.025em;
 }
@@ -516,71 +519,73 @@ article[id] {
   margin-top: 2rem;
 }
 
-.hero__card {
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
+.hero__figure {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 360px);
+  margin: 0;
+}
+
+.hero__photo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+}
+
+/* Cadre décoratif décalé derrière la photo */
+.hero__photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--campion);
+  border-radius: 999px 999px var(--radius) var(--radius);
+  opacity: 0.55;
+  transform: translate(14px, 14px);
+}
+
+.hero__photo img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px 999px var(--radius) var(--radius);
   box-shadow: var(--shadow-lg);
+  object-fit: cover;
 }
 
-.hero__card-title {
-  margin-bottom: 12px;
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.terrains {
-  display: grid;
-  gap: 6px;
-}
-
-.terrains a {
+.hero__badge {
+  position: absolute;
+  bottom: 22px;
+  left: -28px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px;
-  border-radius: 14px;
-  color: var(--text);
-  text-decoration: none;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  gap: 12px;
+  max-width: 290px;
+  padding: 10px 16px 10px 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.35;
 }
 
-.terrains a:hover {
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
-  transform: translateX(4px);
-}
-
-.terrains__icon {
-  display: grid;
+.hero__badge-icons {
+  display: flex;
   flex: none;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
 }
 
-.terrains__icon svg {
+.hero__badge-icons svg {
   width: 34px;
   height: 34px;
+  padding: 5px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
 }
 
-.terrains strong {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.terrains small {
-  display: block;
-  color: var(--muted);
-  font-size: 0.88rem;
-  line-height: 1.4;
+.hero__badge-icons svg + svg {
+  margin-left: -8px;
 }
 
 .hero__waves {
@@ -629,6 +634,18 @@ article[id] {
   .hero__inner {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .hero__figure {
+    width: min(100% - 28px, 320px);
+    margin-top: 12px;
+  }
+
+  .hero__badge {
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
+    max-width: none;
+  }
 }
 
 /* ---------- Icônes des terrains (héritent de --accent) ---------- */
@@ -653,6 +670,17 @@ article[id] {
   stroke: var(--accent);
   stroke-width: 2.2;
   opacity: 1;
+}
+
+.ico-fill--soft {
+  opacity: 0.6;
+}
+
+.ico-body {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 /* ---------- Sections ---------- */
@@ -736,6 +764,51 @@ article[id] {
   color: var(--muted);
   font-size: 0.95rem;
   line-height: 1.45;
+}
+
+.interests {
+  margin-top: clamp(40px, 6vw, 64px);
+  padding-top: clamp(28px, 4vw, 40px);
+  border-top: 1px solid var(--line);
+}
+
+.interests__title {
+  margin-bottom: 18px;
+  font-size: 1.15rem;
+}
+
+.interests__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+}
+
+.interests__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-alt);
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.interests__list strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.interests__list svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  fill: none;
+  stroke: var(--sea);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 @media (max-width: 860px) {
@@ -935,6 +1008,78 @@ article[id] {
   font-size: 0.85rem;
 }
 
+.stage__people {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.stage__people span {
+  margin-right: 6px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.stage__people span::after {
+  content: " :";
+}
+
+.stage__list {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
+.stage__list li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.stage__list li::before {
+  content: "";
+  position: absolute;
+  top: 0.68em;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.subhead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stages + .subhead {
+  margin-top: clamp(40px, 6vw, 64px);
+}
+
+.stages--compact {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 20px;
+}
+
+.stage--compact {
+  padding: clamp(22px, 3vw, 30px);
+  box-shadow: none;
+}
+
+.stage--compact .stage__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+}
+
+.stage--compact h3 {
+  font-size: 1.2rem;
+}
+
 @media (max-width: 600px) {
   .stage {
     grid-template-columns: minmax(0, 1fr);
@@ -1003,9 +1148,19 @@ article[id] {
   font-weight: 500;
 }
 
+.skill__note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 @media (min-width: 1000px) {
   .skills {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .skill--featured {
+    grid-column: span 2;
   }
 }
 
@@ -1059,7 +1214,13 @@ article[id] {
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.contact__link:hover {
+.contact__link--static {
+  margin: 0;
+  border-style: dashed;
+  background: transparent;
+}
+
+a.contact__link:hover {
   background: rgba(255, 255, 255, 0.16);
   transform: translateX(4px);
 }
@@ -1145,7 +1306,6 @@ article[id] {
   }
 
   .btn,
-  .terrains a,
   .contact__link {
     transition: none;
   }
