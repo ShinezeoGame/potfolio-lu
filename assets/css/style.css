@@ -605,6 +605,117 @@ article[id] {
   margin-left: -8px;
 }
 
+/* Invitation à descendre, au-dessus des dunes */
+.scroll-cue {
+  position: absolute;
+  bottom: clamp(64px, 8.5vw, 118px);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  transform: translateX(-50%);
+  transition: opacity 0.4s ease, visibility 0.4s, color 0.2s ease;
+}
+
+.scroll-cue.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.scroll-cue:hover {
+  color: var(--primary);
+}
+
+.scroll-cue__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.scroll-cue__stem {
+  position: relative;
+  width: 16px;
+  height: 46px;
+}
+
+/* La tige */
+.scroll-cue__stem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 4px;
+  left: 50%;
+  width: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, var(--sand));
+  transform: translateX(-50%);
+}
+
+/* La feuille qui descend en se balançant */
+.scroll-cue__leaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 20px;
+  fill: var(--primary);
+  transform-origin: 50% 0;
+  animation: seed-fall 2.8s ease-in-out infinite;
+}
+
+.scroll-cue__vein {
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+@keyframes seed-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) rotate(-14deg);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(12px) rotate(12deg);
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(28px) rotate(-6deg);
+  }
+}
+
+/* Sur une seule colonne (mobile, tablette en portrait), la page dépasse déjà visiblement de l'écran */
+@media (max-width: 860px) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue__leaf {
+    animation: none;
+    transform: translateY(24px);
+  }
+}
+
 /* Les dunes débordent un peu de l'écran : leur mouvement de va-et-vient ne laisse jamais voir leurs bords */
 .hero__waves {
   position: absolute;

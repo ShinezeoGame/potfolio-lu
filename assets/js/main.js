@@ -31,8 +31,12 @@
 
   const toTop = document.querySelector('.to-top');
 
+  const scrollCue = document.querySelector('.scroll-cue');
+
   const onScroll = () => {
     header.classList.toggle('is-scrolled', window.scrollY > 8);
+    // L'invitation à descendre s'efface dès que la visite commence
+    if (scrollCue) scrollCue.classList.toggle('is-hidden', window.scrollY > 40);
     // La flèche apparaît une fois l'écran titre dépassé
     if (toTop) toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.6);
   };
