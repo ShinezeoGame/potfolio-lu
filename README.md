@@ -67,6 +67,6 @@ Lorsqu'un lien vers le site est partagé, LinkedIn, Facebook, WhatsApp ou Discor
 1. Sur GitHub, ouvrez **Settings → Pages**.
 2. Dans **Build and deployment**, choisissez **Deploy from a branch**.
 3. Sélectionnez la branche qui contient le site et le dossier `/ (root)`, puis enregistrez.
-4. Après une ou deux minutes, le site est accessible à l'adresse `https://shinezeogame.github.io/potfolio-lu/`.
+4. Après une ou deux minutes, le site est accessible à l'adresse `https://ludivinecodoner.github.io/` (le dépôt doit s'appeler exactement `ludivinecodoner.github.io`).
 
 Chaque nouveau push sur cette branche met le site à jour automatiquement.
