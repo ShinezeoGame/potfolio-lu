@@ -1,35 +1,7 @@
 (() => {
-  const root = document.documentElement;
   const header = document.querySelector('.site-header');
   const nav = document.getElementById('nav');
   const navToggle = document.querySelector('.nav-toggle');
-  const themeToggle = document.querySelector('.theme-toggle');
-
-  /* ---------- Thème clair / sombre ---------- */
-
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-  const currentTheme = () => root.dataset.theme || (prefersDark.matches ? 'dark' : 'light');
-
-  const updateThemeLabel = () => {
-    const next = currentTheme() === 'dark' ? 'clair' : 'sombre';
-    themeToggle.setAttribute('aria-label', `Activer le thème ${next}`);
-  };
-
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const next = currentTheme() === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      try {
-        localStorage.setItem('theme', next);
-      } catch (e) {
-        /* stockage indisponible : le choix vaut pour cette visite */
-      }
-      updateThemeLabel();
-    });
-
-    prefersDark.addEventListener('change', updateThemeLabel);
-    updateThemeLabel();
-  }
 
   /* ---------- Menu mobile ---------- */
 

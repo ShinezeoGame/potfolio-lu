@@ -11,9 +11,9 @@ Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours uni
 - **Bénévolat international** — chantier « Green Beats » (Corps européen de solidarité, Solidarités Jeunesses), Penàguila, province d'Alicante (Espagne)
 - **Projet en cours** — écriture d'un livre de statistiques appliquées (contexte, méthode adaptée, code R)
 
-Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et propose un thème clair et un thème sombre.
+Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et utilise une palette sobre : fond crème et beige, texte brun, un seul accent vert.
 
-Le site ne dépose aucun cookie et ne fait appel à aucun service tiers (polices hébergées sur le site, pas de mesure d'audience) : aucun bandeau de consentement n'est donc nécessaire. Si un outil de statistiques ou un contenu externe (vidéo, carte…) est ajouté un jour, il faudra mettre à jour `mentions-legales.html` et, selon l'outil, demander le consentement des visiteurs.
+Le site ne dépose aucun cookie, n'enregistre rien dans le navigateur et ne fait appel à aucun service tiers (polices hébergées sur le site, pas de mesure d'audience) : aucun bandeau de consentement n'est donc nécessaire. Si un outil de statistiques ou un contenu externe (vidéo, carte…) est ajouté un jour, il faudra mettre à jour `mentions-legales.html` et, selon l'outil, demander le consentement des visiteurs.
 
 ## Structure
 
@@ -21,7 +21,7 @@ Le site ne dépose aucun cookie et ne fait appel à aucun service tiers (polices
 index.html                      Contenu de la page (toutes les sections)
 mentions-legales.html           Mentions légales, cookies et données personnelles
 assets/css/style.css            Mise en forme (couleurs en haut du fichier)
-assets/js/main.js               Menu mobile, thème clair/sombre, animations
+assets/js/main.js               Menu mobile, copie de l'e-mail, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
 assets/docs/                    Documents consultables (attestation, poster de L3)
@@ -33,7 +33,7 @@ assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
 Tout le texte se trouve dans `index.html`, section par section (`ACCUEIL`, `À PROPOS`, `PARCOURS`, `EXPÉRIENCES`, `COMPÉTENCES`, `CONTACT`).
 
 - **Photo** : remplacez `assets/img/ludivine-codoner.jpg` par une autre image au format portrait (3:4) en gardant le même nom.
-- **Couleurs** : variables en haut de `assets/css/style.css` (`--sea`, `--leaf`, `--campion`, `--ochre`…).
+- **Couleurs** : variables en haut de `assets/css/style.css` (`--bg`, `--bg-alt`, `--surface`, `--text`, `--primary`…).
 - **Ajouter un CV téléchargeable** : déposez le fichier sous `assets/cv.pdf`, puis ajoutez dans la liste `contact__links` de `index.html` :
 
   ```html
@@ -49,7 +49,7 @@ Tout le texte se trouve dans `index.html`, section par section (`ACCUEIL`, `À P
 
 ## Aperçu en local
 
-Ouvrez simplement `index.html` dans un navigateur, ou lancez un petit serveur :
+Lancez un petit serveur local (en ouvrant directement `index.html`, le navigateur bloque les polices) :
 
 ```bash
 python3 -m http.server 8000

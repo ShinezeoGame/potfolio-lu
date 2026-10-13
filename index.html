@@ -9,7 +9,7 @@
   <meta property="og:description" content="Biodiversité, écosystèmes marins et côtiers, inventaires naturalistes et biostatistiques : découvrez mon parcours et mes stages.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/img/ludivine-codoner.jpg">
-  <meta name="theme-color" content="#4c7d41">
+  <meta name="theme-color" content="#4f6f3a">
 
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <!-- Polices hébergées sur le site : aucune requête vers un service tiers -->
@@ -17,14 +17,7 @@
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
 
-  <!-- Applique le thème choisi avant l'affichage pour éviter un flash -->
-  <script>
-    document.documentElement.classList.add('js');
-    try {
-      var t = localStorage.getItem('theme');
-      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-    } catch (e) {}
-  </script>
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -53,10 +46,6 @@
       </nav>
 
       <div class="header__actions">
-        <button class="icon-btn theme-toggle" type="button" aria-label="Changer de thème">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
-        </button>
         <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Ouvrir le menu">
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
@@ -93,7 +82,7 @@
           </div>
           <figcaption class="hero__badge">
             <span class="hero__badge-icons" aria-hidden="true">
-              <svg viewBox="0 0 48 48" style="--accent: var(--campion)"><use href="#icon-flower"/></svg>
+              <svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
             </span>
             <span>Sur le terrain, avec le silène dioïque (<em>Silene dioica</em>)</span>
           </figcaption>
@@ -260,7 +249,7 @@
         <h3 class="subhead reveal">Stages de recherche</h3>
         <div class="stages">
           <!-- Stage M2 -->
-          <article class="stage reveal" id="exp-m2" style="--accent: var(--leaf)">
+          <article class="stage reveal" id="exp-m2">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-dune"/></svg>
             </div>
@@ -302,7 +291,7 @@
           </article>
 
           <!-- Stage M1 -->
-          <article class="stage reveal" id="exp-m1" style="--accent: var(--sea)">
+          <article class="stage reveal" id="exp-m1">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-mussel"/></svg>
             </div>
@@ -333,7 +322,7 @@
           </article>
 
           <!-- Stage L3 -->
-          <article class="stage reveal" id="exp-l3" style="--accent: var(--campion)">
+          <article class="stage reveal" id="exp-l3">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
             </div>
@@ -383,7 +372,7 @@
 
         <h3 class="subhead reveal">Biodiversité &amp; territoires</h3>
         <div class="stages stages--compact">
-          <article class="stage stage--compact reveal" id="exp-armentieres" style="--accent: var(--ochre)">
+          <article class="stage stage--compact reveal" id="exp-armentieres">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-butterfly"/></svg>
             </div>
@@ -404,7 +393,7 @@
             </div>
           </article>
 
-          <article class="stage stage--compact reveal" style="--accent: var(--campion)">
+          <article class="stage stage--compact reveal">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-seedling"/></svg>
             </div>
@@ -424,7 +413,7 @@
 
         <h3 class="subhead reveal">Engagement</h3>
         <div class="stages stages--compact">
-          <article class="stage stage--compact reveal" id="exp-benevolat" style="--accent: var(--leaf)">
+          <article class="stage stage--compact reveal" id="exp-benevolat">
             <div class="stage__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><use href="#icon-heart"/></svg>
             </div>
