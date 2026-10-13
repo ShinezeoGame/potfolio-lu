@@ -164,12 +164,11 @@
     prev.addEventListener('click', () => page(-1));
     next.addEventListener('click', () => page(1));
 
-    // La molette fait défiler la ligne de photos ; aux extrémités, la page reprend la main
+    // Au-dessus de la ligne de photos, la molette la fait défiler, sans jamais faire bouger la page
     track.addEventListener('wheel', (e) => {
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
       const max = track.scrollWidth - track.clientWidth;
       if (max <= 1) return;
-      if ((e.deltaY < 0 && track.scrollLeft <= 0) || (e.deltaY > 0 && track.scrollLeft >= max - 1)) return;
       e.preventDefault();
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? track.clientWidth : 1;
       track.scrollLeft += e.deltaY * unit;

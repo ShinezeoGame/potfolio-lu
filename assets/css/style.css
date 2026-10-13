@@ -63,7 +63,7 @@
 
 /* ---------- Base ---------- */
 
-/* Éléments ponctués de rose (icônes du silène, cœur de l'engagement) */
+/* Éléments ponctués de rose (fleur de silène de l'accueil, cœur de l'engagement) */
 .accent-rose {
   --accent: var(--rose);
 }
