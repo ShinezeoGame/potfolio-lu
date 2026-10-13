@@ -21,6 +21,7 @@ assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, thème clair/sombre, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
+assets/docs/                    Documents téléchargeables (attestations)
 ```
 
 ## Modifier le contenu
