@@ -24,7 +24,7 @@ assets/css/style.css            Mise en forme (couleurs en haut du fichier)
 assets/js/main.js               Menu mobile, thème clair/sombre, animations
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
-assets/docs/                    Documents téléchargeables (attestations)
+assets/docs/                    Documents consultables (attestation, poster de L3)
 assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1)
 ```
 

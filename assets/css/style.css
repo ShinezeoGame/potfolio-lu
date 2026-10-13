@@ -1151,6 +1151,19 @@ article[id] {
   stroke-linejoin: round;
 }
 
+.doc-link--thumb {
+  padding: 6px 16px 6px 6px;
+}
+
+.doc-link--thumb img {
+  display: block;
+  width: 40px;
+  height: 57px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
 .doc-link small {
   color: var(--muted);
   font-weight: 500;
@@ -1396,39 +1409,9 @@ article[id] {
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.contact__stack {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  min-width: 0;
-}
-
-.contact__hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-
-.contact__link .contact__hint svg {
-  width: 15px;
-  height: 15px;
-}
-
 .contact__link.is-copied {
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-.contact__link.is-copied .contact__hint {
-  background: #f2f8f6;
-  color: #12505a;
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .contact__link--static {
@@ -1541,23 +1524,19 @@ a.contact__link:hover {
 }
 
 .ai-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px 3px 9px;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 50%;
   background: var(--surface);
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 500;
   cursor: help;
 }
 
 .ai-badge svg {
-  width: 15px;
-  height: 15px;
-  flex: none;
+  width: 16px;
+  height: 16px;
   fill: var(--leaf);
 }
 

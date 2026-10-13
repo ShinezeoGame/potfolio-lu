@@ -127,7 +127,7 @@
 
   document.querySelectorAll('[data-copy]').forEach((link) => {
     const label = link.querySelector('[data-copy-label]');
-    const initialLabel = label ? label.textContent : '';
+    const initialLabel = label ? label.innerHTML : '';
     let resetTimer;
 
     link.addEventListener('click', async (e) => {
@@ -140,12 +140,12 @@
         return;
       }
       link.classList.add('is-copied');
-      if (label) label.textContent = 'Copiée\u00a0!';
+      if (label) label.textContent = 'Adresse copiée\u00a0!';
       if (copyStatus) copyStatus.textContent = 'Adresse e-mail copiée dans le presse-papiers.';
       clearTimeout(resetTimer);
       resetTimer = setTimeout(() => {
         link.classList.remove('is-copied');
-        if (label) label.textContent = initialLabel;
+        if (label) label.innerHTML = initialLabel;
         if (copyStatus) copyStatus.textContent = '';
       }, 2500);
     });
