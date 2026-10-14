@@ -691,8 +691,11 @@
 
   /* ---------- Départ ---------- */
 
-  layout();
-  updateDepth();
+  // Première mise en place sans transition : le carnet apparaît directement fermé, à sa place
+  withoutAnimation(() => {
+    layout();
+    updateDepth();
+  });
 
   if (state === 'reading') {
     // Arrivée par un lien vers une section : carnet déjà ouvert à la bonne page
