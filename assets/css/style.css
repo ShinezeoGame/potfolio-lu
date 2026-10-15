@@ -1,10 +1,11 @@
 /* ==========================================================================
    Portfolio — feuille de style
-   Un carnet de terrain posé sur un fond crème : papier à petits carreaux,
+   Un carnet de terrain posé sur un bureau crème : papier à petits carreaux,
    écriture à l'encre verte, un accent vert (celui du logo) et, par petites
-   touches, le rose du silène dioïque.
+   touches, le rose du silène dioïque. Le carnet se pose ensuite sur une pile
+   de livres (Formation, Expériences, Passions) qui s'ouvrent un à un.
 
-   Les mesures du carnet (--pw, --ph, positions…) sont recalculées par
+   Les mesures des livres (--pw, --ph, positions…) sont recalculées par
    assets/js/main.js selon la taille de la fenêtre ; les valeurs ci-dessous
    servent si JavaScript est désactivé.
    ========================================================================== */
@@ -45,6 +46,17 @@
   --postit-sand: #f1e0b2;
   --highlight: rgba(205, 218, 152, 0.75);
 
+  /* Les livres de la pile */
+  --tome-formation: #9c7a45;
+  --tome-formation-dark: #6c5230;
+  --tome-formation-ink: #7a5a2b;
+  --tome-experiences: #3f5f56;
+  --tome-experiences-dark: #2a413b;
+  --tome-experiences-ink: #2f5248;
+  --tome-passions: #a3506d;
+  --tome-passions-dark: #74344c;
+  --tome-passions-ink: #93405f;
+
   --shadow: 0 1px 2px rgba(66, 50, 28, 0.05), 0 10px 30px rgba(66, 50, 28, 0.07);
   --shadow-lg: 0 2px 4px rgba(66, 50, 28, 0.06), 0 20px 50px rgba(66, 50, 28, 0.12);
   --shadow-print: 0 1px 2px rgba(60, 40, 20, 0.12), 0 12px 26px -8px rgba(60, 40, 20, 0.32);
@@ -60,6 +72,7 @@
   --ease-book: cubic-bezier(0.5, 0.05, 0.2, 1);
   --t-book: 1.15s;
   --t-flip: 1.1s;
+  --t-shift: 0.8s;
 
   /* Mesures par défaut du carnet (une page) */
   --pw: min(44vw, 330px);
@@ -174,10 +187,9 @@ p {
 }
 
 /* Paragraphes justifiés, avec césure pour éviter les grands espaces */
-.journal p:not([class]),
+.page__content p:not([class]),
+.project__text p:not([class]),
 .step__highlight,
-.chapter__intro,
-.step__list li,
 .legal p,
 .legal li {
   text-align: justify;
@@ -493,16 +505,29 @@ ol {
   }
 }
 
-/* Sur la page d'accueil, l'en-tête n'apparaît qu'une fois le carnet ouvert */
-html[data-book="closed"] .site-header,
-html[data-book="open"] .site-header {
+/* Sur la page d'accueil, l'en-tête flotte au-dessus du bureau
+   et n'apparaît qu'une fois le carnet posé sur la pile */
+html[data-scene] .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+html[data-scene]:not([data-scene="desk"]) .site-header,
+html.reader-open .site-header {
   visibility: hidden;
   transform: translateY(-100%);
 }
 
-/* ==========================================================================
-   Accueil : le carnet de terrain
-   ========================================================================== */
+/* Pendant la lecture d'un livre, le bureau s'efface derrière lui */
+html.reader-open[data-scene] .desk__more,
+html.reader-open .to-top {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------- Icônes et dessins ---------- */
 
 /* Les icônes héritent de --accent */
 .ico-fill {
@@ -568,74 +593,46 @@ html[data-book="open"] .site-header {
 .d-glass { fill: #e3eef0; }
 .d-wing { fill: #ffffff; opacity: 0.85; }
 
-.intro {
+/* ==========================================================================
+   Le bureau : le carnet de terrain, puis la pile de livres
+   ========================================================================== */
+
+.desk {
   position: relative;
-  padding: 56px 16px 72px;
+  padding: 48px 16px 64px;
+}
+
+/* Avec JavaScript, le bureau occupe exactement l'écran ; le carnet y est placé par le script */
+.js .desk {
+  height: 100vh;
+  height: 100svh;
+  min-height: 420px;
+  padding: 0;
   overflow: hidden;
 }
 
-/* Avec JavaScript, l'accueil occupe tout l'écran et le carnet y est placé précisément */
-.js .intro {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  padding: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* Le carnet : une page fait --pw de large ; ouvert, il en montre deux */
-.book {
-  position: relative;
-  width: var(--pw);
-  height: var(--ph);
-  margin-left: 50%;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: calc(var(--u) * 5.2);
-  line-height: 1.2;
-}
-
-.js .book {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-  /* Perspective commune aux feuillets, centrée sur la reliure */
-  perspective: calc(var(--u) * 420);
-  perspective-origin: 0 50%;
-  transform-origin: 0 0;
-  transform: translate3d(var(--bx, 0px), var(--by, 0px), 0) scale(var(--bs, 1));
-  transition: transform var(--t-book) var(--ease-book);
-  pointer-events: auto;
-}
-
-html[data-book="closed"] .book {
-  --bx: var(--x-closed);
-  --by: var(--y-closed);
-  --bs: var(--s-closed);
-}
-
-html[data-book="open"] .book {
-  --bx: var(--x-open);
-  --by: var(--y-open);
-  --bs: 1;
-  cursor: pointer;
-}
-
-html[data-book="reading"] .book {
-  --bx: var(--x-read);
-  --by: var(--y-read);
-  --bs: var(--s-read);
-}
-
 /* Tant que le script n'a pas mesuré la fenêtre, rien ne s'affiche */
-.js:not(.is-ready) .intro {
+.js:not(.is-ready) .desk,
+.js:not(.is-ready) .reader {
+  visibility: hidden;
+}
+
+/* Avant que le carnet soit posé, la page ne défile pas */
+html[data-scene]:not([data-scene="desk"]),
+html[data-scene]:not([data-scene="desk"]) body,
+html.reader-open,
+html.reader-open body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html[data-scene]:not([data-scene="desk"]) .chapter {
   visibility: hidden;
 }
 
 /* Changement d'état sans animation (arrivée directe, redimensionnement) */
-.no-anim *,
+.no-anim,
+.no-anim *:not(.ch),
 .no-anim *::before,
 .no-anim *::after {
   transition-duration: 0s !important;
@@ -644,7 +641,47 @@ html[data-book="reading"] .book {
   animation-delay: 0s !important;
 }
 
-/* Ombre portée sur le bureau, qui s'étend aux deux pages à l'ouverture */
+/* ---------- Un livre : une page fait --pw de large ; ouvert, il en montre deux ---------- */
+
+.book {
+  --book-dark: var(--cover-dark);
+  position: relative;
+  width: var(--pw);
+  height: var(--ph);
+  margin-inline: auto;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: calc(var(--u) * 5.2);
+  line-height: 1.2;
+}
+
+.js .book {
+  margin: 0;
+  /* Perspective commune aux feuillets, centrée sur la reliure */
+  perspective: calc(var(--u) * 420);
+  perspective-origin: 0 50%;
+}
+
+/* Le carnet : placé, incliné et mis à l'échelle par le script selon l'étape.
+   L'origine est le bas de la reliure, là où il se pose sur la pile. */
+.js .carnet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 100%;
+  transform:
+    translate3d(var(--bx, 0px), calc(var(--by, 0px) + var(--lift, 0px)), 0)
+    perspective(1800px) rotateX(var(--brx, 0deg)) rotateZ(var(--brz, 0deg)) scale(var(--bs, 1));
+  transition: transform var(--t-book) var(--ease-book);
+}
+
+/* Posé sur la pile, le carnet se soulève un peu au survol : un clic le reprend en main */
+html[data-scene="desk"] .carnet:hover {
+  --lift: -6px;
+  transition-duration: 0.35s;
+}
+
+/* Ombre portée, qui s'étend aux deux pages à l'ouverture */
 .book__shadow {
   position: absolute;
   top: 1.5%;
@@ -655,13 +692,17 @@ html[data-book="reading"] .book {
   box-shadow:
     0 calc(var(--u) * 3) calc(var(--u) * 6) calc(var(--u) * -1) rgba(60, 40, 20, 0.36),
     0 calc(var(--u) * 0.8) calc(var(--u) * 1.6) rgba(60, 40, 20, 0.16);
-  transition: left var(--t-book) var(--ease-book);
+  transition: left var(--t-book) var(--ease-book), opacity var(--t-book) ease;
 }
 
-html[data-book="open"] .book__shadow,
-html[data-book="reading"] .book__shadow,
+html[data-scene]:not([data-scene="closed"]) .carnet .book__shadow,
+.tome:not(.is-shut) .book__shadow,
 html:not(.js) .book__shadow {
   left: calc(var(--u) * -101.6);
+}
+
+html[data-scene="desk"] .carnet .book__shadow {
+  opacity: 0.55;
 }
 
 /* Quatrième de couverture, qui dépasse un peu autour des pages */
@@ -669,7 +710,7 @@ html:not(.js) .book__shadow {
   position: absolute;
   inset: calc(var(--u) * -1.6) calc(var(--u) * -1.6) calc(var(--u) * -1.6) 0;
   border-radius: calc(var(--u) * 0.6) calc(var(--u) * 1.8) calc(var(--u) * 1.8) calc(var(--u) * 0.6);
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 12%), var(--cover-dark);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 12%), var(--book-dark);
 }
 
 /* Tranche des pages */
@@ -682,10 +723,6 @@ html:not(.js) .book__shadow {
     calc(var(--u) * 0.25) calc(var(--u) * 0.2) 0 #e3d8c1,
     calc(var(--u) * 0.5) calc(var(--u) * 0.4) 0 #fbf6ea,
     calc(var(--u) * 0.75) calc(var(--u) * 0.6) 0 #ded2b9;
-}
-
-.book__edges--left {
-  display: none;
 }
 
 /* Feuille volante glissée entre deux pages */
@@ -724,97 +761,33 @@ html:not(.js) .book__shadow {
   transform-origin: top center;
 }
 
-/* ---------- Post-it marque-pages : aussi le sommaire ---------- */
-
-.tabs {
+/* Mini post-it qui dépassent de la tranche */
+.book__tabs {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 100%;
-  z-index: 3;
+  z-index: 1;
   width: 0;
 }
 
-.tab {
-  --tab: var(--postit-sage);
-  --tx: calc(var(--u) * -23);
+.book__tabs span {
   position: absolute;
   top: var(--top);
-  left: calc(var(--u) * -10);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: calc(var(--u) * 38);
-  height: calc(var(--u) * 8.4);
-  padding-right: calc(var(--u) * 2.6);
+  left: calc(var(--u) * -5);
+  width: calc(var(--u) * 11.5);
+  height: calc(var(--u) * 6.4);
   border-radius: 0 calc(var(--u) * 1) calc(var(--u) * 1) 0;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent 30%), var(--tab);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent 40%), var(--tab);
   box-shadow: calc(var(--u) * 0.3) calc(var(--u) * 0.4) calc(var(--u) * 0.8) rgba(60, 40, 20, 0.16);
-  color: var(--ink);
-  font-size: calc(var(--u) * 4.2);
-  font-weight: 400;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  transform: translateX(var(--tx)) rotate(var(--rot, 0deg));
-  transition:
-    transform 0.6s var(--ease-book) var(--tab-delay, 0s),
-    height 0.3s ease, margin 0.3s ease, font-size 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
+  transform: rotate(var(--rot));
 }
 
-.tab span {
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.tab:nth-child(3n+1) { --tab: var(--postit-rose); --tab-strong: #eda7bf; }
-.tab:nth-child(3n+2) { --tab: var(--postit-sage); --tab-strong: #c6d79c; }
-.tab:nth-child(3n+3) { --tab: var(--postit-sand); --tab-strong: #edcf86; }
-.tab:nth-child(1) { --top: 9%; --rot: -1deg; --tab-delay: 0.05s; }
-.tab:nth-child(2) { --top: 22%; --rot: 1deg; --tab-delay: 0.1s; }
-.tab:nth-child(3) { --top: 35%; --rot: -0.5deg; --tab-delay: 0.15s; }
-.tab:nth-child(4) { --top: 48%; --rot: 1.2deg; --tab-delay: 0.2s; }
-.tab:nth-child(5) { --top: 61%; --rot: -1deg; --tab-delay: 0.25s; }
-.tab:nth-child(6) { --top: 74%; --rot: 0.6deg; --tab-delay: 0.3s; }
-
-/* Pendant la lecture, les post-it sortent davantage et montrent leur titre */
-html[data-book="reading"] .tab {
-  --tx: 0px;
-}
-
-html[data-book="reading"] .tab span {
-  opacity: 1;
-  transition-delay: 0.5s;
-}
-
-html[data-book="reading"] .tab {
-  color: var(--ink-soft);
-}
-
-html[data-book="reading"] .tab:hover {
-  --tx: calc(var(--u) * 3);
-  color: var(--ink);
-}
-
-/* La partie en cours de lecture : post-it plus coloré, plus grand, qui sort davantage */
-html[data-book="reading"] .tab.is-active {
-  --tx: calc(var(--u) * 9);
-  --rot: 0deg;
-  z-index: 2;
-  height: calc(var(--u) * 10);
-  margin-top: calc(var(--u) * -0.8);
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.05), transparent 30%), var(--tab-strong);
-  box-shadow:
-    calc(var(--u) * 0.5) calc(var(--u) * 0.8) calc(var(--u) * 1.6) rgba(60, 40, 20, 0.28),
-    inset calc(var(--u) * -0.6) 0 0 rgba(255, 255, 255, 0.35);
-  color: var(--ink);
-  font-size: calc(var(--u) * 4.8);
-  font-weight: 700;
-}
-
-.tab:focus-visible {
-  outline-offset: 2px;
-}
+.book__tabs span:nth-child(1) { --top: 10%; --rot: -1.5deg; --tab: var(--postit-rose); }
+.book__tabs span:nth-child(2) { --top: 23%; --rot: 1deg; --tab: var(--postit-sage); }
+.book__tabs span:nth-child(3) { --top: 37%; --rot: -0.6deg; --tab: var(--postit-sand); }
+.book__tabs span:nth-child(4) { --top: 53%; --rot: 1.4deg; --tab: var(--postit-rose); }
+.book__tabs span:nth-child(5) { --top: 68%; --rot: -1deg; --tab: var(--postit-sage); }
 
 /* ---------- Feuillets : chaque feuille a un recto et un verso ---------- */
 
@@ -835,21 +808,9 @@ html[data-book="reading"] .tab.is-active {
   transform: rotateY(-180deg);
 }
 
-/* Ordre d'empilement du carnet fermé (le script le met à jour quand les pages tournent) */
-.leaf--cover { --z: 16; }
-.leaf--hypo { --z: 15; }
-.leaf[data-page="1"] { --z: 14; }
-.leaf[data-page="2"] { --z: 13; }
-.leaf[data-page="3"] { --z: 12; }
-.leaf[data-page="4"] { --z: 11; }
-
-/* Sans JavaScript : le carnet reste ouvert sur la question et l'hypothèse */
-html:not(.js) .leaf--cover {
-  transform: rotateY(-180deg);
-}
-
-html:not(.js) .leaf--hypo {
-  z-index: 20;
+/* Avant que le script ne règle l'ordre d'empilement, la couverture est au-dessus */
+.leaf--cover {
+  --z: 30;
 }
 
 .leaf__face {
@@ -863,9 +824,24 @@ html:not(.js) .leaf--hypo {
   transform: rotateY(180deg);
 }
 
+.leaf__face > .page {
+  position: absolute;
+  inset: 0;
+}
+
 /* La couverture dépasse légèrement des pages */
 .leaf--cover {
   inset: calc(var(--u) * -1.6) calc(var(--u) * -1.6) calc(var(--u) * -1.6) 0;
+}
+
+/* Revers de la couverture : la page de gauche y est collée */
+.leaf--cover > .leaf__back {
+  border-radius: calc(var(--u) * 1.8) calc(var(--u) * 0.6) calc(var(--u) * 0.6) calc(var(--u) * 1.8);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 14%), var(--book-dark);
+}
+
+.leaf--cover > .leaf__back > .page {
+  inset: calc(var(--u) * 1.6) 0 calc(var(--u) * 1.6) calc(var(--u) * 1.6);
 }
 
 /* Papier à petits carreaux */
@@ -925,7 +901,7 @@ html:not(.js) .leaf--hypo {
   50% { opacity: 1; }
 }
 
-/* ---------- Couverture ---------- */
+/* ---------- Couverture du carnet ---------- */
 
 .cover {
   overflow: hidden;
@@ -1043,22 +1019,8 @@ html:not(.js) .leaf--hypo {
   stroke-linejoin: round;
 }
 
-/* Revers de la couverture : la page de gauche y est collée */
-.cover-inside {
-  border-radius: calc(var(--u) * 1.8) calc(var(--u) * 0.6) calc(var(--u) * 0.6) calc(var(--u) * 1.8);
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 14%), var(--cover-dark);
-}
-
-.cover-inside .page {
-  position: absolute;
-  top: calc(var(--u) * 1.6);
-  bottom: calc(var(--u) * 1.6);
-  left: calc(var(--u) * 1.6);
-  right: 0;
-}
-
 /* Le carnet fermé s'entrouvre au survol */
-html[data-book="closed"] .book:hover .leaf--cover {
+html[data-scene="closed"] .carnet:hover .leaf--cover {
   transform: rotateY(-14deg);
   transition-duration: 0.6s;
 }
@@ -1068,7 +1030,7 @@ html[data-book="closed"] .book:hover .leaf--cover {
   transform-origin: 0 50%;
 }
 
-html[data-book="closed"].is-ready .leaf--cover .leaf__front {
+html[data-scene="closed"].is-ready .carnet .leaf--cover .leaf__front {
   animation: cover-peek 1.6s var(--ease-book) 2.4s 2;
 }
 
@@ -1077,7 +1039,7 @@ html[data-book="closed"].is-ready .leaf--cover .leaf__front {
   45% { transform: rotateY(-11deg); }
 }
 
-html[data-book="closed"] .book.is-nudged .leaf--cover .leaf__front {
+html[data-scene="closed"] .carnet.is-nudged .leaf--cover .leaf__front {
   animation: cover-nudge 0.6s var(--ease-book);
 }
 
@@ -1086,7 +1048,7 @@ html[data-book="closed"] .book.is-nudged .leaf--cover .leaf__front {
   40% { transform: rotateY(-18deg); }
 }
 
-/* Bouton invisible qui couvre le carnet fermé */
+/* Bouton invisible qui couvre le carnet fermé, puis le carnet posé sur la pile */
 .book__open {
   position: absolute;
   inset: calc(var(--u) * -1.6) calc(var(--u) * -1.6) calc(var(--u) * -1.6) 0;
@@ -1098,7 +1060,12 @@ html[data-book="closed"] .book.is-nudged .leaf--cover .leaf__front {
   cursor: pointer;
 }
 
-html:not([data-book="closed"]) .book__open {
+html[data-scene="desk"] .book__open {
+  left: calc(var(--pw) * -1 - var(--u) * 1.6);
+}
+
+html[data-scene]:not([data-scene="closed"]):not([data-scene="desk"]) .book__open,
+html:not(.js) .book__open {
   display: none;
 }
 
@@ -1158,8 +1125,8 @@ html:not(.js) .spread__underline {
   right: 0;
   bottom: 0;
   z-index: 6;
-  width: calc(var(--u) * 46);
-  height: calc(var(--u) * 20);
+  width: calc(var(--u) * 52);
+  height: calc(var(--u) * 16);
   padding: 0;
   border: 0;
   background: none;
@@ -1172,8 +1139,9 @@ html:not(.js) .spread__underline {
   position: absolute;
   right: calc(var(--u) * 13);
   bottom: calc(var(--u) * 5);
-  font-size: calc(var(--u) * 4.6);
+  font-size: max(13px, calc(var(--u) * 4.6));
   font-weight: 400;
+  line-height: 1;
   white-space: nowrap;
 }
 
@@ -1193,7 +1161,8 @@ html:not(.js) .spread__underline {
   transition: width 0.3s ease, height 0.3s ease;
 }
 
-html[data-book="open"] .turn__corner {
+html[data-scene="question"] .turn__corner,
+html[data-scene="profil"] .turn__corner {
   animation: corner-lift 2.2s ease-in-out 3s infinite;
 }
 
@@ -1213,8 +1182,160 @@ html[data-book="open"] .turn__corner {
   82% { width: calc(var(--u) * 13); height: calc(var(--u) * 13); }
 }
 
-html:not([data-book="open"]) .turn {
+html[data-scene="closed"] .turn,
+html[data-scene="desk"] .turn {
   visibility: hidden;
+}
+
+/* Sur la double page, un clic tourne la page */
+html[data-scene="question"] .carnet,
+html[data-scene="portrait"] .carnet,
+html[data-scene="profil"] .carnet {
+  cursor: pointer;
+}
+
+/* ---------- Pages du carnet : portrait et profil ---------- */
+
+.page__content--portrait {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 7);
+  padding: calc(var(--u) * 9) calc(var(--u) * 10) calc(var(--u) * 9) calc(var(--u) * 8);
+}
+
+.portrait {
+  display: flex;
+  justify-content: center;
+}
+
+.print--portrait {
+  --r: -2.5deg;
+}
+
+.print--portrait a {
+  padding: calc(var(--u) * 2) calc(var(--u) * 2) 0;
+}
+
+.print--portrait img {
+  width: auto;
+  height: calc(var(--u) * 62);
+}
+
+.print--portrait .print__cap {
+  max-width: calc(var(--u) * 46.5);
+  margin-inline: auto;
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 0.5) calc(var(--u) * 2.4);
+  font-size: max(12px, calc(var(--u) * 3.6));
+}
+
+.print--portrait::before {
+  top: calc(var(--u) * -2.2);
+  width: calc(var(--u) * 15);
+  height: calc(var(--u) * 4.6);
+  margin-left: calc(var(--u) * -7.5);
+}
+
+/* Chiffres clés en post-it */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--u) * 2.6);
+}
+
+.fact {
+  display: grid;
+  align-content: start;
+  gap: calc(var(--u) * 0.6);
+  width: calc(var(--u) * 24.5);
+  min-height: calc(var(--u) * 21);
+  padding: calc(var(--u) * 2.2) calc(var(--u) * 2.2) calc(var(--u) * 2.6);
+  background: var(--postit-sage);
+  box-shadow: 0 1px 1px rgba(60, 40, 20, 0.08), 0 calc(var(--u) * 1.6) calc(var(--u) * 2.6) calc(var(--u) * -1.6) rgba(60, 40, 20, 0.35);
+  transform: rotate(-2deg);
+}
+
+.fact:nth-child(2) {
+  background: var(--postit-rose);
+  transform: rotate(1.6deg) translateY(calc(var(--u) * 1.4));
+}
+
+.fact:nth-child(3) {
+  background: var(--postit-sand);
+  transform: rotate(-1deg);
+}
+
+.fact__value {
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: max(16px, calc(var(--u) * 5.8));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.fact__label {
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: max(10.5px, calc(var(--u) * 2.25));
+  line-height: 1.3;
+}
+
+/* Le profil : du texte imprimé, souligné au surligneur */
+.page__content--profil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 8) calc(var(--u) * 8) calc(var(--u) * 15) calc(var(--u) * 10);
+  overflow: hidden;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: calc(clamp(12px, var(--u) * 2.75, 16px) * var(--fit, 1));
+  line-height: 1.55;
+}
+
+.page__content--profil > :first-child {
+  margin-top: auto;
+}
+
+.page__content--profil > :last-child {
+  margin-bottom: auto;
+}
+
+.page__content--profil .eyebrow {
+  margin: 0 0 0.15em;
+  color: var(--rose);
+  font-family: var(--font-hand);
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: none;
+}
+
+.profil__title {
+  margin: 0 0 0.75em;
+  color: var(--ink);
+  font-size: 1.55em;
+  line-height: 1.18;
+}
+
+.page__content--profil p:not([class]) {
+  margin: 0 0 0.8em;
+}
+
+.page__content--profil strong {
+  color: var(--ink);
+  font-weight: 600;
+  background: linear-gradient(transparent 58%, var(--highlight) 58%, var(--highlight) 92%, transparent 92%);
+}
+
+[tabindex="-1"]:focus {
+  outline: none;
 }
 
 /* ---------- Indications sous le carnet ---------- */
@@ -1232,11 +1353,12 @@ html:not([data-book="open"]) .turn {
   padding-inline: 16px;
   color: var(--muted);
   font-family: var(--font-hand);
-  font-size: clamp(1.25rem, 1.5vw, 1.55rem);
+  font-size: clamp(1.2rem, 1.5vw, 1.5rem);
   font-weight: 400;
   line-height: 1.1;
   text-align: center;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.4s ease;
 }
 
@@ -1268,118 +1390,21 @@ html:not([data-book="open"]) .turn {
   50% { transform: translateY(5px); }
 }
 
-html[data-book="closed"] .intro__hint--open {
+html[data-scene="closed"] .intro__hint--open {
   opacity: 1;
   transition-delay: 0.9s;
 }
 
-html[data-book="open"] .intro__hint--turn {
+html[data-scene="question"] .intro__hint--turn {
   opacity: 1;
-  transition-delay: 3.2s;
+  transition-delay: 3.4s;
 }
 
-html:not(.js) .intro__hint {
-  display: none;
-}
-
-/* ---------- Passions : autocollants et phrases sur la double page ---------- */
-
-.stickers__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.sticker {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--st-gap, 14px);
-}
-
-.sticker svg {
-  width: var(--st, 76px);
-  height: auto;
-  flex: none;
-  overflow: visible;
-  transform: rotate(var(--sr, 0deg));
-}
-
-.sticker__text {
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: var(--st-font, 1.1rem);
-  line-height: 1.18;
-  text-align: left;
-  -webkit-hyphens: manual;
-  hyphens: manual;
-}
-
-.sticker__text strong {
-  display: block;
-  margin-bottom: 0.12em;
-  font-size: 1.16em;
-  font-weight: 700;
-}
-
-/* Sans JavaScript : les passions s'affichent sous le carnet */
-.stickers {
-  max-width: 760px;
-  margin: 40px auto 0;
-}
-
-html:not(.js) .stickers__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-}
-
-/* Avec JavaScript : posées sur la double page ouverte */
-.js .stickers {
-  position: absolute;
-  top: var(--sf-y);
-  left: var(--sf-x);
-  width: var(--sf-w);
-  height: var(--sf-h);
-  max-width: none;
-  margin: 0;
-}
-
-.stickers .sticker {
-  --st: calc(var(--u) * 15);
-  --st-gap: calc(var(--u) * 3);
-  --st-font: calc(var(--u) * 3.9);
-}
-
-.js .stickers .sticker {
-  position: absolute;
-  top: var(--sy);
-  left: var(--sx);
-  width: 40%;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.js .stickers .sticker svg {
-  transform: rotate(var(--sr)) scale(0.3);
-  transition: transform 0.3s ease;
-}
-
-html[data-book="open"] .stickers .sticker {
+html[data-scene="portrait"] .intro__hint--turn,
+html[data-scene="profil"] .intro__hint--turn {
   opacity: 1;
-  transition: opacity 0.2s ease var(--sd);
+  transition-delay: 1.6s;
 }
-
-html[data-book="open"] .stickers .sticker svg {
-  transform: rotate(var(--sr)) scale(1);
-  transition: transform 0.55s cubic-bezier(0.3, 1.5, 0.5, 1) var(--sd);
-}
-
-/* Les deux passions de gauche sous la question, les deux de droite sous l'hypothèse */
-.sticker--inpn { --sx: 5%; --sy: 44%; --sr: -8deg; --sd: 1.3s; }
-.sticker--jeux { --sx: 5%; --sy: 66%; --sr: 6deg; --sd: 1.5s; }
-.sticker--macro { --sx: 54.5%; --sy: 46%; --sr: -5deg; --sd: 1.7s; }
-.sticker--ecriture { --sx: 54.5%; --sy: 61%; --sr: 7deg; --sd: 1.9s; }
 
 /* ---------- Écriture progressive ---------- */
 
@@ -1413,251 +1438,1031 @@ html[data-book="open"] .stickers .sticker svg {
   }
 }
 
-/* ---------- Pages du carnet qui se remplissent ---------- */
+/* ==========================================================================
+   La pile de livres : le carnet s'y pose, ouvert à sa dernière page
+   ========================================================================== */
 
-.page--journal {
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--u) * 6.5) calc(var(--u) * 7) calc(var(--u) * 7) calc(var(--u) * 15);
+.pile-wrap {
+  width: var(--pile-w);
+  margin: 48px auto 0;
 }
 
-/* Marge rose, comme sur un cahier */
-.page--journal::before {
+/* Sans JavaScript, la pile garde une largeur fixe sous le carnet */
+html:not(.js) .pile-wrap {
+  --pile-w: min(calc(100vw - 32px), 560px);
+}
+
+.js .pile-wrap {
+  position: absolute;
+  top: var(--pile-y, 60%);
+  left: var(--pile-x, 20%);
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(36px);
+  transition: opacity 0.5s ease, transform 0.7s var(--ease-book), visibility 0s linear 0.7s;
+}
+
+html[data-scene="desk"] .pile-wrap {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.7s ease 0.5s, transform 0.9s var(--ease-book) 0.4s, visibility 0s;
+}
+
+.pile {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ombre portée de la pile sur le bureau */
+.pile::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  bottom: calc(var(--pile-w) * -0.025);
+  z-index: -1;
+  height: calc(var(--pile-w) * 0.06);
+  background: radial-gradient(closest-side, rgba(60, 40, 20, 0.34), rgba(60, 40, 20, 0));
+}
+
+/* Chaque livre, couché, montre son dos toilé avec son titre */
+.spine {
+  --c: var(--tome-formation);
+  --c-dark: var(--tome-formation-dark);
+  --h: 0.095;
+  --off: 0%;
+  --rot: 0deg;
+  --pull: 0px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4%;
+  width: var(--w, 100%);
+  height: calc(var(--pile-w) * var(--h));
+  min-height: 34px;
+  margin-left: var(--off);
+  padding: 0 7% 0 10%;
+  border-radius: calc(var(--pile-w) * 0.008) calc(var(--pile-w) * 0.014) calc(var(--pile-w) * 0.014) calc(var(--pile-w) * 0.008);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0) 18%, rgba(255, 255, 255, 0.1) 46%, rgba(0, 0, 0, 0) 74%, rgba(0, 0, 0, 0.3)),
+    var(--c);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 calc(var(--pile-w) * 0.004) 0 var(--c-dark),
+    0 calc(var(--pile-w) * 0.012) calc(var(--pile-w) * 0.02) calc(var(--pile-w) * -0.008) rgba(50, 35, 20, 0.5);
+  color: #f8eed6;
+  text-decoration: none;
+  transform: translateX(var(--pull)) rotate(var(--rot));
+  transition: transform 0.35s var(--ease-book), filter 0.25s ease;
+}
+
+/* Nervures dorées aux deux extrémités du dos */
+.spine::before,
+.spine::after {
+  content: "";
+  position: absolute;
+  top: 14%;
+  bottom: 14%;
+  width: calc(var(--pile-w) * 0.006);
+  border-inline: 1px solid rgba(240, 214, 160, 0.55);
+}
+
+.spine::before {
+  left: 5.5%;
+}
+
+.spine::after {
+  right: 3.5%;
+}
+
+.spine__title {
+  font-family: var(--font-serif);
+  font-size: max(15px, calc(var(--pile-w) * var(--h) * 0.42));
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.spine__meta {
+  margin-left: auto;
+  font-size: max(10px, calc(var(--pile-w) * 0.0175));
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-align: right;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.spine:hover,
+.spine:focus-visible {
+  --pull: calc(var(--pile-w) * 0.035);
+  filter: brightness(1.07);
+}
+
+.spine:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.spine--formation {
+  --w: 93%;
+  --off: 3.5%;
+  --rot: -0.5deg;
+}
+
+.spine--experiences {
+  --c: var(--tome-experiences);
+  --c-dark: var(--tome-experiences-dark);
+  --h: 0.11;
+  --rot: 0.35deg;
+}
+
+/* Le livre des passions, en bas de la pile, est plus fin */
+.spine--passions {
+  --c: var(--tome-passions);
+  --c-dark: var(--tome-passions-dark);
+  --h: 0.062;
+  --w: 96%;
+  --off: 1.5%;
+  --rot: -0.25deg;
+}
+
+.spine--passions .spine__title {
+  font-size: max(13px, calc(var(--pile-w) * var(--h) * 0.5));
+}
+
+.pile__hint {
+  margin: calc(var(--pile-w) * 0.06) 0 0;
+  color: var(--muted);
+  font-family: var(--font-hand);
+  font-size: clamp(1.15rem, 1.4vw, 1.4rem);
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* Lien vers la suite de la page, au pied du bureau */
+.desk__more {
+  display: none;
+}
+
+.js .desk__more {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s, color 0.2s ease;
+}
+
+html[data-scene="desk"] .desk__more {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 0.6s ease 1.1s, transform 0.6s ease 1.1s, visibility 0s, color 0.2s ease;
+}
+
+.desk__more:hover {
+  color: var(--primary);
+}
+
+.desk__more span {
+  display: inline-block;
+  animation: hint-bob 1.8s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   La liseuse : un livre ouvert par-dessus le bureau
+   ========================================================================== */
+
+.reader {
+  --pw: var(--tpw, 440px);
+  --ph: var(--tph, 572px);
+  --u: var(--tu, 4.4px);
+}
+
+.js .reader {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  visibility: hidden;
+  transition: visibility 0s linear 0.45s;
+}
+
+html.reader-open .reader {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.reader__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(40, 31, 20, 0.62);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+html.reader-open .reader__backdrop {
+  opacity: 1;
+}
+
+.js .reader__stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Le livre ouvert : la reliure au milieu de l'écran ; fermé ou page seule, il se décale */
+.js .tome {
+  --t-flip: 0.95s;
+  position: absolute;
+  top: var(--ty, 64px);
+  left: 50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  transform: translateX(calc(var(--shift, -0.5) * var(--pw))) scale(var(--ts, 0.9));
+  transition:
+    transform var(--t-shift) var(--ease-book),
+    opacity 0.35s ease,
+    visibility 0s linear 0.35s;
+}
+
+.js .tome.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform var(--t-shift) var(--ease-book),
+    opacity 0.35s ease,
+    visibility 0s;
+}
+
+/* Boutons de la liseuse */
+.reader__btn {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(255, 250, 241, 0.38);
+  border-radius: 50%;
+  background: rgba(255, 250, 241, 0.12);
+  color: #fffaf1;
+  cursor: pointer;
+  opacity: 0;
+  transition: background-color 0.2s ease, opacity 0.35s ease;
+}
+
+html.reader-open .reader__btn {
+  opacity: 1;
+}
+
+.reader__btn:hover {
+  background: rgba(255, 250, 241, 0.26);
+}
+
+html.reader-open .reader__btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.reader__btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.reader__close {
+  top: 12px;
+  right: 14px;
+}
+
+.reader__prev,
+.reader__next {
+  top: 50%;
+  margin-top: -24px;
+}
+
+.reader__prev {
+  left: max(12px, calc(50% - var(--pw) - 76px));
+}
+
+.reader__next {
+  right: max(12px, calc(50% - var(--pw) - 76px));
+}
+
+.reader__count {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  margin: 0;
+  color: rgba(255, 250, 241, 0.85);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+html.reader-open .reader__count {
+  opacity: 1;
+}
+
+/* Onglets pour passer d'un livre à l'autre */
+.reader__books {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 250, 241, 0.1);
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+html.reader-open .reader__books {
+  opacity: 1;
+}
+
+.reader__books a {
+  --c: var(--tome-formation);
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: rgba(255, 250, 241, 0.82);
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.reader__books a[data-open="experiences"] {
+  --c: var(--tome-experiences);
+}
+
+.reader__books a[data-open="passions"] {
+  --c: var(--tome-passions);
+}
+
+.reader__books a:hover {
+  background: rgba(255, 250, 241, 0.14);
+  color: #fffaf1;
+}
+
+.reader__books a[aria-current="true"] {
+  background: var(--c);
+  color: #fffaf1;
+  box-shadow: inset 0 0 0 1px rgba(255, 250, 241, 0.25);
+}
+
+.reader :focus-visible {
+  outline-color: #fffaf1;
+}
+
+.reader .page :focus-visible {
+  outline-color: var(--primary);
+}
+
+/* ---------- Les livres : couleurs ---------- */
+
+.tome {
+  --tome: var(--tome-formation);
+  --book-dark: var(--tome-formation-dark);
+  --accent: var(--tome-formation-ink);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--tfs, 16px);
+  line-height: 1.55;
+}
+
+.tome--experiences {
+  --tome: var(--tome-experiences);
+  --book-dark: var(--tome-experiences-dark);
+  --accent: var(--tome-experiences-ink);
+}
+
+.tome--passions {
+  --tome: var(--tome-passions);
+  --book-dark: var(--tome-passions-dark);
+  --accent: var(--tome-passions-ink);
+}
+
+/* Première de couverture toilée, avec son étiquette */
+.tome-cover {
+  overflow: hidden;
+  border-radius: calc(var(--u) * 0.6) calc(var(--u) * 1.8) calc(var(--u) * 1.8) calc(var(--u) * 0.6);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0 1px, transparent 1px 3px),
+    radial-gradient(130% 90% at 30% 15%, color-mix(in srgb, var(--tome) 82%, #fff), var(--tome) 55%, var(--book-dark));
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+    inset calc(var(--u) * -0.8) 0 calc(var(--u) * 1.6) rgba(0, 0, 0, 0.2);
+  color: #f8eed6;
+  --accent: #f3e4c3;
+}
+
+.tome-cover .ico-body {
+  stroke: #f8eed6;
+}
+
+.tome-cover .ico-line {
+  stroke: var(--book-dark);
+}
+
+.tome-cover__band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--u) * 8);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.12) 70%, rgba(255, 255, 255, 0.07));
+}
+
+.tome-cover__band::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(var(--u) * 11.5);
-  width: 1.5px;
-  background: rgba(180, 67, 108, 0.32);
+  right: calc(var(--u) * 1.2);
+  border-right: 1px solid rgba(240, 214, 160, 0.4);
 }
 
-.page__runner {
-  margin: 0 0 calc(var(--u) * 5);
-  color: var(--ink-soft);
-  font-family: var(--font-sans);
-  font-size: calc(var(--u) * 2.2);
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
-.page__number {
+.tome-cover__label {
   position: absolute;
-  right: calc(var(--u) * 7);
-  bottom: calc(var(--u) * 5);
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: calc(var(--u) * 4.4);
+  top: 22%;
+  left: 18%;
+  right: 10%;
+  padding: calc(var(--u) * 6) calc(var(--u) * 4) calc(var(--u) * 6.5);
+  border: 1px solid rgba(240, 214, 160, 0.55);
+  outline: 1px solid rgba(240, 214, 160, 0.3);
+  outline-offset: calc(var(--u) * 1.2);
+  text-align: center;
 }
 
-.page__title {
-  margin: 0 0 calc(var(--u) * 5);
-  color: var(--ink);
-  font-size: calc(var(--u) * 6.8);
+.tome-cover__label svg {
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * 13);
+  margin: 0 auto calc(var(--u) * 3);
+}
+
+.tome-cover__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: calc(var(--u) * 8.4);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+}
+
+.tome-cover__sub {
+  margin: calc(var(--u) * 3) 0 0;
+  font-size: calc(var(--u) * 2.5);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* Papier crème, sans carreaux */
+.tome .page {
+  background-color: #fffcf4;
+  background-image: radial-gradient(120% 90% at 50% 40%, rgba(255, 255, 255, 0.6), rgba(236, 224, 200, 0.28));
+  background-size: 100% 100%;
+  background-position: 0 0;
+}
+
+/* Numéro de page, dans le coin extérieur */
+.page__num {
+  position: absolute;
+  bottom: calc(var(--u) * 4);
+  z-index: 1;
+  color: var(--ink-soft);
+  font-family: var(--font-hand);
+  font-size: max(12px, calc(var(--u) * 3.1));
+  line-height: 1;
+}
+
+.page--right .page__num {
+  right: calc(var(--u) * 6);
+}
+
+.page--left .page__num {
+  left: calc(var(--u) * 6);
+}
+
+/* ---------- Le contenu des pages ---------- */
+
+.tome .page__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 7.5) calc(var(--u) * 7) calc(var(--u) * 9.5) calc(var(--u) * 9);
+  overflow: hidden;
+  font-size: calc(1em * var(--fit, 1));
+}
+
+.tome .page--left .page__content {
+  padding-left: calc(var(--u) * 7);
+  padding-right: calc(var(--u) * 9);
+}
+
+/* Le contenu est centré dans la hauteur de la page, sans jamais déborder par le haut */
+.tome .page__content > :first-child {
+  margin-top: auto;
+}
+
+.tome .page__content > :last-child {
+  margin-bottom: auto;
+}
+
+/* Écran trop petit : la page défile plutôt que de couper le texte */
+.tome .page__content.is-overflow {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.page__year {
+  margin: 0 0 0.35em;
+  color: var(--accent);
+  font-family: var(--font-hand);
+  font-size: 2.5em;
   font-weight: 700;
   line-height: 1;
 }
 
-.entries {
-  display: grid;
-  gap: calc(var(--u) * 5.2);
+.memo-head {
+  margin: 0 0 0.9em;
+  color: var(--accent);
+  font-family: var(--font-hand);
+  font-size: 1.9em;
+  font-weight: 700;
+  line-height: 1;
 }
 
-.entry {
-  position: relative;
-  display: grid;
-  line-height: 1.1;
+/* Page de titre */
+.page__content--title {
+  align-items: center;
+  text-align: center;
 }
 
-.entry > span {
-  display: block;
-}
-
-.entry__doodle {
-  position: absolute;
-  top: calc(var(--u) * 0.6);
-  left: calc(var(--u) * -12.6);
-  width: calc(var(--u) * 8.4);
-  height: calc(var(--u) * 8.4);
-  opacity: 0;
-  transform: scale(0.6) rotate(-12deg);
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
-  transition-delay: var(--entry-delay, 0s);
-}
-
-.entry.is-written .entry__doodle {
-  opacity: 1;
+.title-page__doodle {
+  width: 4.6em;
+  height: 4.6em;
+  margin: 0 auto 1.1em;
   transform: rotate(-6deg);
 }
 
-.entry--rose {
-  --accent: var(--rose);
+.title-page__title {
+  margin: 0;
+  color: var(--text);
+  font-size: 2.7em;
+  line-height: 1.05;
 }
 
-.entry__date {
-  color: var(--ink-soft);
-  font-size: calc(var(--u) * 4.4);
-  font-weight: 400;
+.title-page__title--small {
+  margin-bottom: 1.1em;
+  font-size: 1.9em;
+  text-align: center;
 }
 
-.entry--rose .entry__date,
-.entry--conclusion .entry__date {
-  color: var(--rose);
+.title-page__sub {
+  margin: 1em 0 0;
+  padding-top: 0.9em;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--muted);
+  font-size: 0.74em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.entry__title {
+.title-page__note {
+  max-width: 17em;
+  margin: 2.2em auto 0;
   color: var(--ink);
-  font-size: calc(var(--u) * 6);
-  font-weight: 700;
+  font-family: var(--font-hand);
+  font-size: 1.35em;
+  line-height: 1.2;
+  transform: rotate(-1.5deg);
 }
 
-.entry__place {
-  color: var(--ink-soft);
-  font-size: calc(var(--u) * 4.8);
+/* Sommaire */
+.toc {
+  display: grid;
 }
 
-.entry__place--mail {
-  font-size: calc(var(--u) * 4.2);
+.toc li + li {
+  border-top: 1px dashed color-mix(in srgb, var(--accent) 30%, var(--line));
 }
 
-.entry__line {
+.toc a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1em;
+  align-items: center;
+  padding: 0.6em 0.1em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.toc__kicker {
+  color: var(--accent);
+  font-family: var(--font-hand);
+  font-size: 1.12em;
+  line-height: 1.15;
+}
+
+.toc__title {
+  grid-column: 1;
+  font-size: 0.94em;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+}
+
+/* Numéro de la page où commence la partie */
+.toc a[data-page]::after {
+  content: attr(data-page);
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  color: var(--muted);
+  font-family: var(--font-serif);
+  font-size: 1.05em;
+}
+
+.toc a:hover .toc__title {
+  color: var(--accent);
+}
+
+/* Fiches « Cette année-là » : renvoient vers le livre des expériences */
+.memos {
+  display: grid;
+  gap: 1.5em;
+}
+
+.memo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36% 1fr;
+  gap: 0.9em;
+  align-items: center;
+  padding: 0.8em;
+  background: #fffefa;
+  box-shadow: var(--shadow-print);
+  transform: rotate(-0.7deg);
+}
+
+.memo:nth-child(2) {
+  transform: rotate(0.8deg);
+}
+
+.memo::before {
+  content: "";
+  position: absolute;
+  top: -0.55em;
+  left: 50%;
+  width: 4.2em;
+  height: 1.2em;
+  margin-left: -2.1em;
+  background: var(--tape);
+  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.1);
+  transform: rotate(-3deg);
+}
+
+.memo__thumb {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+
+.memo__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memo__thumb--doodle {
+  display: grid;
+  place-items: center;
+  background: var(--postit-sand);
+}
+
+.memo__thumb--doodle svg {
+  width: 62%;
+  height: 62%;
+}
+
+.memo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  min-width: 0;
+}
+
+.memo__kicker {
+  color: var(--muted);
+  font-family: var(--font-hand);
+  font-size: 1.08em;
+  line-height: 1.1;
+}
+
+.memo__title {
+  font-family: var(--font-serif);
+  font-size: 1.12em;
+  font-weight: 600;
+  line-height: 1.22;
+}
+
+.memo__desc {
+  color: var(--muted);
+  font-size: 0.84em;
+  line-height: 1.4;
+}
+
+.memo__link {
+  margin-top: 0.45em;
+  color: var(--accent);
+  font-size: 0.84em;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.memo__link:hover {
+  text-decoration: underline;
+}
+
+/* Page illustrée d'un dessin et d'une note manuscrite */
+.page__content--doodle {
+  align-items: center;
+  text-align: center;
+}
+
+.doodle-page__sun {
+  width: 8.5em;
+  height: 8.5em;
+  margin: 0 auto 1.4em;
+  transform: rotate(-8deg);
+}
+
+.doodle-page__note {
+  max-width: 14em;
+  margin: 0 auto;
   color: var(--ink);
-  font-size: calc(var(--u) * 5.2);
+  font-family: var(--font-hand);
+  font-size: 1.6em;
+  line-height: 1.2;
+}
+
+/* ---------- Albums : une planche de photos par stage ---------- */
+
+.page__content--photos {
+  padding-top: calc(var(--u) * 6.5);
+}
+
+.tome .page__content--photos > :first-child,
+.tome .page__content--photos > :last-child {
+  margin-block: 0;
+}
+
+.album__title {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  align-self: center;
+  margin: 0 0 1em;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1.3em;
   font-weight: 700;
+  line-height: 1;
+  text-align: center;
 }
 
-.entry__line--soft {
-  color: var(--ink-soft);
+/* Le titre est écrit sur un morceau de ruban adhésif */
+.album__title span {
+  display: inline-block;
+  padding: 0.3em 0.75em 0.35em;
+  background: var(--tape);
+  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.12);
+  transform: rotate(-2deg);
+}
+
+/* La grille remplit la page ; le script choisit le nombre de colonnes et centre la dernière ligne */
+.album-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols2, 6), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows, 4), minmax(0, 1fr));
+  gap: 1.1em 0.9em;
+  padding: 0.3em 0.2em 0.2em;
+}
+
+.album-grid .print {
+  grid-column-end: span 2;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Tirage photo, posé avec un morceau de ruban adhésif */
+.print {
+  --r: -1.4deg;
+  position: relative;
+  transform: rotate(var(--r));
+}
+
+.print:nth-child(4n+2) { --r: 1.3deg; }
+.print:nth-child(4n+3) { --r: -0.6deg; }
+.print:nth-child(4n+4) { --r: 1.8deg; }
+
+.print a {
+  display: block;
+  padding: 7px 7px 0;
+  border-radius: 2px;
+  background: #fffdf8;
+  box-shadow: var(--shadow-print);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.print a:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 2px 4px rgba(60, 40, 20, 0.12), 0 20px 34px -10px rgba(60, 40, 20, 0.38);
+}
+
+.print::before {
+  content: "";
+  position: absolute;
+  top: -0.5em;
+  left: 50%;
+  z-index: 2;
+  width: 3.4em;
+  height: 1em;
+  margin-left: -1.7em;
+  background: var(--tape);
+  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.1);
+  transform: rotate(calc(var(--r) * -2.5));
+  pointer-events: none;
+}
+
+.print img {
+  display: block;
+  max-width: none;
+  background: var(--bg-alt);
+}
+
+.print__cap {
+  display: block;
+  padding: 6px 2px 9px;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1rem;
   font-weight: 400;
+  line-height: 1.1;
+  text-align: center;
 }
 
-/* L'étape lue en ce moment est surlignée */
-.entry__title,
-.entry--id .entry__line:first-child {
-  justify-self: start;
-  background: linear-gradient(transparent 52%, var(--highlight) 52%, var(--highlight) 88%, transparent 88%) no-repeat 0 0 / 0% 100%;
-  transition: background-size 0.7s ease;
-  transition-delay: calc(var(--entry-delay, 0ms) + 0.8s);
+.album-grid .print a {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0.35em 0.35em 0;
 }
 
-.entry.is-current .entry__title,
-.entry--id.is-current .entry__line:first-child {
-  background-size: 100% 100%;
+.album-grid .print img {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  object-fit: cover;
+}
+
+.album-grid .print__cap {
+  display: -webkit-box;
+  flex: none;
+  overflow: hidden;
+  margin-bottom: 0.45em;
+  padding: 0.35em 0.1em 0;
+  font-size: 0.8em;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Planche très remplie : une seule ligne de légende */
+.album-grid[data-dense] .print__cap {
+  -webkit-line-clamp: 1;
+  font-size: 0.74em;
+}
+
+/* ---------- Passions : les autocollants et leurs descriptions ---------- */
+
+.stickers-list {
+  display: grid;
+  gap: 2.4em;
+}
+
+.sticker {
+  --sr: -6deg;
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+}
+
+.sticker:nth-child(2) {
+  --sr: 7deg;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.sticker svg {
+  width: 7.4em;
+  height: auto;
+  flex: none;
+  overflow: visible;
+  transform: rotate(var(--sr));
+}
+
+.sticker__text {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1.42em;
+  line-height: 1.2;
+}
+
+.sticker__text strong {
+  display: block;
+  margin-bottom: 0.15em;
+  color: var(--accent);
+  font-size: 1.14em;
+  font-weight: 700;
 }
 
 /* ==========================================================================
-   Le parcours : descriptions au centre, albums photos à droite
+   Descriptions : années, stages, engagement (dans les livres) et projet en cours
+   Toutes les tailles sont relatives au texte qui les entoure.
    ========================================================================== */
-
-.journal {
-  position: relative;
-  padding-inline: clamp(16px, 5vw, 40px);
-}
-
-.journal:focus {
-  outline: none;
-}
-
-/* Le contenu n'apparaît qu'une fois le carnet ouvert */
-.js .journal,
-.js .to-top {
-  transition: opacity 0.7s ease 0.5s, visibility 0s linear 0.5s;
-}
-
-html[data-book="closed"] .journal,
-html[data-book="open"] .journal {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-}
-
-/* Défilement bloqué tant que le carnet n'est pas ouvert */
-html[data-book="closed"],
-html[data-book="open"],
-html.is-turning {
-  overflow: hidden;
-}
-
-.journal {
-  counter-reset: chapitre;
-}
-
-.chapter {
-  max-width: 760px;
-  margin-inline: auto;
-  counter-increment: chapitre;
-}
-
-/* Sous l'en-tête fixe des petits écrans */
-.chapter,
-.step {
-  scroll-margin-top: 64px;
-}
-
-/* Un trait plein entre les parties, un trait pointillé entre les descriptions */
-.chapter + .chapter {
-  margin-top: clamp(24px, 5vw, 48px);
-  padding-top: clamp(40px, 7vw, 72px);
-  border-top: 1px solid var(--line);
-}
-
-.step + .step {
-  border-top: 1px dashed var(--line);
-}
-
-.chapter__head {
-  margin-bottom: clamp(30px, 5vw, 44px);
-}
-
-/* Numéro de partie devant l'intitulé : 01, 02… */
-.chapter__head .eyebrow::before {
-  content: counter(chapitre, decimal-leading-zero);
-  margin-right: 0.75em;
-  padding-right: 0.75em;
-  border-right: 1px solid color-mix(in srgb, var(--rose) 45%, transparent);
-  color: var(--rose);
-}
-
-.chapter__head h2 {
-  margin-bottom: 0.9rem;
-}
-
-.chapter__intro {
-  max-width: 62ch;
-  margin: 0;
-  color: var(--muted);
-  font-size: 1.08rem;
-}
-
-.step {
-  padding-block: clamp(36px, 6vw, 60px);
-}
-
-.step:first-child {
-  padding-top: 0;
-}
 
 .step__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 14px;
-  margin: 0 0 12px;
+  gap: 0.1em 0.65em;
+  margin: 0 0 0.55em;
   color: var(--muted);
   font-family: var(--font-hand);
-  font-size: 1.35rem;
+  font-size: 1.3em;
   font-weight: 400;
   line-height: 1.1;
 }
 
-/* Le même petit dessin que dans la marge du carnet */
+/* Petit dessin à côté de la date */
 .step__icon {
-  width: 30px;
-  height: 30px;
+  width: 1.45em;
+  height: 1.45em;
   flex: none;
-  margin-right: -2px;
+  margin-right: -0.1em;
   transform: rotate(-6deg);
 }
 
@@ -1673,41 +2478,32 @@ html.is-turning {
   position: absolute;
   left: -2px;
   right: -4px;
-  bottom: -5px;
-  height: 7px;
+  bottom: -0.22em;
+  height: 0.3em;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5C30 2 62 1.5 98 4' fill='none' stroke='%23b4436c' stroke-width='2.2' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
 }
 
 .step__title {
-  margin-bottom: 0.7rem;
-  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  margin-bottom: 0.55em;
+  font-size: 1.45em;
   line-height: 1.2;
-}
-
-.step__sub {
-  margin: -0.2rem 0 0.9rem;
-  color: var(--muted);
-  font-family: var(--font-serif);
-  font-size: 1.08rem;
-  font-style: italic;
-  line-height: 1.45;
 }
 
 .step__org {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  margin: 0 0 6px;
+  gap: 0.6em;
+  margin: 0 0 0.35em;
   color: var(--text);
-  font-size: 0.97rem;
+  font-size: 0.92em;
   font-weight: 600;
   line-height: 1.45;
 }
 
 .step__org svg {
-  width: 19px;
-  height: 19px;
-  margin-top: 2px;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.1em;
   flex: none;
   fill: none;
   stroke: var(--accent);
@@ -1717,11 +2513,16 @@ html.is-turning {
 }
 
 .step__org + :not(.step__org) {
-  margin-top: 22px;
+  margin-top: 1.1em;
+}
+
+.page__content p:not([class]) {
+  margin: 0 0 0.8em;
 }
 
 .step__highlight {
-  padding: 16px 20px;
+  margin: 0 0 0.8em;
+  padding: 0.75em 1em;
   border-left: 3px solid var(--accent);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   background: color-mix(in srgb, var(--accent) 9%, transparent);
@@ -1733,31 +2534,128 @@ html.is-turning {
 
 .step__list {
   display: grid;
-  gap: 10px;
-  margin-bottom: 1.15em;
+  gap: 0.55em;
+  margin-bottom: 0.9em;
 }
 
 .step__list li {
   position: relative;
-  padding-left: 22px;
+  padding-left: 1.35em;
 }
 
 .step__list li::before {
   content: "";
   position: absolute;
-  top: 0.68em;
-  left: 2px;
-  width: 9px;
-  height: 9px;
+  top: 0.62em;
+  left: 0.1em;
+  width: 0.5em;
+  height: 0.5em;
   border: 2px solid var(--accent);
   border-radius: 50%;
+}
+
+.step__footer {
+  margin-top: 1.1em;
+  padding-top: 0.9em;
+  border-top: 1px dashed var(--line);
+}
+
+.step__people {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.92em;
+  line-height: 1.45;
+}
+
+.step__people span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 0.8em;
+}
+
+.step__footer > .tags:first-child {
+  margin-top: 0;
+}
+
+.tags li {
+  padding: 0.12em 0.7em;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+
+.doc-link {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: 1.1em;
+  padding: 0.55em 0.95em;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.86em;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.doc-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.doc-link svg {
+  width: 1.3em;
+  height: 1.3em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.doc-link small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Tampon « Diplômée » */
+.step__stamp {
+  align-self: flex-start;
+  margin: 0.8em 0 0;
+  padding: 0.1em 0.55em 0.15em;
+  border: 2px solid var(--rose);
+  border-radius: 6px;
+  color: var(--rose);
+  font-family: var(--font-hand);
+  font-size: 1.55em;
+  font-weight: 700;
+  line-height: 1.1;
+  transform: rotate(-4deg);
+  opacity: 0.88;
 }
 
 .steps {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .steps li {
@@ -1774,119 +2672,35 @@ html.is-turning {
   color: var(--muted);
 }
 
-.step__footer {
-  margin-top: 26px;
-  padding-top: 20px;
-  border-top: 1px dashed var(--line);
+/* ==========================================================================
+   Compétences et contact, sous le bureau
+   ========================================================================== */
+
+.chapter {
+  max-width: 1040px;
+  margin-inline: auto;
+  padding: clamp(64px, 9vw, 112px) clamp(16px, 4vw, 32px) 0;
+  scroll-margin-top: 56px;
 }
 
-.step__people {
-  margin: 0;
-  color: var(--text);
-  font-size: 0.97rem;
+.chapter + .chapter {
+  margin-top: clamp(56px, 8vw, 96px);
+  border-top: 1px solid var(--line);
 }
 
-.step__people span {
-  display: block;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.chapter__head {
+  margin-bottom: clamp(28px, 4vw, 40px);
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+.chapter__head h2 {
+  margin-bottom: 0.6rem;
 }
 
-.step__people + .tags {
-  margin-top: 16px;
-}
-
-.step__footer > .tags:first-child {
-  margin-top: 0;
-}
-
-.tags li {
-  padding: 3px 12px;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
-  border-radius: 999px;
-  color: var(--text);
-  font-size: 0.85rem;
-}
-
-.step__links {
-  display: grid;
-  gap: 6px;
-  margin-top: 24px;
-  padding-top: 18px;
-  border-top: 1px dashed var(--line);
-}
-
-.step__links-label {
-  margin: 0 0 2px;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.step__links a {
-  justify-self: start;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.step__links a:hover {
-  text-decoration: underline;
-}
-
-.doc-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  padding: 10px 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 0.92rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.doc-link:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.doc-link svg {
-  width: 20px;
-  height: 20px;
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.doc-link small {
-  color: var(--muted);
-  font-weight: 500;
-}
 
 /* Compétences : fiches bristol */
 .skills {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
   gap: 22px;
 }
 
@@ -2024,205 +2838,31 @@ a.contact__link:not(.contact__link--main):hover {
   stroke-linejoin: round;
 }
 
-/* ---------- Albums ----------
-   Sous chaque description, une rangée de photos sur une bande de papier kraft :
-   elle part de l'alignement du texte et file jusqu'au bord droit de l'écran. */
 
-.album {
-  --album-pad: clamp(16px, 5vw, 40px);
-  position: relative;
-  margin-top: 34px;
-  margin-right: calc(-1 * var(--album-pad));
-}
+/* ---------- Projet en cours : le livre de biostatistiques, à gauche de sa description ---------- */
 
-/* La bande de kraft, fixe derrière les photos qui défilent */
-.album[data-gallery]:not(.album--portrait)::before {
-  content: "";
-  position: absolute;
-  top: 26px;
-  bottom: 4px;
-  left: 0;
-  right: 0;
-  border-radius: 6px 0 0 6px;
-  background-color: var(--kraft);
-  background-image: radial-gradient(rgba(120, 90, 50, 0.08) 1px, transparent 1px);
-  background-size: 7px 7px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 24px -14px rgba(60, 40, 20, 0.4);
-}
-
-.album__title {
-  position: relative;
-  z-index: 3;
-  margin: 0 0 -10px 16px;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-/* Le titre est écrit sur un morceau de ruban adhésif */
-.album__title span {
-  display: inline-block;
-  padding: 6px 14px 7px;
-  background: var(--tape);
-  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.12);
-  transform: rotate(-2deg);
-}
-
-.album__prints {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 18px;
-  padding: 30px var(--album-pad) 22px 18px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-  scrollbar-color: var(--sand) transparent;
-}
-
-.print {
-  --r: -1.5deg;
-  position: relative;
-  flex: none;
-  scroll-snap-align: start;
-  transform: rotate(var(--r));
-}
-
-.print:nth-child(4n+2) { --r: 1.6deg; }
-.print:nth-child(4n+3) { --r: -0.7deg; }
-.print:nth-child(4n+4) { --r: 2.2deg; }
-
-.print a {
-  display: block;
-  width: min-content;
-  padding: 7px 7px 0;
-  border-radius: 2px;
-  background: #fffdf8;
-  box-shadow: var(--shadow-print);
-  color: var(--ink);
-  text-decoration: none;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.print a:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 2px 4px rgba(60, 40, 20, 0.12), 0 20px 34px -10px rgba(60, 40, 20, 0.38);
-}
-
-/* Morceau de ruban adhésif en haut de chaque photo */
-.print::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  z-index: 2;
-  width: 62px;
-  height: 20px;
-  margin-left: -31px;
-  background: var(--tape);
-  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.1);
-  transform: rotate(calc(var(--r) * -2.5));
-  pointer-events: none;
-}
-
-.print img {
-  display: block;
-  width: auto;
-  max-width: none;
-  height: var(--print-h, 168px);
-  background: var(--bg-alt);
-}
-
-.print__cap {
-  display: block;
-  padding: 6px 2px 9px;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.1;
-  text-align: center;
-}
-
-/* Les photos se posent une à une sur la bande */
-.js .print.reveal {
-  opacity: 0;
-  transform: translateY(30px) rotate(calc(var(--r) * 3));
-  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1);
-}
-
-.js .print.reveal.is-visible {
-  opacity: 1;
-  transform: rotate(var(--r));
-}
-
-/* Présentation : le portrait et les chiffres clés en post-it, côte à côte */
-.album--portrait {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 18px 30px;
-  margin-right: 0;
-}
-
-.album--portrait .album__prints {
-  padding: 14px 0 0 6px;
-  overflow: visible;
-}
-
-.album--portrait .print {
-  --print-h: 230px;
-}
-
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.fact {
+.project {
   display: grid;
-  align-content: start;
-  gap: 2px;
-  width: 140px;
-  min-height: 116px;
-  padding: 12px 13px 14px;
-  background: var(--postit-sage);
-  box-shadow: 0 1px 1px rgba(60, 40, 20, 0.08), 0 8px 14px -8px rgba(60, 40, 20, 0.35);
-  transform: rotate(-2deg);
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 72px);
+  align-items: center;
+  margin-top: clamp(56px, 8vw, 88px);
+  padding: clamp(28px, 4vw, 44px) clamp(24px, 4vw, 48px) clamp(28px, 4vw, 44px) clamp(28px, 5vw, 56px);
+  border: 1px dashed color-mix(in srgb, var(--primary) 30%, var(--line));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
 }
 
-.fact:nth-child(2) {
-  background: var(--postit-rose);
-  transform: rotate(1.6deg) translateY(8px);
+.project__text {
+  max-width: 640px;
 }
 
-.fact:nth-child(3) {
-  background: var(--postit-sand);
-  transform: rotate(-1deg);
+.project__text .step__title {
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
 }
 
-.fact__value {
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.fact__label {
-  color: var(--text);
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-/* Le livre en cours d'écriture, sous sa description */
-.album--object {
-  display: flex;
-  padding: 10px 0 10px 8px;
-  margin-right: 0;
+.project__text p:not([class]) {
+  margin: 0 0 1.1em;
 }
 
 .bookmock {
@@ -2241,14 +2881,6 @@ a.contact__link:not(.contact__link--main):hover {
     linear-gradient(160deg, #f4ead4, #e9dbbd);
   box-shadow: 6px 6px 0 -1px #fffaf0, 7px 7px 0 -1px #d9cbb0, 12px 14px 26px -10px rgba(60, 40, 20, 0.45);
   color: var(--text);
-}
-
-.bookmock__kicker {
-  margin: 0 0 18px;
-  color: var(--rose);
-  font-family: var(--font-hand);
-  font-size: 1.2rem;
-  font-weight: 700;
 }
 
 .bookmock__title {
@@ -2301,19 +2933,159 @@ a.contact__link:not(.contact__link--main):hover {
 
 .bookmock__note {
   position: absolute;
-  right: -46px;
+  right: -40px;
   bottom: 26px;
   margin: 0;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: var(--postit-sand);
   box-shadow: 0 8px 14px -8px rgba(60, 40, 20, 0.35);
   color: var(--ink);
   font-family: var(--font-hand);
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
   transform: rotate(8deg);
 }
 
+@media (max-width: 640px) {
+  .project {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .bookmock {
+    margin-right: 30px;
+  }
+}
+
+/* ---------- Contact, et la carte postale pour finir ---------- */
+
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(36px, 6vw, 80px);
+  align-items: center;
+}
+
+.contact__text > p:not([class]) {
+  max-width: 56ch;
+  color: var(--muted);
+}
+
+.postcard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-self: center;
+  width: min(100%, 420px);
+  min-height: 250px;
+  padding: 22px;
+  background: #fffdf6;
+  box-shadow: var(--shadow-print);
+  transform: rotate(2deg);
+}
+
+.postcard__message {
+  padding-right: 18px;
+  border-right: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.postcard p {
+  margin: 0 0 12px;
+  text-align: left;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+}
+
+.postcard__sign {
+  color: var(--rose);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.postcard__address {
+  position: relative;
+  padding: 92px 0 0 18px;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.postcard__address p {
+  margin: 0;
+  background: repeating-linear-gradient(transparent 0 26px, var(--line) 26px 27px);
+}
+
+/* Timbre aux bords dentelés */
+.postcard__stamp {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 64px;
+  padding: 4px;
+  background: linear-gradient(var(--primary-soft), var(--primary-soft)) content-box, #f4ecda;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 2.6px, transparent 96%, #000) -4px -4px / 8px 8px;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 2.6px, transparent 96%, #000) -4px -4px / 8px 8px;
+}
+
+.postcard__stamp svg {
+  width: 34px;
+  height: 34px;
+  --accent: var(--rose);
+}
+
+.postcard__postmark {
+  position: absolute;
+  top: 26px;
+  right: 34px;
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border: 1.5px solid rgba(47, 42, 34, 0.45);
+  border-radius: 50%;
+  color: rgba(47, 42, 34, 0.6);
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-14deg);
+}
+
+@media (max-width: 820px) {
+  .contact {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .postcard {
+    padding: 16px;
+  }
+
+  .postcard__message {
+    padding-right: 12px;
+    font-size: 1.15rem;
+  }
+
+  .postcard__address {
+    padding-left: 12px;
+    font-size: 1.1rem;
+  }
+}
 /* ---------- Mentions légales ---------- */
 
 /* Page des mentions légales */
@@ -2594,119 +3366,140 @@ body:has(.lightbox[open]) {
   }
 }
 
-/* ---------- Apparition au défilement ---------- */
+/* ==========================================================================
+   Petits écrans : une page à la fois dans les livres
+   ========================================================================== */
 
-.js .reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+html[data-mode="single"] .reader__prev,
+html[data-mode="single"] .reader__next {
+  top: auto;
+  bottom: 10px;
+  margin-top: 0;
 }
 
-.js .reveal.is-visible {
-  opacity: 1;
+html[data-mode="single"] .reader__prev {
+  left: 14px;
+}
+
+html[data-mode="single"] .reader__next {
+  right: 14px;
+}
+
+html[data-mode="single"] .reader__count {
+  bottom: 24px;
+}
+
+html[data-mode="single"] .reader__books {
+  left: 12px;
   transform: none;
 }
 
-/* ==========================================================================
-   Petits écrans : autocollants autour du carnet ouvert
-   ========================================================================== */
-
-/* Quand la double page est petite (téléphone), les passions se placent au-dessus et au-dessous */
-.stickers-out .stickers .sticker {
-  --st: clamp(48px, 14vw, 64px);
-  --st-gap: 6px;
-  --st-font: clamp(0.82rem, 3.3vw, 0.95rem);
-  flex-direction: column;
-  width: 47%;
+/* En page seule, la liseuse ne montre que la colonne de la page lue */
+html[data-mode="single"] .reader__stage {
+  clip-path: inset(0 max(0px, calc(50% - var(--pw) / 2 - 6px)));
 }
 
-.stickers-out .stickers .sticker--inpn,
-.stickers-out .stickers .sticker--jeux {
-  top: auto;
-  bottom: calc(100% + 14px);
+html[data-mode="single"] .tome .page__content {
+  padding-left: calc(var(--u) * 6.5);
+  padding-right: calc(var(--u) * 6.5);
 }
 
-.stickers-out .sticker--inpn { --sx: 0%; --sr: -7deg; }
-.stickers-out .sticker--jeux { --sx: 53%; --sr: 6deg; }
-.stickers-out .sticker--macro { --sx: 0%; --sy: calc(100% + 18px); --sr: 5deg; }
-.stickers-out .sticker--ecriture { --sx: 53%; --sy: calc(100% + 18px); --sr: -6deg; }
-
-@media (max-width: 1179px), (max-height: 599px) {
-  /* Pendant la lecture, le carnet s'éclipse : le parcours prend toute la largeur */
-  .js .intro {
-    transition: visibility 0s linear var(--t-book);
+@media (max-width: 420px) {
+  .reader__books a {
+    padding: 6px 10px;
+    font-size: 0.82rem;
   }
 
-  html[data-book="reading"] .intro {
-    visibility: hidden;
-  }
-
-  html:not([data-book="reading"]) .intro {
-    transition-delay: 0s;
-  }
-}
-
-/* Écrans bas (téléphone à l'horizontale) : pas de place pour les passions sur la double page */
-@media (max-height: 599px) {
-  .js .stickers {
-    display: none;
+  .reader__books {
+    gap: 2px;
   }
 }
 
 /* ==========================================================================
-   Grand écran : le carnet à gauche, la lecture à droite
-   Chaque description est suivie de son album, sans colonne qui laisserait des vides.
+   Sans JavaScript : les carnets et les livres se lisent page après page
    ========================================================================== */
 
-@media (min-width: 1180px) and (min-height: 600px) {
-  .js .site-header {
-    display: none;
-  }
+html:not(.js) .book {
+  --pw: min(calc(100vw - 32px), 600px);
+  --u: calc(var(--pw) / 100);
+  width: var(--pw);
+  height: auto;
+  margin: 0 auto;
+}
 
-  .js .chapter,
-  .js .step {
-    scroll-margin-top: 0;
-  }
+html:not(.js) .book__shadow,
+html:not(.js) .book__back,
+html:not(.js) .book__edges,
+html:not(.js) .book__sheet,
+html:not(.js) .book__ribbon,
+html:not(.js) .book__tabs,
+html:not(.js) .turn,
+html:not(.js) .page--blank,
+html:not(.js) .intro__hint,
+html:not(.js) .pile__hint,
+html:not(.js) .reader__backdrop,
+html:not(.js) .reader__btn,
+html:not(.js) .reader__count,
+html:not(.js) .reader__books {
+  display: none;
+}
 
-  .js .journal {
-    padding-left: var(--nb-col);
-    padding-right: 0;
-  }
+html:not(.js) .leaf,
+html:not(.js) .leaf__face,
+html:not(.js) .leaf__face > .page,
+html:not(.js) .leaf--cover > .leaf__back > .page,
+html:not(.js) .page__content {
+  position: relative;
+  inset: auto;
+  transform: none;
+}
 
-  .js .chapter {
-    max-width: none;
-    margin: 0;
-    padding-right: clamp(32px, 5vw, 96px);
-  }
+html:not(.js) .leaf__face {
+  margin-bottom: 24px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
 
-  .js .chapter:first-child {
-    padding-top: 12vh;
-  }
+html:not(.js) .leaf--cover > .leaf__back {
+  padding: 0;
+  background: none;
+}
 
-  .js .chapter:last-child {
-    padding-bottom: 8vh;
-  }
+html:not(.js) .cover,
+html:not(.js) .tome-cover {
+  height: calc(var(--pw) * 1.1);
+}
 
-  .js .step__text {
-    max-width: 680px;
-  }
+html:not(.js) .page {
+  border-radius: 10px;
+}
 
-  .js .step--wide .step__text {
-    max-width: 980px;
-  }
+html:not(.js) .page--spread {
+  min-height: calc(var(--pw) * 0.8);
+}
 
-  /* L'album file jusqu'au bord droit de l'écran */
-  .js .album {
-    --album-pad: clamp(32px, 5vw, 96px);
-  }
+html:not(.js) .page__content--portrait,
+html:not(.js) .page__content--profil {
+  font-size: 1rem;
+}
 
-  .js .print {
-    --print-h: 178px;
-  }
+html:not(.js) .tome {
+  margin-top: 48px;
+  font-size: 1rem;
+}
 
-  .js .album--portrait .print {
-    --print-h: 250px;
-  }
+html:not(.js) .tome .page__content {
+  padding: 32px 28px 40px;
+  overflow: visible;
+}
+
+html:not(.js) .album-grid {
+  grid-template-rows: none;
+  grid-auto-rows: 180px;
+}
+
+html:not(.js) .page__num {
+  display: none;
 }
 
 /* ==========================================================================
@@ -2721,13 +3514,11 @@ body:has(.lightbox[open]) {
   :root {
     --t-book: 0.01s;
     --t-flip: 0.01s;
+    --t-shift: 0.01s;
   }
 
-  .js .reveal,
-  .js .print.reveal {
-    opacity: 1;
-    transform: rotate(var(--r, 0deg));
-    transition: none;
+  .js .tome {
+    --t-flip: 0.01s;
   }
 
   .js .ch {
@@ -2737,46 +3528,28 @@ body:has(.lightbox[open]) {
 
   .leaf--cover .leaf__front,
   .turn__corner,
-  .intro__hint svg {
+  .intro__hint svg,
+  .desk__more span {
     animation: none !important;
   }
 
-  .stickers .sticker,
-  .stickers .sticker svg,
-  .entry__doodle,
-  .tab,
-  .tab span {
-    transition: none !important;
-  }
-
-  .js .journal,
-  .js .to-top {
-    transition-duration: 0.2s;
-    transition-delay: 0s;
-  }
-
+  .js .pile-wrap,
+  .js .desk__more,
+  .spine,
   .btn,
   .contact__link,
   .print a {
-    transition: none;
+    transition-duration: 0.01s !important;
+    transition-delay: 0s !important;
   }
 }
 
 @media print {
   .site-header,
-  .intro,
-  .to-top {
+  .to-top,
+  .reader__btn,
+  .reader__books,
+  .reader__backdrop {
     display: none;
-  }
-
-  .journal {
-    visibility: visible !important;
-    opacity: 1 !important;
-    padding: 0 !important;
-  }
-
-  .js .reveal {
-    opacity: 1;
-    transform: none;
   }
 }

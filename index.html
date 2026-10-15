@@ -6,7 +6,7 @@
   <title>Ludivine Codoner — Chargée d'études en écologie</title>
   <meta name="description" content="Portfolio de Ludivine Codoner, chargée d'études en écologie, diplômée du master Biodiversité, Écologie, Évolution (parcours FOGEM) de l'Université de Lille : parcours, stages de recherche, inventaires naturalistes et biostatistiques.">
   <meta property="og:title" content="Ludivine Codoner — Chargée d'études en écologie">
-  <meta property="og:description" content="Biodiversité, écosystèmes marins et côtiers, inventaires naturalistes et biostatistiques : ouvrez mon carnet de terrain pour découvrir mon parcours.">
+  <meta property="og:description" content="Biodiversité, écosystèmes marins et côtiers, inventaires naturalistes et biostatistiques : ouvrez mon carnet de terrain et mes livres pour découvrir mon parcours.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Ludivine Codoner">
@@ -29,20 +29,26 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <script>
-    // Avant le premier affichage : le carnet est fermé, sauf si l'on arrive directement sur une section
+    // Avant le premier affichage : le carnet est fermé, sauf si l'on arrive par un lien vers une partie.
+    // L'ancre est mise de côté pour que le navigateur ne fasse pas défiler la page : le script s'en charge.
     (function (d) {
+      var hash = location.hash;
       d.classList.add('js');
-      d.setAttribute('data-book', location.hash.length > 1 ? 'reading' : 'closed');
+      d.setAttribute('data-scene', hash.length > 1 ? 'desk' : 'closed');
+      if (hash.length > 1 && window.history && history.replaceState) {
+        d.setAttribute('data-hash', hash);
+        history.replaceState(null, '', location.pathname + location.search);
+      }
     })(document.documentElement);
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#contenu">Aller au contenu</a>
+  <a class="skip-link" href="#bibliotheque">Aller au contenu</a>
 
-  <!-- ============ EN-TÊTE (tablettes et téléphones) ============ -->
+  <!-- ============ EN-TÊTE (une fois le carnet posé sur la pile) ============ -->
   <header class="site-header">
     <div class="container header__inner">
-      <a class="brand" href="#a-propos" aria-label="Ludivine Codoner, retour au début du parcours">
+      <a class="brand" href="#a-propos" aria-label="Ludivine Codoner : rouvrir le carnet de terrain">
         <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
           <circle cx="16" cy="16" r="15" class="brand__bg"/>
           <path d="M16 22.5V9.5" class="brand__stroke"/>
@@ -55,9 +61,9 @@
       <nav class="nav" id="nav" aria-label="Navigation principale">
         <ul class="nav__list">
           <li><a href="#a-propos">Profil</a></li>
-          <li><a href="#parcours">Formation</a></li>
-          <li><a href="#experiences">Stages</a></li>
-          <li><a href="#engagement">Engagement</a></li>
+          <li><a href="#formation" data-open="formation">Formation</a></li>
+          <li><a href="#experiences" data-open="experiences">Expériences</a></li>
+          <li><a href="#passions" data-open="passions">Passions</a></li>
           <li><a href="#competences">Compétences</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -73,796 +79,877 @@
     </div>
   </header>
 
-  <!-- ============ ACCUEIL : LE CARNET DE TERRAIN ============
-       Fermé, puis ouvert sur la double page (question et hypothèse). Sur grand écran, il glisse
-       ensuite à gauche et se remplit au fil de la lecture : les notes des pages reprennent en
-       résumé les sections de la page (dates, diplômes, lieux). -->
-  <section class="intro" id="accueil" aria-label="Accueil : carnet de terrain">
-    <div class="book">
-      <!-- Carnet fermé : un clic n'importe où sur la couverture l'ouvre -->
-      <button class="book__open" type="button" aria-label="Ouvrir le carnet de terrain"></button>
-      <div class="book__shadow" aria-hidden="true"></div>
-      <div class="book__back" aria-hidden="true"></div>
-      <div class="book__edges book__edges--right" aria-hidden="true"></div>
-      <div class="book__edges book__edges--left" aria-hidden="true"></div>
-      <!-- Feuille volante glissée entre deux pages, et ruban marque-page -->
-      <div class="book__sheet" aria-hidden="true"><span>relevés de terrain</span></div>
-      <span class="book__ribbon" aria-hidden="true"></span>
+  <main id="contenu">
 
-      <!-- Post-it qui dépassent : ils marquent les pages et servent de sommaire -->
-      <nav class="tabs" aria-label="Sommaire du carnet">
-        <a class="tab" href="#a-propos" data-chapter="a-propos"><span>Profil</span></a>
-        <a class="tab" href="#parcours" data-chapter="parcours"><span>Formation</span></a>
-        <a class="tab" href="#experiences" data-chapter="experiences"><span>Stages</span></a>
-        <a class="tab" href="#engagement" data-chapter="engagement"><span>Engagement</span></a>
-        <a class="tab" href="#competences" data-chapter="competences"><span>Compétences</span></a>
-        <a class="tab" href="#contact" data-chapter="contact"><span>Contact</span></a>
+    <!-- ============ LE BUREAU : CARNET DE TERRAIN ET PILE DE LIVRES ============
+         Le carnet s'ouvre sur la question et l'hypothèse, puis sur le profil.
+         Il se pose ensuite, ouvert à sa dernière page, sur la pile de livres. -->
+    <section class="desk" id="accueil" aria-label="Carnet de terrain et livres du parcours">
+      <div class="book carnet" data-carnet>
+        <!-- Carnet fermé : un clic n'importe où sur la couverture l'ouvre -->
+        <button class="book__open" type="button" aria-label="Ouvrir le carnet de terrain"></button>
+        <div class="book__shadow" aria-hidden="true"></div>
+        <div class="book__back" aria-hidden="true"></div>
+        <div class="book__edges" aria-hidden="true"></div>
+        <!-- Feuille volante glissée entre deux pages, ruban marque-page et post-it qui dépassent -->
+        <div class="book__sheet" aria-hidden="true"><span>relevés de terrain</span></div>
+        <span class="book__ribbon" aria-hidden="true"></span>
+        <span class="book__tabs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+
+        <div class="leaf leaf--cover">
+              <div class="leaf__face leaf__front cover">
+                <span class="cover__spine" aria-hidden="true"></span>
+                <span class="cover__elastic" aria-hidden="true"></span>
+                <div class="cover__label">
+                  <p class="cover__kicker">Carnet de terrain</p>
+                  <h1 class="cover__name">Ludivine Codoner</h1>
+                  <p class="cover__role">Chargée d'études en écologie</p>
+                </div>
+                <p class="cover__foot">Biodiversité · Écosystèmes · Biostatistiques</p>
+                <svg class="cover__mark" viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M16 22.5V9.5"/>
+                  <path d="M16 18c-.8-3.4-3.4-5.2-7-5.2.2 3.5 2.9 5.4 7 5.2ZM16 14.5c.8-3.4 3.4-5.2 7-5.2-.2 3.5-2.9 5.4-7 5.2ZM16 10c-1.7-1.5-1.7-3.9 0-5.4 1.7 1.5 1.7 3.9 0 5.4Z"/>
+                  <path d="M5.5 25.5c3-2.6 6.6-3.8 10.5-3.8s7.5 1.2 10.5 3.8"/>
+                </svg>
+              </div>
+          <div class="leaf__face leaf__back cover-inside">
+            <div class="page page--left page--spread">
+              <p class="page__date" data-today>Lille, Hauts-de-France</p>
+              <p class="spread__label" data-write>Question scientifique :</p>
+              <p class="spread__text" data-write>Comment comprendre ce qui nous entoure ?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaf">
+          <div class="leaf__face leaf__front">
+            <div class="page page--right page--spread">
+              <p class="spread__label" data-write>Hypothèse :</p>
+              <p class="spread__text" data-write>étudier l'environnement permet de mieux le protéger.</p>
+              <svg class="spread__underline" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9c40-6 92-8 194-3"/></svg>
+              <button class="turn" type="button" data-next aria-label="Tourner la page">
+                <span class="turn__label" aria-hidden="true">Tourner la page</span>
+                <span class="turn__corner" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="leaf__face leaf__back">
+            <div class="page page--left">
+              <div class="page__content page__content--portrait">
+                <ul class="portrait" data-gallery aria-label="Photo de profil">
+                  <li class="print print--portrait">
+                    <a href="assets/img/ludivine-codoner.jpg" data-caption="Sur le terrain, avec le silène dioïque">
+                      <img src="assets/img/ludivine-codoner.jpg" width="360" height="480"
+                           alt="Ludivine Codoner sur le terrain, observant des fleurs roses de silène dioïque (Silene dioica) cultivées en pots.">
+                      <span class="print__cap" aria-hidden="true">Sur le terrain, avec le silène dioïque</span>
+                    </a>
+                  </li>
+                </ul>
+                <ul class="facts">
+                  <li class="fact"><span class="fact__value">Bac+5</span><span class="fact__label">Master BEE, parcours FOGEM, Université de Lille, 2026</span></li>
+                  <li class="fact"><span class="fact__value">5 stages</span><span class="fact__label">en laboratoire de recherche et en collectivité</span></li>
+                  <li class="fact"><span class="fact__value">12 mois</span><span class="fact__label">d'expérience cumulée en stage, de la L2 au M2</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaf">
+          <div class="leaf__face leaf__front">
+            <div class="page page--right">
+              <div class="page__content page__content--profil" id="a-propos">
+                <p class="eyebrow">Profil</p>
+                <h2 class="profil__title">Comprendre le vivant, de l'organisme à l'écosystème</h2>
+                <p>Naturaliste dans l'âme et écologue de formation, je cherche à comprendre comment les organismes et les populations interagissent avec leur environnement, et ce que cela nous apprend du fonctionnement des écosystèmes.</p>
+                <p>Diplômée en 2026 du master Biodiversité, Écologie, Évolution de l'Université de Lille (parcours <strong>Fonctionnement et Gestion des Écosystèmes Marins</strong>), j'ai mené mes stages de recherche dans des milieux très différents : la pollinisation du silène dioïque, le comportement d'agrégation de la moule commune, puis les liens entre diversité spécifique et diversité génétique des communautés végétales dunaires au sein de l'UMR BIOGECO (INRAE, Université de Bordeaux). Ce dernier projet, centré sur un important travail d'analyse de données, m'a permis de développer de solides compétences en <strong>biostatistiques</strong>, que je prolonge aujourd'hui en écrivant un livre consacré aux statistiques appliquées sous R.</p>
+                <p>En parallèle, mes stages au service Nature en Ville d'Armentières m'ont fait découvrir l'écologie appliquée aux territoires : <strong>inventaires faune et flore</strong> et lancement d'un Atlas de la Biodiversité Communale.</p>
+              </div>
+              <button class="turn" type="button" data-next aria-label="La suite dans les livres">
+                <span class="turn__label" aria-hidden="true">La suite dans les livres</span>
+                <span class="turn__corner" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="leaf__face leaf__back">
+            <div class="page page--left page--blank"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pile-wrap" id="bibliotheque">
+        <h2 class="sr-only">Les livres du parcours</h2>
+        <nav class="pile" aria-label="Livres du parcours">
+          <a class="spine spine--formation" href="#formation" data-open="formation">
+            <span class="spine__title">Formation</span>
+            <span class="spine__meta">2021 – 2026</span>
+          </a>
+          <a class="spine spine--experiences" href="#experiences" data-open="experiences">
+            <span class="spine__title">Expériences</span>
+            <span class="spine__meta">Stages · engagement</span>
+          </a>
+          <a class="spine spine--passions" href="#passions" data-open="passions">
+            <span class="spine__title">Passions</span>
+          </a>
+        </nav>
+        <p class="pile__hint" aria-hidden="true" data-hint-pile>Cliquez sur un livre pour l'ouvrir</p>
+      </div>
+
+      <a class="desk__more" href="#competences">Compétences et contact <span aria-hidden="true">↓</span></a>
+
+      <p class="intro__hint intro__hint--open" aria-hidden="true">
+        <svg viewBox="0 0 40 40"><path d="M8 34c2-12 10-21 24-25M24 6l9 3-4 9"/></svg>
+        <span data-hint-open>Cliquez sur le carnet pour l'ouvrir</span>
+      </p>
+      <p class="intro__hint intro__hint--turn" aria-hidden="true">
+        <span data-hint-turn>Cliquez sur la page ou faites défiler</span>
+        <svg viewBox="0 0 40 40"><path d="M20 6v26M11 23l9 10 9-10"/></svg>
+      </p>
+    </section>
+
+    <!-- ============ LES LIVRES ============
+         Chaque livre s'ouvre par-dessus le bureau : une double page par année (Formation),
+         par stage ou engagement (Expériences), et les passions dans le plus fin. -->
+    <div class="reader" data-reader role="dialog" aria-modal="true" aria-label="Livres du parcours">
+      <div class="reader__backdrop" data-close-reader></div>
+      <nav class="reader__books" aria-label="Changer de livre">
+        <a href="#formation" data-open="formation">Formation</a>
+        <a href="#experiences" data-open="experiences">Expériences</a>
+        <a href="#passions" data-open="passions">Passions</a>
       </nav>
-
-      <!-- Couverture : au recto le titre du carnet, au verso la page de gauche de la première double page -->
-      <div class="leaf leaf--cover">
-        <div class="leaf__face leaf__front cover">
-          <span class="cover__spine" aria-hidden="true"></span>
-          <span class="cover__elastic" aria-hidden="true"></span>
-          <div class="cover__label">
-            <p class="cover__kicker">Carnet de terrain</p>
-            <h1 class="cover__name">Ludivine Codoner</h1>
-            <p class="cover__role">Chargée d'études en écologie</p>
+      <div class="reader__stage">
+        <article class="book tome tome--formation" id="formation" data-tome aria-label="Livre : Formation">
+          <div class="book__shadow" aria-hidden="true"></div>
+          <div class="book__back" aria-hidden="true"></div>
+          <div class="book__edges" aria-hidden="true"></div>
+          <div class="leaf leaf--cover">
+            <div class="leaf__face leaf__front tome-cover">
+              <span class="tome-cover__band" aria-hidden="true"></span>
+              <div class="tome-cover__label">
+                <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg>
+                <p class="tome-cover__title">Formation</p>
+                <p class="tome-cover__sub">2021 – 2026</p>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--title">
+                  <svg class="title-page__doodle" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg>
+                  <h2 class="title-page__title">Formation</h2>
+                  <p class="title-page__sub">Université de Lille · 2021 – 2026</p>
+                  <p class="title-page__note">Une licence en Sciences de la Vie, puis un master Biodiversité, Écologie, Évolution : une double page par année.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="cover__foot">Biodiversité · Écosystèmes · Biostatistiques</p>
-          <svg class="cover__mark" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M16 22.5V9.5"/>
-            <path d="M16 18c-.8-3.4-3.4-5.2-7-5.2.2 3.5 2.9 5.4 7 5.2ZM16 14.5c.8-3.4 3.4-5.2 7-5.2-.2 3.5-2.9 5.4-7 5.2ZM16 10c-1.7-1.5-1.7-3.9 0-5.4 1.7 1.5 1.7 3.9 0 5.4Z"/>
-            <path d="M5.5 25.5c3-2.6 6.6-3.8 10.5-3.8s7.5 1.2 10.5 3.8"/>
-          </svg>
-        </div>
-        <div class="leaf__face leaf__back cover-inside">
-          <div class="page page--left page--spread">
-            <p class="page__date" data-today>Lille, Hauts-de-France</p>
-            <p class="spread__label" data-write>Question scientifique :</p>
-            <p class="spread__text" data-write>Comment comprendre ce qui nous entoure ?</p>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--toc">
+                  <p class="memo-head">Sommaire</p>
+                  <ol class="toc">
+                    <li><a href="#annee-2021" data-goto="annee-2021"><span class="toc__kicker">2021 – 2022</span><span class="toc__title">Licence 1 · Portail Sciences de la Vie, de la Terre et de l'Environnement</span></a></li>
+                    <li><a href="#annee-2022" data-goto="annee-2022"><span class="toc__kicker">2022 – 2023</span><span class="toc__title">Licence 2 · Licence Sciences de la Vie</span></a></li>
+                    <li><a href="#annee-2023" data-goto="annee-2023"><span class="toc__kicker">2023 – 2024</span><span class="toc__title">Licence 3 · Parcours Biologie des Organismes et des Populations</span></a></li>
+                    <li><a href="#annee-2024" data-goto="annee-2024"><span class="toc__kicker">2024 – 2025</span><span class="toc__title">Master 1 · Master Biodiversité, Écologie, Évolution</span></a></li>
+                    <li><a href="#annee-2025" data-goto="annee-2025"><span class="toc__kicker">2025 – 2026</span><span class="toc__title">Master 2 · Parcours Fonctionnement et Gestion des Écosystèmes Marins</span></a></li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="annee-2021">
+                  <p class="page__year">2021 – 2022</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">Licence 1</span></p>
+                  <h3 class="step__title">Portail Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</h3>
+                  <p>Un portail commun aux sciences de la vie, de la Terre et de l'environnement, pour poser des bases larges avant de choisir sa voie.</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--doodle">
+                  <svg class="doodle-page__sun" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg>
+                  <p class="doodle-page__note">Là où tout a commencé : les premières graines du parcours.</p>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--memo">
+                  <p class="memo-head">Cette année-là</p>
+                  <ul class="memos">
+                    <li class="memo">
+                      <span class="memo__thumb memo__thumb--doodle"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">2022 – 2023</span>
+                        <span class="memo__title">Animatrice écologie et environnement</span>
+                        <span class="memo__desc">Centre de loisirs d'Armentières</span>
+                        <a class="memo__link" href="#exp-animatrice" data-goto="exp-animatrice">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content" id="annee-2022">
+                  <p class="page__year">2022 – 2023</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">Licence 2</span></p>
+                  <h3 class="step__title">Licence Sciences de la Vie (SV)</h3>
+                  <p>Le choix des sciences de la vie : des bases solides en biologie des organismes, en écologie et en évolution.</p>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="annee-2023">
+                  <p class="page__year">2023 – 2024</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg><span class="step__kicker">Licence 3</span></p>
+                  <h3 class="step__title">Parcours Biologie des Organismes et des Populations (BOP)</h3>
+                  <p>Une orientation vers l'étude des populations et de leurs interactions avec le milieu. Licence Sciences de la Vie obtenue en 2024.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--memo">
+                  <p class="memo-head">Cette année-là</p>
+                  <ul class="memos">
+                    <li class="memo">
+                      <span class="memo__thumb"><img src="assets/img/terrain/l3-tente-silenes-min.webp" alt="" loading="lazy"></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">Stage de L3 · 2024</span>
+                        <span class="memo__title">Pollinisateurs et <em>Silene dioica</em></span>
+                        <span class="memo__desc">Laboratoire EEP, Université de Lille</span>
+                        <a class="memo__link" href="#exp-l3" data-goto="exp-l3">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
+                    <li class="memo">
+                      <span class="memo__thumb"><img src="assets/img/terrain/armentieres-determination-min.webp" alt="" loading="lazy"></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">Stages de L2 et L3</span>
+                        <span class="memo__title">Service Nature en Ville</span>
+                        <span class="memo__desc">Inventaires faune et flore à Armentières</span>
+                        <a class="memo__link" href="#exp-armentieres" data-goto="exp-armentieres">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--memo">
+                  <p class="memo-head">Cette année-là</p>
+                  <ul class="memos">
+                    <li class="memo">
+                      <span class="memo__thumb"><img src="assets/img/terrain/m1-marquage-bigorneaux-min.webp" alt="" loading="lazy"></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">Stage de M1 · 2025</span>
+                        <span class="memo__title">Agrégation de la moule commune</span>
+                        <span class="memo__desc">Station marine de Wimereux</span>
+                        <a class="memo__link" href="#exp-m1" data-goto="exp-m1">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content" id="annee-2024">
+                  <p class="page__year">2024 – 2025</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">Master 1</span></p>
+                  <h3 class="step__title">Master Biodiversité, Écologie, Évolution (BEE)</h3>
+                  <p>Première année du master, et premier pas vers les écosystèmes marins avec un stage de recherche à la station marine de Wimereux.</p>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="annee-2025">
+                  <p class="page__year">2025 – 2026</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">Master 2</span></p>
+                  <h3 class="step__title">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</h3>
+                  <p>Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi de la biodiversité.</p>
+                  <p class="step__stamp">Diplômée en 2026</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--memo">
+                  <p class="memo-head">Cette année-là</p>
+                  <ul class="memos">
+                    <li class="memo">
+                      <span class="memo__thumb"><img src="assets/img/terrain/m2-flore-equipe-min.webp" alt="" loading="lazy"></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">Stage de M2 · 2026</span>
+                        <span class="memo__title">Diversité des communautés dunaires</span>
+                        <span class="memo__desc">UMR BIOGECO, INRAE – Université de Bordeaux</span>
+                        <a class="memo__link" href="#exp-m2" data-goto="exp-m2">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left page--blank"></div>
+            </div>
+          </div>
+        </article>
 
-      <!-- Première page de droite : l'hypothèse -->
-      <div class="leaf leaf--hypo">
-        <div class="leaf__face leaf__front page page--right page--spread">
-          <p class="spread__label" data-write>Hypothèse :</p>
-          <p class="spread__text" data-write>étudier l'environnement permet de mieux le protéger.</p>
-          <svg class="spread__underline" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9c40-6 92-8 194-3"/></svg>
-          <button class="turn" type="button" aria-label="Tourner la page et découvrir le parcours">
-            <span class="turn__label" aria-hidden="true">Tourner la page</span>
-            <span class="turn__corner" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div class="leaf__face leaf__back page page--left"></div>
-      </div>
+        <article class="book tome tome--experiences" id="experiences" data-tome aria-label="Livre : Expériences">
+          <div class="book__shadow" aria-hidden="true"></div>
+          <div class="book__back" aria-hidden="true"></div>
+          <div class="book__edges" aria-hidden="true"></div>
+          <div class="leaf leaf--cover">
+            <div class="leaf__face leaf__front tome-cover">
+              <span class="tome-cover__band" aria-hidden="true"></span>
+              <div class="tome-cover__label">
+                <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg>
+                <p class="tome-cover__title">Expériences</p>
+                <p class="tome-cover__sub">Stages · engagement</p>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--title">
+                  <svg class="title-page__doodle" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg>
+                  <h2 class="title-page__title">Expériences</h2>
+                  <p class="title-page__sub">Stages de recherche · territoires · engagement</p>
+                  <p class="title-page__note">Une double page par stage ou engagement : la description d'un côté, les photos de l'autre.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--toc">
+                  <p class="memo-head">Sommaire</p>
+                  <ol class="toc">
+                    <li><a href="#exp-m2" data-goto="exp-m2"><span class="toc__kicker">Master 2 · 2026</span><span class="toc__title">Stage de M2 · BIOGECO</span></a></li>
+                    <li><a href="#exp-m1" data-goto="exp-m1"><span class="toc__kicker">Master 1 · 2025</span><span class="toc__title">Stage de M1 · LOG</span></a></li>
+                    <li><a href="#exp-l3" data-goto="exp-l3"><span class="toc__kicker">Licence 3 · 2024</span><span class="toc__title">Stage de L3 · EEP</span></a></li>
+                    <li><a href="#exp-armentieres" data-goto="exp-armentieres"><span class="toc__kicker">Licence 2 / 3 · 2023 – 2024</span><span class="toc__title">Service Nature en Ville</span></a></li>
+                    <li><a href="#exp-animatrice" data-goto="exp-animatrice"><span class="toc__kicker">2022 – 2023</span><span class="toc__title">Animatrice écologie</span></a></li>
+                    <li><a href="#exp-benevolat" data-goto="exp-benevolat"><span class="toc__kicker">Septembre 2026</span><span class="toc__title">Chantier « Green Beats »</span></a></li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="exp-m2">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-dune"/></svg><span class="step__kicker">Master 2 · 2026</span><span>6 mois</span></p>
+                  <h3 class="step__title">Corrélation entre diversité spécifique et diversité génétique des communautés végétales dunaires</h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>UMR BIOGECO · INRAE – Université de Bordeaux</span></p>
+                  <p>Les dunes littorales de Nouvelle-Aquitaine abritent des communautés végétales adaptées à des conditions difficiles : sable mobile, embruns, sécheresse. Ce stage visait à déterminer si la diversité des espèces au sein des communautés et la diversité génétique au sein des populations varient de concert — une question centrale pour comprendre et préserver la biodiversité à ses différents niveaux d'organisation.</p>
+                  <p class="step__highlight"><strong>Cœur du projet :</strong> un important travail d'analyse biostatistique, de la structuration des jeux de données à l'interprétation des résultats.</p>
+                  <div class="step__footer">
+                    <p class="step__people"><span>Encadrement</span>Marie-Lise Benot, Maya Gonzalez et Olivier Lepais</p>
+                    <ul class="tags" aria-label="Thématiques"><li>Biostatistiques</li><li>Diversité génétique</li><li>Écologie des communautés</li><li>Écosystèmes dunaires</li><li>Conservation</li></ul>
+                  </div>
+                  <a class="doc-link" href="https://stagem2-lcodoner-ae45e9.pages-forge.inrae.fr/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg><span>Mes scripts R du stage <small>(forge INRAE)</small></span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--photos">
+                  <p class="album__title"><span>Sorties de terrain</span></p>
+                  <ul class="album-grid" data-count="5" data-gallery aria-label="Photos des sorties de terrain du stage de M2">
+                    <li class="print">
+                      <a href="assets/img/terrain/m2-dune-oyats.webp" data-caption="Dune littorale couverte d'oyats, entre l'océan et le village">
+                        <img src="assets/img/terrain/m2-dune-oyats-min.webp" width="780" height="440" loading="lazy" alt="Dune de sable couverte de touffes d'oyats, avec l'océan à gauche et un village bordé de forêt à droite">
+                        <span class="print__cap" aria-hidden="true">Dune littorale couverte d'oyats, entre l'océan et le village</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m2-flore-equipe.webp" data-caption="Identification de la flore dunaire en équipe">
+                        <img src="assets/img/terrain/m2-flore-equipe-min.webp" width="781" height="440" loading="lazy" alt="Six personnes accroupies ou debout sur une dune à végétation basse, observant des plantes et prenant des notes">
+                        <span class="print__cap" aria-hidden="true">Identification de la flore dunaire en équipe</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m2-dune-ocean.webp" data-caption="Sur la dune, face à l'océan">
+                        <img src="assets/img/terrain/m2-dune-ocean-min.webp" width="203" height="440" loading="lazy" alt="Ludivine Codoner, bras levés, sur le sable au pied de la dune, avec l'océan en arrière-plan">
+                        <span class="print__cap" aria-hidden="true">Sur la dune, face à l'océan</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m2-maisons-ensablees.webp" data-caption="Habitations gagnées par le sable">
+                        <img src="assets/img/terrain/m2-maisons-ensablees-min.webp" width="780" height="440" loading="lazy" alt="Maisons aux toits de tuiles dont les murs sont en partie recouverts par le sable de la dune">
+                        <span class="print__cap" aria-hidden="true">Habitations gagnées par le sable</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m2-station-meteo.webp" data-caption="Station météorologique installée sur la dune">
+                        <img src="assets/img/terrain/m2-station-meteo-min.webp" width="781" height="440" loading="lazy" alt="Deux personnes en gilet orange travaillant au pied d'une station météorologique installée sur la dune, face à l'océan">
+                        <span class="print__cap" aria-hidden="true">Station météorologique installée sur la dune</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--photos">
+                  <p class="album__title"><span>Sur le terrain et à la station marine</span></p>
+                  <ul class="album-grid" data-count="7" data-gallery aria-label="Photos du stage de M1">
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-estran-maree-basse.webp" data-caption="Sortie sur l'estran à marée basse">
+                        <img src="assets/img/terrain/m1-estran-maree-basse-min.webp" width="330" height="440" loading="lazy" alt="Grande plage de sable ridé à marée basse, avec des falaises au loin et trois promeneurs">
+                        <span class="print__cap" aria-hidden="true">Sortie sur l'estran à marée basse</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-marquage-bigorneaux.webp" data-caption="Marquage de bigorneaux à la peinture pour les reconnaître dans le temps">
+                        <img src="assets/img/terrain/m1-marquage-bigorneaux-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner accroupie sur un rocher à marée basse, en train de marquer des bigorneaux à la peinture">
+                        <span class="print__cap" aria-hidden="true">Marquage de bigorneaux à la peinture pour les reconnaître dans le temps</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-moules-marquees.webp" data-caption="Moules marquées individuellement pour le suivi">
+                        <img src="assets/img/terrain/m1-moules-marquees-min.webp" width="330" height="440" loading="lazy" alt="Une quinzaine de moules portant chacune une étiquette jaune numérotée, dans un récipient transparent">
+                        <span class="print__cap" aria-hidden="true">Moules marquées individuellement pour le suivi</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-bassins.webp" data-caption="Bassins expérimentaux de la station marine">
+                        <img src="assets/img/terrain/m1-bassins-min.webp" width="587" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche penchée au-dessus d'un grand bassin bleu dans une salle d'expérimentation">
+                        <span class="print__cap" aria-hidden="true">Bassins expérimentaux de la station marine</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-releves-bacs.webp" data-caption="Relevés aux bacs d'expérimentation">
+                        <img src="assets/img/terrain/m1-releves-bacs-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche prenant des notes devant une rangée de bacs d'eau de mer">
+                        <span class="print__cap" aria-hidden="true">Relevés aux bacs d'expérimentation</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-microscope.webp" data-caption="Manteau d'une moule observé au microscope pour déterminer son sexe">
+                        <img src="assets/img/terrain/m1-microscope-min.webp" width="330" height="440" loading="lazy" alt="Champ circulaire d'un microscope montrant un fragment de manteau de moule, observé pour en déterminer le sexe">
+                        <span class="print__cap" aria-hidden="true">Manteau d'une moule observé au microscope pour déterminer son sexe</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/m1-laboratoire.webp" data-caption="Le laboratoire de la station marine">
+                        <img src="assets/img/terrain/m1-laboratoire-min.webp" width="330" height="440" loading="lazy" alt="Vue d'ensemble d'un laboratoire avec paillasses, microscopes et étagères">
+                        <span class="print__cap" aria-hidden="true">Le laboratoire de la station marine</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content" id="exp-m1">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-mussel"/></svg><span class="step__kicker">Master 1 · 2025</span><span>2 mois</span></p>
+                  <h3 class="step__title">Comportement d'agrégation de la moule commune (<em>Mytilus edulis</em>) en période de reproduction</h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire d'Océanologie et de Géosciences (LOG, UMR 8187) · Station Marine de Wimereux</span></p>
+                  <p>Bien que fixées par leur byssus, les moules sont capables de se déplacer pour se regrouper en agrégats. Ce stage d'écologie comportementale portait sur ce comportement d'agrégation chez la moule commune et sur ses variations au cours des périodes de reproduction, un moment clé pour la dynamique de ses populations.</p>
+                  <div class="step__footer">
+                    <p class="step__people"><span>Encadrement</span>Marine Uguen</p>
+                    <ul class="tags" aria-label="Thématiques"><li>Écologie comportementale</li><li>Agrégation</li><li>Reproduction</li><li>Écosystèmes marins</li></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="exp-l3">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg><span class="step__kicker">Licence 3 · 2024</span><span>2 mois</span></p>
+                  <h3 class="step__title">Dimorphisme sexuel et taux de visite des pollinisateurs chez <em>Silene dioica</em></h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire Écologie, Évolution et Paléontologie (EEP, UMR 8198 CNRS) · Université de Lille</span></p>
+                  <p>Comme son nom l'indique, le silène dioïque (<em>Silene dioica</em>) est une plante dioïque : les fleurs mâles et femelles sont portées par des individus différents, et sa reproduction dépend donc entièrement des pollinisateurs. Inscrit dans une thèse sur la sélection exercée par les pollinisateurs sur les traits floraux, ce stage cherchait à savoir si les plantes mâles et femelles diffèrent par leurs traits floraux, et si ces différences modifient le taux de visite des pollinisateurs.</p>
+                  <p class="step__highlight"><strong>Résultats :</strong> un dimorphisme sexuel marqué. Les plantes mâles, plus petites, portent davantage de fleurs ouvertes et sont plus visitées. Les bourdons montrent une nette préférence pour les plantes mâles, alors que les syrphes visitent indifféremment les deux sexes.</p>
+                  <div class="step__footer">
+                    <p class="step__people"><span>Encadrement</span>Nina Joffard et Isabelle De Cauwer</p>
+                    <ul class="tags" aria-label="Thématiques"><li>Écologie de la pollinisation</li><li>Dimorphisme sexuel</li><li>Traits floraux</li><li>Statistiques sous R</li></ul>
+                  </div>
+                  <a class="doc-link" href="assets/docs/poster-l3-silene-dioica.webp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H5zM12 16v4M8.5 20h7M8 8h8M8 11.5h5"/></svg><span>Voir le poster scientifique <small>(image)</small></span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--photos">
+                  <p class="album__title"><span>Sur le terrain et au laboratoire</span></p>
+                  <ul class="album-grid" data-count="10" data-gallery aria-label="Photos du stage de L3">
+                    <li class="print">
+                      <a href="assets/docs/poster-l3-silene-dioica.webp" data-caption="Le poster scientifique du stage">
+                        <img src="assets/img/terrain/l3-poster-min.webp" width="311" height="440" loading="lazy" alt="Poster scientifique du stage de L3 : dimorphisme sexuel et taux de visite des pollinisateurs chez Silene dioica">
+                        <span class="print__cap" aria-hidden="true">Le poster scientifique du stage</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-capture-filet.webp" data-caption="Capture de pollinisateurs au filet entomologique">
+                        <img src="assets/img/terrain/l3-capture-filet-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner en sous-bois, tenant un filet entomologique et une boîte de capture">
+                        <span class="print__cap" aria-hidden="true">Capture de pollinisateurs au filet entomologique</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-labo-manip.webp" data-caption="Manipulations au laboratoire">
+                        <img src="assets/img/terrain/l3-labo-manip-min.webp" width="331" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche, manipulant une pipette à une paillasse de laboratoire">
+                        <span class="print__cap" aria-hidden="true">Manipulations au laboratoire</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-tente-silenes.webp" data-caption="Entretien des plants de silène dioïque dans une tente expérimentale">
+                        <img src="assets/img/terrain/l3-tente-silenes-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner penchée sur des plants de silène dioïque en fleurs, disposés en rangées dans une tente">
+                        <span class="print__cap" aria-hidden="true">Entretien des plants de silène dioïque dans une tente expérimentale</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-colonie-bourdons.webp" data-caption="Colonie de bourdons utilisée pour l'expérience">
+                        <img src="assets/img/terrain/l3-colonie-bourdons-min.webp" width="782" height="440" loading="lazy" alt="Boîte d'élevage transparente vue de dessus, contenant une colonie de bourdons">
+                        <span class="print__cap" aria-hidden="true">Colonie de bourdons utilisée pour l'expérience</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-microscope-equipe.webp" data-caption="Travail au microscope et sur ordinateur, à deux">
+                        <img src="assets/img/terrain/l3-microscope-equipe-min.webp" width="587" height="440" loading="lazy" alt="Ludivine Codoner debout en blouse à côté d'une personne assise devant un microscope et un ordinateur">
+                        <span class="print__cap" aria-hidden="true">Travail au microscope et sur ordinateur, à deux</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-devant-tentes.webp" data-caption="Devant les tentes d'expérimentation, sous la pluie">
+                        <img src="assets/img/terrain/l3-devant-tentes-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner souriante, capuche sur la tête, devant une tente d'expérimentation sous un filet">
+                        <span class="print__cap" aria-hidden="true">Devant les tentes d'expérimentation, sous la pluie</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-capture-filet-equipe.webp" data-caption="Capture au filet en sous-bois, en équipe">
+                        <img src="assets/img/terrain/l3-capture-filet-equipe-min.webp" width="330" height="440" loading="lazy" alt="Deux personnes de dos dans un sous-bois, munies de filets entomologiques">
+                        <span class="print__cap" aria-hidden="true">Capture au filet en sous-bois, en équipe</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-microscope.webp" data-caption="Observation au microscope">
+                        <img src="assets/img/terrain/l3-microscope-min.webp" width="584" height="440" loading="lazy" alt="Personne en blouse devant un microscope relié à un écran d'ordinateur">
+                        <span class="print__cap" aria-hidden="true">Observation au microscope</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/l3-releves-tente.webp" data-caption="Relevés au milieu des silènes, sous tente">
+                        <img src="assets/img/terrain/l3-releves-tente-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner tenant une feuille de relevés parmi les plants de silène dioïque dans une tente expérimentale">
+                        <span class="print__cap" aria-hidden="true">Relevés au milieu des silènes, sous tente</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--photos">
+                  <p class="album__title"><span>Inventaires en images</span></p>
+                  <ul class="album-grid" data-count="11" data-gallery aria-label="Photos des stages au Service Nature en Ville d'Armentières">
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-chat-donnees.webp" data-caption="Saisie des données d'inventaire, sous surveillance">
+                        <img src="assets/img/terrain/armentieres-chat-donnees-min.webp" width="248" height="440" loading="lazy" alt="Chat blanc allongé sur des fiches de relevé, devant un ordinateur affichant un tableur">
+                        <span class="print__cap" aria-hidden="true">Saisie des données d'inventaire, sous surveillance</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-chat-flores.webp" data-caption="Séance de détermination, avec un assistant à quatre pattes">
+                        <img src="assets/img/terrain/armentieres-chat-flores-min.webp" width="782" height="440" loading="lazy" alt="Chat blanc et noir allongé sur un bureau entre deux flores ouvertes">
+                        <span class="print__cap" aria-hidden="true">Séance de détermination, avec un assistant à quatre pattes</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-determination.webp" data-caption="Identification des plantes récoltées, flore à l'appui">
+                        <img src="assets/img/terrain/armentieres-determination-min.webp" width="587" height="440" loading="lazy" alt="Fleurs roses et tiges feuillées posées sur un bureau, à côté d'une flore et de fiches de relevé">
+                        <span class="print__cap" aria-hidden="true">Identification des plantes récoltées, flore à l'appui</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-ombellifere.webp" data-caption="Détermination d'une ombellifère à la loupe">
+                        <img src="assets/img/terrain/armentieres-ombellifere-min.webp" width="248" height="440" loading="lazy" alt="Ombelle blanche et ombelle en fruit posées sur un bureau, à côté d'une loupe de terrain">
+                        <span class="print__cap" aria-hidden="true">Détermination d'une ombellifère à la loupe</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-coccinelles.webp" data-caption="Nymphes de coccinelles et jeune adulte sur une feuille">
+                        <img src="assets/img/terrain/armentieres-coccinelles-min.webp" width="330" height="440" loading="lazy" alt="Deux nymphes de coccinelles rayées et une jeune coccinelle orange sans points sur une feuille">
+                        <span class="print__cap" aria-hidden="true">Nymphes de coccinelles et jeune adulte sur une feuille</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-syrphe.webp" data-caption="Syrphe dans la végétation">
+                        <img src="assets/img/terrain/armentieres-syrphe-min.webp" width="248" height="440" loading="lazy" alt="Syrphe à l'abdomen rayé orange et noir posé parmi les plantes, au pied d'une pierre">
+                        <span class="print__cap" aria-hidden="true">Syrphe dans la végétation</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-papillon.webp" data-caption="Papillon posé dans les herbes hautes">
+                        <img src="assets/img/terrain/armentieres-papillon-min.webp" width="782" height="440" loading="lazy" alt="Papillon orangé et brun posé sur des brins d'herbe">
+                        <span class="print__cap" aria-hidden="true">Papillon posé dans les herbes hautes</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-libellule.webp" data-caption="Libellule posée dans la végétation">
+                        <img src="assets/img/terrain/armentieres-libellule-min.webp" width="248" height="440" loading="lazy" alt="Libellule aux ailes déployées posée sur une tige au milieu de la végétation">
+                        <span class="print__cap" aria-hidden="true">Libellule posée dans la végétation</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-agrion.webp" data-caption="Agrion dans les herbes hautes">
+                        <img src="assets/img/terrain/armentieres-agrion-min.webp" width="782" height="440" loading="lazy" alt="Petite demoiselle bleue posée parmi les herbes">
+                        <span class="print__cap" aria-hidden="true">Agrion dans les herbes hautes</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-tircis.webp" data-caption="Tircis (Pararge aegeria) sur des orties">
+                        <img src="assets/img/terrain/armentieres-tircis-min.webp" width="248" height="440" loading="lazy" alt="Papillon brun tacheté de crème, ailes ouvertes, posé sur des feuilles d'ortie">
+                        <span class="print__cap" aria-hidden="true">Tircis (Pararge aegeria) sur des orties</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/armentieres-sympetrum.webp" data-caption="Sympétrum posé sur une feuille">
+                        <img src="assets/img/terrain/armentieres-sympetrum-min.webp" width="782" height="440" loading="lazy" alt="Libellule rouge du genre Sympetrum posée sur une feuille, sur fond d'herbe">
+                        <span class="print__cap" aria-hidden="true">Sympétrum posé sur une feuille</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content" id="exp-armentieres">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg><span class="step__kicker">Licence 2 / 3 · 2023 – 2024</span><span>2 stages d'un mois</span></p>
+                  <h3 class="step__title">Service Nature en Ville</h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Ville d'Armentières</span></p>
+                  <ul class="step__list">
+                    <li>Inventaire de la faune et de la flore d'un site de la commune</li>
+                    <li>Lancement de l'Atlas de la Biodiversité Communale, outil de connaissance de la biodiversité locale au service des politiques de la ville</li>
+                  </ul>
+                  <div class="step__footer">
+                    <p class="step__people"><span>Encadrement</span>Lionel Chapelain</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content" id="exp-animatrice">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg><span class="step__kicker">2022 – 2023</span><span>2 mois</span></p>
+                  <h3 class="step__title">Animatrice écologie et environnement</h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Centre de loisirs d'Armentières</span></p>
+                  <ul class="step__list">
+                    <li>Sensibilisation des enfants à l'écologie et à l'environnement</li>
+                    <li>Création de supports pédagogiques</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--doodle">
+                  <svg class="doodle-page__sun" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg>
+                  <p class="doodle-page__note">Sensibiliser les enfants à la nature, en jouant et en fabriquant des supports pédagogiques.</p>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--photos">
+                  <p class="album__title"><span>Le chantier en images</span></p>
+                  <ul class="album-grid" data-count="11" data-gallery aria-label="Photos du chantier international en Espagne">
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-gloriette.webp" data-caption="Remise en état d'une gloriette">
+                        <img src="assets/img/terrain/benevolat-gloriette-min.webp" width="330" height="440" loading="lazy" alt="Une volontaire debout sur une table en pierre, balayant la structure métallique d'une gloriette dans un jardin">
+                        <span class="print__cap" aria-hidden="true">Remise en état d'une gloriette</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-pergola.webp" data-caption="Débroussaillage sous une pergola">
+                        <img src="assets/img/terrain/benevolat-pergola-min.webp" width="780" height="440" loading="lazy" alt="Volontaires au travail sous une pergola envahie par la végétation, au bord d'un chemin">
+                        <span class="print__cap" aria-hidden="true">Débroussaillage sous une pergola</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-fresque-en-cours.webp" data-caption="Peinture d'une fresque murale">
+                        <img src="assets/img/terrain/benevolat-fresque-en-cours-min.webp" width="330" height="440" loading="lazy" alt="Deux volontaires de dos peignant un arbre au cœur rouge sur un mur blanc, pots de peinture au sol">
+                        <span class="print__cap" aria-hidden="true">Peinture d'une fresque murale</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-fresque-terminee.webp" data-caption="La fresque terminée">
+                        <img src="assets/img/terrain/benevolat-fresque-terminee-min.webp" width="587" height="440" loading="lazy" alt="Fresque murale terminée représentant des montagnes, des chèvres et un arbre orné de cœurs, signée par les volontaires">
+                        <span class="print__cap" aria-hidden="true">La fresque terminée</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-village-toits.webp" data-caption="Les toits de Penàguila">
+                        <img src="assets/img/terrain/benevolat-village-toits-min.webp" width="587" height="440" loading="lazy" alt="Vue sur les toits du village de Penàguila, entouré de collines boisées">
+                        <span class="print__cap" aria-hidden="true">Les toits de Penàguila</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-village-ruelle.webp" data-caption="Ruelle du village">
+                        <img src="assets/img/terrain/benevolat-village-ruelle-min.webp" width="248" height="440" loading="lazy" alt="Ruelle bordée de maisons aux façades couvertes de plantes grimpantes">
+                        <span class="print__cap" aria-hidden="true">Ruelle du village</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-village-fontaine.webp" data-caption="Fontaine du village">
+                        <img src="assets/img/terrain/benevolat-village-fontaine-min.webp" width="248" height="440" loading="lazy" alt="Fontaine en pierre entourée de végétation au pied d'une maison">
+                        <span class="print__cap" aria-hidden="true">Fontaine du village</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-equipe.webp" data-caption="L'équipe de volontaires">
+                        <img src="assets/img/terrain/benevolat-equipe-min.webp" width="659" height="440" loading="lazy" alt="Six volontaires posant au bord d'une route, avec un village et des montagnes en arrière-plan">
+                        <span class="print__cap" aria-hidden="true">L'équipe de volontaires</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-randonnee.webp" data-caption="Randonnée dans les montagnes alentour">
+                        <img src="assets/img/terrain/benevolat-randonnee-min.webp" width="330" height="440" loading="lazy" alt="Groupe de volontaires en randonnée sur un sentier rocailleux entre les pins">
+                        <span class="print__cap" aria-hidden="true">Randonnée dans les montagnes alentour</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-coucher-soleil.webp" data-caption="Coucher de soleil au sommet">
+                        <img src="assets/img/terrain/benevolat-coucher-soleil-min.webp" width="330" height="440" loading="lazy" alt="Silhouettes de volontaires au sommet d'une colline au coucher du soleil, à côté d'un rocher surmonté d'une croix">
+                        <span class="print__cap" aria-hidden="true">Coucher de soleil au sommet</span>
+                      </a>
+                    </li>
+                    <li class="print">
+                      <a href="assets/img/terrain/benevolat-trajet.webp" data-caption="En route vers le chantier">
+                        <img src="assets/img/terrain/benevolat-trajet-min.webp" width="587" height="440" loading="lazy" alt="Selfie de l'équipe de volontaires assise à l'arrière d'un véhicule, dont Ludivine Codoner souriante">
+                        <span class="print__cap" aria-hidden="true">En route vers le chantier</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content accent-rose" id="exp-benevolat">
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-heart"/></svg><span class="step__kicker">Bénévolat international · 2026</span><span>Du 1<sup>er</sup> au 16 septembre</span></p>
+                  <h3 class="step__title">Chantier « Green Beats »</h3>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span>Penàguila, province d'Alicante (Espagne)</span></p>
+                  <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Corps européen de solidarité · Solidarités Jeunesses</span></p>
+                  <p>Restauration du Jardín de Santos, un jardin historique du village endommagé par un incendie.</p>
+                  <div class="step__footer">
+                    <ul class="tags" aria-label="Thématiques"><li>Restauration écologique</li><li>Volontariat européen</li></ul>
+                  </div>
+                  <a class="doc-link" href="assets/docs/attestation-chantier-green-beats-2026.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span>Attestation de participation <small>(PDF)</small></span></a>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left page--blank"></div>
+            </div>
+          </div>
+        </article>
 
-      <!-- Pages du carnet qui se remplissent pendant la lecture (résumé visuel, masqué aux lecteurs d'écran) -->
-      <div class="leaf" data-page="1">
-        <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__number">p. 1</p>
-          <p class="page__runner">Carnet de terrain · L. Codoner</p>
-          <p class="page__title" data-write>Profil &amp; formation</p>
-          <ol class="entries">
-            <li class="entry entry--id" data-entry="profil">
-              <span class="entry__line" data-write>Observatrice : Ludivine Codoner</span>
-              <span class="entry__line entry__line--soft" data-write>Lille, Hauts-de-France</span>
-            </li>
-            <li class="entry" data-entry="master">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-wave"/></svg>
-              <span class="entry__date" data-write>2024 – 2026 · Bac+5</span>
-              <span class="entry__title" data-write>Master BEE · FOGEM</span>
-              <span class="entry__place" data-write>Université de Lille</span>
-            </li>
-            <li class="entry" data-entry="licence">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-seedling"/></svg>
-              <span class="entry__date" data-write>2021 – 2024 · Bac+3</span>
-              <span class="entry__title" data-write>Licence SV · BOP</span>
-              <span class="entry__place" data-write>Université de Lille</span>
-            </li>
-          </ol>
-        </div>
-        <div class="leaf__face leaf__back page page--left"></div>
+        <article class="book tome tome--passions" id="passions" data-tome aria-label="Livre : Passions">
+          <div class="book__shadow" aria-hidden="true"></div>
+          <div class="book__back" aria-hidden="true"></div>
+          <div class="book__edges" aria-hidden="true"></div>
+          <div class="leaf leaf--cover">
+            <div class="leaf__face leaf__front tome-cover">
+              <span class="tome-cover__band" aria-hidden="true"></span>
+              <div class="tome-cover__label">
+                <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-heart"/></svg>
+                <p class="tome-cover__title">Passions</p>
+                <p class="tome-cover__sub">En dehors du terrain</p>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left">
+                <div class="page__content page__content--stickers">
+                  <h2 class="title-page__title title-page__title--small">En dehors du terrain</h2>
+                  <ul class="stickers-list">
+                    <li class="sticker">
+                      <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-inpn" filter="url(#sticker-cut)"/></svg>
+                      <p class="sticker__text"><strong>Bénévole à l'INPN</strong> Inventaire National du Patrimoine Naturel : je participe à l'inventaire des espèces.</p>
+                    </li>
+                    <li class="sticker">
+                      <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-jeux" filter="url(#sticker-cut)"/></svg>
+                      <p class="sticker__text"><strong>Jeux de société</strong> Création en cours d'un jeu de société sur l'écologie, pour sensibiliser tout en jouant.</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content page__content--stickers">
+                  <ul class="stickers-list">
+                    <li class="sticker">
+                      <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-macro" filter="url(#sticker-cut)"/></svg>
+                      <p class="sticker__text"><strong>Photographie macro</strong> La faune et les pollinisateurs.</p>
+                    </li>
+                    <li class="sticker">
+                      <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-ecriture" filter="url(#sticker-cut)"/></svg>
+                      <p class="sticker__text"><strong>Écriture de nouvelles</strong> Participation au concours de nouvelles étudiant organisé par le Crous, sur le thème « Fierté ».</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="leaf__face leaf__back">
+              <div class="page page--left page--blank"></div>
+            </div>
+          </div>
+        </article>
       </div>
-
-      <div class="leaf" data-page="2">
-        <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__number">p. 2</p>
-          <p class="page__runner">Carnet de terrain · L. Codoner</p>
-          <p class="page__title" data-write>Stages de recherche</p>
-          <ol class="entries">
-            <li class="entry" data-entry="m2">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-dune"/></svg>
-              <span class="entry__date" data-write>2026 · 6 mois</span>
-              <span class="entry__title" data-write>Stage M2 : UMR BIOGECO</span>
-              <span class="entry__place" data-write>INRAE, Bordeaux</span>
-            </li>
-            <li class="entry" data-entry="m1">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-mussel"/></svg>
-              <span class="entry__date" data-write>2025 · 2 mois</span>
-              <span class="entry__title" data-write>Stage M1 : LOG</span>
-              <span class="entry__place" data-write>Station marine de Wimereux</span>
-            </li>
-            <li class="entry" data-entry="l3">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
-              <span class="entry__date" data-write>2024 · 2 mois</span>
-              <span class="entry__title" data-write>Stage L3 : EEP</span>
-              <span class="entry__place" data-write>Université de Lille</span>
-            </li>
-          </ol>
-        </div>
-        <div class="leaf__face leaf__back page page--left"></div>
-      </div>
-
-      <div class="leaf" data-page="3">
-        <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__number">p. 3</p>
-          <p class="page__runner">Carnet de terrain · L. Codoner</p>
-          <p class="page__title" data-write>Territoires &amp; engagement</p>
-          <ol class="entries">
-            <li class="entry" data-entry="armentieres">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-butterfly"/></svg>
-              <span class="entry__date" data-write>2023 – 2024 · 2 × 1 mois</span>
-              <span class="entry__title" data-write>Service Nature en Ville</span>
-              <span class="entry__place" data-write>Ville d'Armentières</span>
-            </li>
-            <li class="entry" data-entry="animatrice">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-sun"/></svg>
-              <span class="entry__date" data-write>2022 – 2023 · 2 mois</span>
-              <span class="entry__title" data-write>Animatrice écologie</span>
-              <span class="entry__place" data-write>Centre de loisirs, Armentières</span>
-            </li>
-            <li class="entry entry--rose" data-entry="benevolat">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-heart"/></svg>
-              <span class="entry__date" data-write>Septembre 2026 · 16 jours</span>
-              <span class="entry__title" data-write>Chantier « Green Beats »</span>
-              <span class="entry__place" data-write>Penàguila, Espagne</span>
-            </li>
-          </ol>
-        </div>
-        <div class="leaf__face leaf__back page page--left"></div>
-      </div>
-
-      <div class="leaf" data-page="4">
-        <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__number">p. 4</p>
-          <p class="page__runner">Carnet de terrain · L. Codoner</p>
-          <p class="page__title" data-write>Compétences &amp; contact</p>
-          <ol class="entries">
-            <li class="entry" data-entry="competences">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-chart"/></svg>
-              <span class="entry__date" data-write>Outils</span>
-              <span class="entry__title" data-write>R · RStudio · Positron</span>
-              <span class="entry__place" data-write>QGIS · espagnol et anglais B1</span>
-            </li>
-            <li class="entry" data-entry="livre">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-book"/></svg>
-              <span class="entry__date" data-write>En cours</span>
-              <span class="entry__title" data-write>Livre de statistiques</span>
-              <span class="entry__place" data-write>appliquées, avec le code R</span>
-            </li>
-            <li class="entry entry--conclusion" data-entry="contact">
-              <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-letter"/></svg>
-              <span class="entry__date" data-write>Conclusion</span>
-              <span class="entry__title" data-write>À vérifier ensemble !</span>
-              <span class="entry__place entry__place--mail" data-write>ludivine.codoner.pro@gmail.com</span>
-            </li>
-          </ol>
-        </div>
-        <div class="leaf__face leaf__back page page--left"></div>
-      </div>
-
+      <button class="reader__btn reader__close" type="button" data-close-reader aria-label="Refermer le livre">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+      <button class="reader__btn reader__prev" type="button" aria-label="Page précédente">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <button class="reader__btn reader__next" type="button" aria-label="Page suivante">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+      </button>
+      <p class="reader__count" aria-live="polite"></p>
     </div>
-
-    <!-- Passions : autocollants et phrases écrites sur la double page à l'ouverture -->
-    <section class="stickers" aria-labelledby="titre-passions">
-      <h2 class="sr-only" id="titre-passions">En dehors du terrain</h2>
-      <ul class="stickers__list">
-        <li class="sticker sticker--inpn">
-          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-inpn" filter="url(#sticker-cut)"/></svg>
-          <p class="sticker__text" data-write><strong>Bénévole à l'INPN</strong> Inventaire National du Patrimoine Naturel : je participe à l'inventaire des espèces.</p>
-        </li>
-        <li class="sticker sticker--jeux">
-          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-jeux" filter="url(#sticker-cut)"/></svg>
-          <p class="sticker__text" data-write><strong>Jeux de société</strong> Création en cours d'un jeu de société sur l'écologie, pour sensibiliser tout en jouant.</p>
-        </li>
-        <li class="sticker sticker--macro">
-          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-macro" filter="url(#sticker-cut)"/></svg>
-          <p class="sticker__text" data-write><strong>Photographie macro</strong> La faune et les pollinisateurs.</p>
-        </li>
-        <li class="sticker sticker--ecriture">
-          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-ecriture" filter="url(#sticker-cut)"/></svg>
-          <p class="sticker__text" data-write><strong>Écriture de nouvelles</strong> Participation au concours de nouvelles étudiant organisé par le Crous, sur le thème « Fierté ».</p>
-        </li>
-      </ul>
-    </section>
-
-    <p class="intro__hint intro__hint--open" aria-hidden="true">
-      <svg viewBox="0 0 40 40"><path d="M8 34c2-12 10-21 24-25M24 6l9 3-4 9"/></svg>
-      <span data-hint-open>Cliquez sur le carnet pour l'ouvrir</span>
-    </p>
-    <p class="intro__hint intro__hint--turn" aria-hidden="true">
-      <span data-hint-turn>Cliquez sur la page ou faites défiler</span>
-      <svg viewBox="0 0 40 40"><path d="M20 6v26M11 23l9 10 9-10"/></svg>
-    </p>
-  </section>
-
-  <main id="contenu" class="journal" tabindex="-1">
-
-    <!-- ============ PROFIL ============ -->
-    <section class="chapter" id="a-propos" aria-labelledby="titre-profil">
-      <article class="step" data-step="profil" data-page="1">
-        <div class="step__text reveal">
-          <header class="chapter__head">
-            <p class="eyebrow">Profil</p>
-            <h2 id="titre-profil">Comprendre le vivant, de l'organisme à l'écosystème</h2>
-          </header>
-          <p>
-            Naturaliste dans l'âme et écologue de formation, je cherche à comprendre comment
-            les organismes et les populations interagissent avec leur environnement, et ce
-            que cela nous apprend du fonctionnement des écosystèmes.
-          </p>
-          <p>
-            Diplômée en 2026 du master Biodiversité, Écologie, Évolution de l'Université de
-            Lille (parcours <strong>Fonctionnement et Gestion des Écosystèmes Marins</strong>),
-            j'ai mené mes stages de recherche dans des milieux très différents : la pollinisation
-            du silène dioïque, le comportement d'agrégation de la moule commune, puis les liens
-            entre diversité spécifique et diversité génétique des communautés végétales dunaires
-            au sein de l'UMR BIOGECO (INRAE, Université de Bordeaux). Ce dernier projet, centré
-            sur un important travail d'analyse de données, m'a permis de développer de solides
-            compétences en <strong>biostatistiques</strong>, que je prolonge aujourd'hui en
-            écrivant un livre consacré aux statistiques appliquées sous R.
-          </p>
-          <p>
-            En parallèle, mes stages au service Nature en Ville d'Armentières m'ont fait découvrir
-            l'écologie appliquée aux territoires : <strong>inventaires faune et flore</strong> et
-            lancement d'un Atlas de la Biodiversité Communale.
-          </p>
-        </div>
-
-        <div class="album album--portrait" data-gallery>
-          <ul class="album__prints">
-            <li class="print print--portrait">
-              <a href="assets/img/ludivine-codoner.jpg" data-caption="Sur le terrain, avec le silène dioïque">
-                <img src="assets/img/ludivine-codoner.jpg" width="360" height="480"
-                     alt="Ludivine Codoner sur le terrain, observant des fleurs roses de silène dioïque (Silene dioica) cultivées en pots.">
-                <span class="print__cap" aria-hidden="true">Sur le terrain, avec le silène dioïque</span>
-              </a>
-            </li>
-          </ul>
-          <ul class="facts">
-            <li class="fact">
-              <span class="fact__value">Bac+5</span>
-              <span class="fact__label">Master BEE, parcours FOGEM — Université de Lille, 2026</span>
-            </li>
-            <li class="fact">
-              <span class="fact__value">5 stages</span>
-              <span class="fact__label">en laboratoire de recherche et en collectivité</span>
-            </li>
-            <li class="fact">
-              <span class="fact__value">12 mois</span>
-              <span class="fact__label">d'expérience cumulée en stage, de la L2 au M2</span>
-            </li>
-          </ul>
-        </div>
-      </article>
-    </section>
-
-    <!-- ============ FORMATION ============ -->
-    <section class="chapter" id="parcours" aria-labelledby="titre-formation">
-      <article class="step" data-step="master" data-page="1">
-        <div class="step__text reveal">
-          <header class="chapter__head">
-            <p class="eyebrow">Formation</p>
-            <h2 id="titre-formation">Mon parcours universitaire</h2>
-            <p class="chapter__intro">
-              Un master en Biodiversité, Écologie, Évolution (BEE), précédé d'une licence en
-              Biologie des Organismes et des Populations (BOP).
-            </p>
-          </header>
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">2024 – 2026</span><span>Bac+5</span></p>
-          <h3 class="step__title">Master Biodiversité, Écologie, Évolution (BEE)</h3>
-          <p class="step__sub">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</p>
-          <p>
-            Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et
-            à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi
-            de la biodiversité.
-          </p>
-          <div class="step__links">
-            <p class="step__links-label">Stages associés</p>
-            <a href="#exp-m1">Stage de M1 : agrégation de la moule commune →</a>
-            <a href="#exp-m2">Stage de M2 : diversité des communautés dunaires →</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="step" data-step="licence" data-page="1">
-        <div class="step__text reveal">
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">2021 – 2024</span><span>Bac+3</span></p>
-          <h3 class="step__title">Licence Sciences de la Vie (SV)</h3>
-          <p class="step__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
-          <p>
-            Des bases solides en biologie des organismes, écologie et évolution, avec une
-            orientation vers l'étude des populations et de leurs interactions avec le milieu.
-          </p>
-          <div class="step__links">
-            <p class="step__links-label">Stages associés</p>
-            <a href="#exp-armentieres">Stages de L2/L3 : inventaires et Atlas de la Biodiversité Communale →</a>
-            <a href="#exp-l3">Stage de L3 : pollinisation de <em>Silene dioica</em> →</a>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- ============ STAGES DE RECHERCHE ============ -->
-    <section class="chapter" id="experiences" aria-labelledby="titre-stages">
-      <article class="step" id="exp-m2" data-step="m2" data-page="2">
-        <div class="step__text reveal">
-          <header class="chapter__head">
-            <p class="eyebrow">Expériences · Stages de recherche</p>
-            <h2 id="titre-stages">Du laboratoire au terrain</h2>
-            <p class="chapter__intro">
-              Trois stages de recherche à trois échelles du vivant, des traits d'un individu à la
-              diversité de communautés entières, complétés par des expériences auprès d'une
-              collectivité, du jeune public et <strong>un engagement bénévole à l'étranger</strong>.
-            </p>
-          </header>
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-dune"/></svg><span class="step__kicker">Master 2 · 2026</span><span>6 mois</span></p>
-          <h3 class="step__title">Corrélation entre diversité spécifique et diversité génétique des communautés végétales dunaires</h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>UMR BIOGECO · INRAE – Université de Bordeaux</span></p>
-          <p>
-            Les dunes littorales de Nouvelle-Aquitaine abritent des communautés végétales
-            adaptées à des conditions difficiles : sable mobile, embruns, sécheresse. Ce stage
-            visait à déterminer si la diversité des espèces au sein des communautés et la
-            diversité génétique au sein des populations varient de concert — une question
-            centrale pour comprendre et préserver la biodiversité à ses différents niveaux
-            d'organisation.
-          </p>
-          <p class="step__highlight">
-            <strong>Cœur du projet :</strong> un important travail d'analyse biostatistique,
-            de la structuration des jeux de données à l'interprétation des résultats.
-          </p>
-          <div class="step__footer">
-            <p class="step__people"><span>Encadrement</span>Marie-Lise Benot, Maya Gonzalez et Olivier Lepais</p>
-            <ul class="tags" aria-label="Thématiques">
-              <li>Biostatistiques</li>
-              <li>Diversité génétique</li>
-              <li>Écologie des communautés</li>
-              <li>Écosystèmes dunaires</li>
-              <li>Conservation</li>
-            </ul>
-          </div>
-          <a class="doc-link" href="https://stagem2-lcodoner-ae45e9.pages-forge.inrae.fr/" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>
-            <span>Mes scripts R du stage <small>(forge INRAE)</small></span>
-          </a>
-        </div>
-        <div class="album" data-gallery role="group" aria-label="Photos des sorties de terrain du stage de M2">
-          <p class="album__title" aria-hidden="true"><span>Sorties de terrain</span></p>
-          <ul class="album__prints">
-            <li class="print print--wide">
-              <a href="assets/img/terrain/m2-dune-oyats.webp" data-caption="Dune littorale couverte d'oyats, entre l'océan et le village">
-                <img src="assets/img/terrain/m2-dune-oyats-min.webp" width="780" height="440" loading="lazy" alt="Dune de sable couverte de touffes d'oyats, avec l'océan à gauche et un village bordé de forêt à droite">
-                <span class="print__cap" aria-hidden="true">Dune littorale couverte d'oyats, entre l'océan et le village</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/m2-flore-equipe.webp" data-caption="Identification de la flore dunaire en équipe">
-                <img src="assets/img/terrain/m2-flore-equipe-min.webp" width="781" height="440" loading="lazy" alt="Six personnes accroupies ou debout sur une dune à végétation basse, observant des plantes et prenant des notes">
-                <span class="print__cap" aria-hidden="true">Identification de la flore dunaire en équipe</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/m2-dune-ocean.webp" data-caption="Sur la dune, face à l'océan">
-                <img src="assets/img/terrain/m2-dune-ocean-min.webp" width="203" height="440" loading="lazy" alt="Ludivine Codoner, bras levés, sur le sable au pied de la dune, avec l'océan en arrière-plan">
-                <span class="print__cap" aria-hidden="true">Sur la dune, face à l'océan</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/m2-maisons-ensablees.webp" data-caption="Habitations gagnées par le sable">
-                <img src="assets/img/terrain/m2-maisons-ensablees-min.webp" width="780" height="440" loading="lazy" alt="Maisons aux toits de tuiles dont les murs sont en partie recouverts par le sable de la dune">
-                <span class="print__cap" aria-hidden="true">Habitations gagnées par le sable</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/m2-station-meteo.webp" data-caption="Station météorologique installée sur la dune">
-                <img src="assets/img/terrain/m2-station-meteo-min.webp" width="781" height="440" loading="lazy" alt="Deux personnes en gilet orange travaillant au pied d'une station météorologique installée sur la dune, face à l'océan">
-                <span class="print__cap" aria-hidden="true">Station météorologique installée sur la dune</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="step" id="exp-m1" data-step="m1" data-page="2">
-        <div class="step__text reveal">
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-mussel"/></svg><span class="step__kicker">Master 1 · 2025</span><span>2 mois</span></p>
-          <h3 class="step__title">Comportement d'agrégation de la moule commune (<em>Mytilus edulis</em>) en période de reproduction</h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire d'Océanologie et de Géosciences (LOG, UMR 8187) · Station Marine de Wimereux</span></p>
-          <p>
-            Bien que fixées par leur byssus, les moules sont capables de se déplacer pour
-            se regrouper en agrégats. Ce stage d'écologie comportementale portait sur ce
-            comportement d'agrégation chez la moule commune et sur ses variations au cours
-            des périodes de reproduction, un moment clé pour la dynamique de ses populations.
-          </p>
-          <div class="step__footer">
-            <p class="step__people"><span>Encadrement</span>Marine Uguen</p>
-            <ul class="tags" aria-label="Thématiques">
-              <li>Écologie comportementale</li>
-              <li>Agrégation</li>
-              <li>Reproduction</li>
-              <li>Écosystèmes marins</li>
-            </ul>
-          </div>
-        </div>
-        <div class="album" data-gallery role="group" aria-label="Photos du stage de M1">
-          <p class="album__title" aria-hidden="true"><span>Sur le terrain et à la station marine</span></p>
-          <ul class="album__prints">
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-estran-maree-basse.webp" data-caption="Sortie sur l'estran à marée basse">
-                <img src="assets/img/terrain/m1-estran-maree-basse-min.webp" width="330" height="440" loading="lazy" alt="Grande plage de sable ridé à marée basse, avec des falaises au loin et trois promeneurs">
-                <span class="print__cap" aria-hidden="true">Sortie sur l'estran à marée basse</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-marquage-bigorneaux.webp" data-caption="Marquage de bigorneaux à la peinture pour les reconnaître dans le temps">
-                <img src="assets/img/terrain/m1-marquage-bigorneaux-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner accroupie sur un rocher à marée basse, en train de marquer des bigorneaux à la peinture">
-                <span class="print__cap" aria-hidden="true">Marquage de bigorneaux à la peinture pour les reconnaître dans le temps</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-moules-marquees.webp" data-caption="Moules marquées individuellement pour le suivi">
-                <img src="assets/img/terrain/m1-moules-marquees-min.webp" width="330" height="440" loading="lazy" alt="Une quinzaine de moules portant chacune une étiquette jaune numérotée, dans un récipient transparent">
-                <span class="print__cap" aria-hidden="true">Moules marquées individuellement pour le suivi</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/m1-bassins.webp" data-caption="Bassins expérimentaux de la station marine">
-                <img src="assets/img/terrain/m1-bassins-min.webp" width="587" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche penchée au-dessus d'un grand bassin bleu dans une salle d'expérimentation">
-                <span class="print__cap" aria-hidden="true">Bassins expérimentaux de la station marine</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-releves-bacs.webp" data-caption="Relevés aux bacs d'expérimentation">
-                <img src="assets/img/terrain/m1-releves-bacs-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche prenant des notes devant une rangée de bacs d'eau de mer">
-                <span class="print__cap" aria-hidden="true">Relevés aux bacs d'expérimentation</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-microscope.webp" data-caption="Manteau d'une moule observé au microscope pour déterminer son sexe">
-                <img src="assets/img/terrain/m1-microscope-min.webp" width="330" height="440" loading="lazy" alt="Champ circulaire d'un microscope montrant un fragment de manteau de moule, observé pour en déterminer le sexe">
-                <span class="print__cap" aria-hidden="true">Manteau d'une moule observé au microscope pour déterminer son sexe</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/m1-laboratoire.webp" data-caption="Le laboratoire de la station marine">
-                <img src="assets/img/terrain/m1-laboratoire-min.webp" width="330" height="440" loading="lazy" alt="Vue d'ensemble d'un laboratoire avec paillasses, microscopes et étagères">
-                <span class="print__cap" aria-hidden="true">Le laboratoire de la station marine</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="step" id="exp-l3" data-step="l3" data-page="2">
-        <div class="step__text reveal">
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg><span class="step__kicker">Licence 3 · 2024</span><span>2 mois</span></p>
-          <h3 class="step__title">Dimorphisme sexuel et taux de visite des pollinisateurs chez <em>Silene dioica</em></h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire Écologie, Évolution et Paléontologie (EEP, UMR 8198 CNRS) · Université de Lille</span></p>
-          <p>
-            Comme son nom l'indique, le silène dioïque (<em>Silene dioica</em>) est une plante
-            dioïque : les fleurs mâles et femelles sont portées par des individus différents, et
-            sa reproduction dépend donc entièrement des pollinisateurs. Inscrit dans une thèse sur
-            la sélection exercée par les pollinisateurs sur les traits floraux, ce stage cherchait
-            à savoir si les plantes mâles et femelles diffèrent par leurs traits floraux, et si ces
-            différences modifient le taux de visite des pollinisateurs.
-          </p>
-          <p class="step__highlight">
-            <strong>Résultats :</strong> un dimorphisme sexuel marqué. Les plantes mâles, plus
-            petites, portent davantage de fleurs ouvertes et sont plus visitées. Les bourdons
-            montrent une nette préférence pour les plantes mâles, alors que les syrphes visitent
-            indifféremment les deux sexes.
-          </p>
-          <div class="step__footer">
-            <p class="step__people"><span>Encadrement</span>Nina Joffard et Isabelle De Cauwer</p>
-            <ul class="tags" aria-label="Thématiques">
-              <li>Écologie de la pollinisation</li>
-              <li>Dimorphisme sexuel</li>
-              <li>Traits floraux</li>
-              <li>Statistiques sous R</li>
-            </ul>
-          </div>
-          <a class="doc-link" href="assets/docs/poster-l3-silene-dioica.webp" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v12H5zM12 16v4M8.5 20h7M8 8h8M8 11.5h5"/></svg>
-            <span>Voir le poster scientifique <small>(image)</small></span>
-          </a>
-        </div>
-        <div class="album" data-gallery role="group" aria-label="Photos du stage de L3">
-          <p class="album__title" aria-hidden="true"><span>Sur le terrain et au laboratoire</span></p>
-          <ul class="album__prints">
-            <li class="print print--portrait">
-              <a href="assets/docs/poster-l3-silene-dioica.webp" data-caption="Le poster scientifique du stage">
-                <img src="assets/img/terrain/l3-poster-min.webp" width="311" height="440" loading="lazy" alt="Poster scientifique du stage de L3 : dimorphisme sexuel et taux de visite des pollinisateurs chez Silene dioica">
-                <span class="print__cap" aria-hidden="true">Le poster scientifique du stage</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-capture-filet.webp" data-caption="Capture de pollinisateurs au filet entomologique">
-                <img src="assets/img/terrain/l3-capture-filet-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner en sous-bois, tenant un filet entomologique et une boîte de capture">
-                <span class="print__cap" aria-hidden="true">Capture de pollinisateurs au filet entomologique</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/l3-labo-manip.webp" data-caption="Manipulations au laboratoire">
-                <img src="assets/img/terrain/l3-labo-manip-min.webp" width="331" height="440" loading="lazy" alt="Ludivine Codoner en blouse blanche, manipulant une pipette à une paillasse de laboratoire">
-                <span class="print__cap" aria-hidden="true">Manipulations au laboratoire</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-tente-silenes.webp" data-caption="Entretien des plants de silène dioïque dans une tente expérimentale">
-                <img src="assets/img/terrain/l3-tente-silenes-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner penchée sur des plants de silène dioïque en fleurs, disposés en rangées dans une tente">
-                <span class="print__cap" aria-hidden="true">Entretien des plants de silène dioïque dans une tente expérimentale</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-colonie-bourdons.webp" data-caption="Colonie de bourdons utilisée pour l'expérience">
-                <img src="assets/img/terrain/l3-colonie-bourdons-min.webp" width="782" height="440" loading="lazy" alt="Boîte d'élevage transparente vue de dessus, contenant une colonie de bourdons">
-                <span class="print__cap" aria-hidden="true">Colonie de bourdons utilisée pour l'expérience</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-microscope-equipe.webp" data-caption="Travail au microscope et sur ordinateur, à deux">
-                <img src="assets/img/terrain/l3-microscope-equipe-min.webp" width="587" height="440" loading="lazy" alt="Ludivine Codoner debout en blouse à côté d'une personne assise devant un microscope et un ordinateur">
-                <span class="print__cap" aria-hidden="true">Travail au microscope et sur ordinateur, à deux</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/l3-devant-tentes.webp" data-caption="Devant les tentes d'expérimentation, sous la pluie">
-                <img src="assets/img/terrain/l3-devant-tentes-min.webp" width="330" height="440" loading="lazy" alt="Ludivine Codoner souriante, capuche sur la tête, devant une tente d'expérimentation sous un filet">
-                <span class="print__cap" aria-hidden="true">Devant les tentes d'expérimentation, sous la pluie</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/l3-capture-filet-equipe.webp" data-caption="Capture au filet en sous-bois, en équipe">
-                <img src="assets/img/terrain/l3-capture-filet-equipe-min.webp" width="330" height="440" loading="lazy" alt="Deux personnes de dos dans un sous-bois, munies de filets entomologiques">
-                <span class="print__cap" aria-hidden="true">Capture au filet en sous-bois, en équipe</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-microscope.webp" data-caption="Observation au microscope">
-                <img src="assets/img/terrain/l3-microscope-min.webp" width="584" height="440" loading="lazy" alt="Personne en blouse devant un microscope relié à un écran d'ordinateur">
-                <span class="print__cap" aria-hidden="true">Observation au microscope</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/l3-releves-tente.webp" data-caption="Relevés au milieu des silènes, sous tente">
-                <img src="assets/img/terrain/l3-releves-tente-min.webp" width="584" height="440" loading="lazy" alt="Ludivine Codoner tenant une feuille de relevés parmi les plants de silène dioïque dans une tente expérimentale">
-                <span class="print__cap" aria-hidden="true">Relevés au milieu des silènes, sous tente</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </article>
-    </section>
-
-    <!-- ============ TERRITOIRES & ENGAGEMENT ============ -->
-    <section class="chapter" id="engagement" aria-labelledby="titre-engagement">
-      <article class="step" id="exp-armentieres" data-step="armentieres" data-page="3">
-        <div class="step__text reveal">
-          <header class="chapter__head">
-            <p class="eyebrow">Expériences · Territoires &amp; engagement</p>
-            <h2 id="titre-engagement">Au service des territoires et du public</h2>
-          </header>
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg><span class="step__kicker">Licence 2 / 3 · 2023 – 2024</span><span>2 stages d'un mois</span></p>
-          <h3 class="step__title">Service Nature en Ville</h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Ville d'Armentières</span></p>
-          <ul class="step__list">
-            <li>Inventaire de la faune et de la flore d'un site de la commune</li>
-            <li>Lancement de l'Atlas de la Biodiversité Communale, outil de connaissance de la biodiversité locale au service des politiques de la ville</li>
-          </ul>
-          <div class="step__footer">
-            <p class="step__people"><span>Encadrement</span>Lionel Chapelain</p>
-          </div>
-        </div>
-        <div class="album" data-gallery role="group" aria-label="Photos des stages au Service Nature en Ville d'Armentières">
-          <p class="album__title" aria-hidden="true"><span>Inventaires en images</span></p>
-          <ul class="album__prints">
-            <li class="print print--tall">
-              <a href="assets/img/terrain/armentieres-chat-donnees.webp" data-caption="Saisie des données d'inventaire, sous surveillance">
-                <img src="assets/img/terrain/armentieres-chat-donnees-min.webp" width="248" height="440" loading="lazy" alt="Chat blanc allongé sur des fiches de relevé, devant un ordinateur affichant un tableur">
-                <span class="print__cap" aria-hidden="true">Saisie des données d'inventaire, sous surveillance</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/armentieres-chat-flores.webp" data-caption="Séance de détermination, avec un assistant à quatre pattes">
-                <img src="assets/img/terrain/armentieres-chat-flores-min.webp" width="782" height="440" loading="lazy" alt="Chat blanc et noir allongé sur un bureau entre deux flores ouvertes">
-                <span class="print__cap" aria-hidden="true">Séance de détermination, avec un assistant à quatre pattes</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/armentieres-determination.webp" data-caption="Identification des plantes récoltées, flore à l'appui">
-                <img src="assets/img/terrain/armentieres-determination-min.webp" width="587" height="440" loading="lazy" alt="Fleurs roses et tiges feuillées posées sur un bureau, à côté d'une flore et de fiches de relevé">
-                <span class="print__cap" aria-hidden="true">Identification des plantes récoltées, flore à l'appui</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/armentieres-ombellifere.webp" data-caption="Détermination d'une ombellifère à la loupe">
-                <img src="assets/img/terrain/armentieres-ombellifere-min.webp" width="248" height="440" loading="lazy" alt="Ombelle blanche et ombelle en fruit posées sur un bureau, à côté d'une loupe de terrain">
-                <span class="print__cap" aria-hidden="true">Détermination d'une ombellifère à la loupe</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/armentieres-coccinelles.webp" data-caption="Nymphes de coccinelles et jeune adulte sur une feuille">
-                <img src="assets/img/terrain/armentieres-coccinelles-min.webp" width="330" height="440" loading="lazy" alt="Deux nymphes de coccinelles rayées et une jeune coccinelle orange sans points sur une feuille">
-                <span class="print__cap" aria-hidden="true">Nymphes de coccinelles et jeune adulte sur une feuille</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/armentieres-syrphe.webp" data-caption="Syrphe dans la végétation">
-                <img src="assets/img/terrain/armentieres-syrphe-min.webp" width="248" height="440" loading="lazy" alt="Syrphe à l'abdomen rayé orange et noir posé parmi les plantes, au pied d'une pierre">
-                <span class="print__cap" aria-hidden="true">Syrphe dans la végétation</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/armentieres-papillon.webp" data-caption="Papillon posé dans les herbes hautes">
-                <img src="assets/img/terrain/armentieres-papillon-min.webp" width="782" height="440" loading="lazy" alt="Papillon orangé et brun posé sur des brins d'herbe">
-                <span class="print__cap" aria-hidden="true">Papillon posé dans les herbes hautes</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/armentieres-libellule.webp" data-caption="Libellule posée dans la végétation">
-                <img src="assets/img/terrain/armentieres-libellule-min.webp" width="248" height="440" loading="lazy" alt="Libellule aux ailes déployées posée sur une tige au milieu de la végétation">
-                <span class="print__cap" aria-hidden="true">Libellule posée dans la végétation</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/armentieres-agrion.webp" data-caption="Agrion dans les herbes hautes">
-                <img src="assets/img/terrain/armentieres-agrion-min.webp" width="782" height="440" loading="lazy" alt="Petite demoiselle bleue posée parmi les herbes">
-                <span class="print__cap" aria-hidden="true">Agrion dans les herbes hautes</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/armentieres-tircis.webp" data-caption="Tircis (Pararge aegeria) sur des orties">
-                <img src="assets/img/terrain/armentieres-tircis-min.webp" width="248" height="440" loading="lazy" alt="Papillon brun tacheté de crème, ailes ouvertes, posé sur des feuilles d'ortie">
-                <span class="print__cap" aria-hidden="true">Tircis (Pararge aegeria) sur des orties</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/armentieres-sympetrum.webp" data-caption="Sympétrum posé sur une feuille">
-                <img src="assets/img/terrain/armentieres-sympetrum-min.webp" width="782" height="440" loading="lazy" alt="Libellule rouge du genre Sympetrum posée sur une feuille, sur fond d'herbe">
-                <span class="print__cap" aria-hidden="true">Sympétrum posé sur une feuille</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="step" data-step="animatrice" data-page="3">
-        <div class="step__text reveal">
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg><span class="step__kicker">2022 – 2023</span><span>2 mois</span></p>
-          <h3 class="step__title">Animatrice écologie et environnement</h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Centre de loisirs d'Armentières</span></p>
-          <ul class="step__list">
-            <li>Sensibilisation des enfants à l'écologie et à l'environnement</li>
-            <li>Création de supports pédagogiques</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="step accent-rose" id="exp-benevolat" data-step="benevolat" data-page="3">
-        <div class="step__text reveal">
-          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-heart"/></svg><span class="step__kicker">Bénévolat international · 2026</span><span>Du 1<sup>er</sup> au 16 septembre</span></p>
-          <h3 class="step__title">Chantier « Green Beats »</h3>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span>Penàguila, province d'Alicante (Espagne)</span></p>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Corps européen de solidarité · Solidarités Jeunesses</span></p>
-          <p>
-            Chantier de volontariat international consacré à la renaissance naturelle et
-            culturelle de Penàguila, village de l'arrière-pays d'Alicante, aux côtés de
-            volontaires venus de plusieurs pays d'Europe.
-          </p>
-          <ul class="step__list">
-            <li>Restauration du Jardín de Santos, jardin historique endommagé par un incendie, et de la Ruta Fitoclimática (sentier phytoclimatique) : débroussaillage, jardinage, replantation d'espèces locales</li>
-            <li>Remise en état du mobilier et des équipements publics, réalisation de fresques murales</li>
-            <li>Activités intergénérationnelles chaque semaine avec les résidents du centre pour personnes âgées du village</li>
-          </ul>
-          <div class="step__footer">
-            <ul class="tags" aria-label="Thématiques">
-              <li>Restauration écologique</li>
-              <li>Espèces locales</li>
-              <li>Volontariat européen</li>
-              <li>Vie locale</li>
-            </ul>
-          </div>
-          <a class="doc-link" href="assets/docs/attestation-chantier-green-beats-2026.pdf" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
-            <span>Attestation de participation <small>(PDF)</small></span>
-          </a>
-        </div>
-        <div class="album" data-gallery role="group" aria-label="Photos du chantier international en Espagne">
-          <p class="album__title" aria-hidden="true"><span>Le chantier en images</span></p>
-          <ul class="album__prints">
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/benevolat-gloriette.webp" data-caption="Remise en état d'une gloriette">
-                <img src="assets/img/terrain/benevolat-gloriette-min.webp" width="330" height="440" loading="lazy" alt="Une volontaire debout sur une table en pierre, balayant la structure métallique d'une gloriette dans un jardin">
-                <span class="print__cap" aria-hidden="true">Remise en état d'une gloriette</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/benevolat-pergola.webp" data-caption="Débroussaillage sous une pergola">
-                <img src="assets/img/terrain/benevolat-pergola-min.webp" width="780" height="440" loading="lazy" alt="Volontaires au travail sous une pergola envahie par la végétation, au bord d'un chemin">
-                <span class="print__cap" aria-hidden="true">Débroussaillage sous une pergola</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/benevolat-fresque-en-cours.webp" data-caption="Peinture d'une fresque murale">
-                <img src="assets/img/terrain/benevolat-fresque-en-cours-min.webp" width="330" height="440" loading="lazy" alt="Deux volontaires de dos peignant un arbre au cœur rouge sur un mur blanc, pots de peinture au sol">
-                <span class="print__cap" aria-hidden="true">Peinture d'une fresque murale</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/benevolat-fresque-terminee.webp" data-caption="La fresque terminée">
-                <img src="assets/img/terrain/benevolat-fresque-terminee-min.webp" width="587" height="440" loading="lazy" alt="Fresque murale terminée représentant des montagnes, des chèvres et un arbre orné de cœurs, signée par les volontaires">
-                <span class="print__cap" aria-hidden="true">La fresque terminée</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/benevolat-village-toits.webp" data-caption="Les toits de Penàguila">
-                <img src="assets/img/terrain/benevolat-village-toits-min.webp" width="587" height="440" loading="lazy" alt="Vue sur les toits du village de Penàguila, entouré de collines boisées">
-                <span class="print__cap" aria-hidden="true">Les toits de Penàguila</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/benevolat-village-ruelle.webp" data-caption="Ruelle du village">
-                <img src="assets/img/terrain/benevolat-village-ruelle-min.webp" width="248" height="440" loading="lazy" alt="Ruelle bordée de maisons aux façades couvertes de plantes grimpantes">
-                <span class="print__cap" aria-hidden="true">Ruelle du village</span>
-              </a>
-            </li>
-            <li class="print print--tall">
-              <a href="assets/img/terrain/benevolat-village-fontaine.webp" data-caption="Fontaine du village">
-                <img src="assets/img/terrain/benevolat-village-fontaine-min.webp" width="248" height="440" loading="lazy" alt="Fontaine en pierre entourée de végétation au pied d'une maison">
-                <span class="print__cap" aria-hidden="true">Fontaine du village</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/benevolat-equipe.webp" data-caption="L'équipe de volontaires">
-                <img src="assets/img/terrain/benevolat-equipe-min.webp" width="659" height="440" loading="lazy" alt="Six volontaires posant au bord d'une route, avec un village et des montagnes en arrière-plan">
-                <span class="print__cap" aria-hidden="true">L'équipe de volontaires</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/benevolat-randonnee.webp" data-caption="Randonnée dans les montagnes alentour">
-                <img src="assets/img/terrain/benevolat-randonnee-min.webp" width="330" height="440" loading="lazy" alt="Groupe de volontaires en randonnée sur un sentier rocailleux entre les pins">
-                <span class="print__cap" aria-hidden="true">Randonnée dans les montagnes alentour</span>
-              </a>
-            </li>
-            <li class="print print--portrait">
-              <a href="assets/img/terrain/benevolat-coucher-soleil.webp" data-caption="Coucher de soleil au sommet">
-                <img src="assets/img/terrain/benevolat-coucher-soleil-min.webp" width="330" height="440" loading="lazy" alt="Silhouettes de volontaires au sommet d'une colline au coucher du soleil, à côté d'un rocher surmonté d'une croix">
-                <span class="print__cap" aria-hidden="true">Coucher de soleil au sommet</span>
-              </a>
-            </li>
-            <li class="print print--wide">
-              <a href="assets/img/terrain/benevolat-trajet.webp" data-caption="En route vers le chantier">
-                <img src="assets/img/terrain/benevolat-trajet-min.webp" width="587" height="440" loading="lazy" alt="Selfie de l'équipe de volontaires assise à l'arrière d'un véhicule, dont Ludivine Codoner souriante">
-                <span class="print__cap" aria-hidden="true">En route vers le chantier</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </article>
-    </section>
 
     <!-- ============ COMPÉTENCES ============ -->
     <section class="chapter" id="competences" aria-labelledby="titre-competences">
-      <article class="step step--wide" data-step="competences" data-page="4">
-        <div class="step__text reveal">
-          <header class="chapter__head">
-            <p class="eyebrow">Compétences</p>
-            <h2 id="titre-competences">Ce que j'apporte à une équipe</h2>
-          </header>
-
+      <header class="chapter__head">
+        <p class="eyebrow">Compétences</p>
+        <h2 id="titre-competences">Ce que j'apporte à une équipe</h2>
+      </header>
           <div class="skills">
             <article class="skill skill--featured">
               <p class="skill__badge">Point fort</p>
@@ -918,53 +1005,38 @@
               <p class="skill__note">Langues : espagnol (B1), anglais (B1)</p>
             </article>
           </div>
+      <article class="project">
+        <div class="bookmock" aria-hidden="true">
+          <div class="bookmock__cover">
+            <p class="bookmock__title">Statistiques appliquées</p>
+            <p class="bookmock__sub">Contexte · Méthode · Code R</p>
+            <svg class="bookmock__plot" viewBox="0 0 120 70"><path class="bookmock__axis" d="M8 6v56h106"/><path class="bookmock__curve" d="M12 58C34 56 40 18 60 16s26 40 50 42"/><circle cx="24" cy="50" r="2.6"/><circle cx="38" cy="34" r="2.6"/><circle cx="52" cy="20" r="2.6"/><circle cx="70" cy="22" r="2.6"/><circle cx="86" cy="42" r="2.6"/><circle cx="100" cy="54" r="2.6"/></svg>
+            <p class="bookmock__author">L. Codoner</p>
+          </div>
+          <p class="bookmock__note">à suivre…</p>
         </div>
-      </article>
-
-      <article class="step" data-step="livre" data-page="4">
-        <div class="step__text reveal">
+        <div class="project__text">
           <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-book"/></svg><span class="step__kicker">Projet en cours</span></p>
           <h3 class="step__title">J'écris un livre de statistiques appliquées</h3>
-          <p>
-            Un guide pratique pour choisir la bonne méthode statistique selon la situation
-            rencontrée. Pour chaque cas, le livre présente le contexte, la statistique à
-            appliquer et le code R associé.
-          </p>
+          <p>Un guide pratique pour choisir la bonne méthode statistique selon la situation rencontrée. Pour chaque cas, le livre présente le contexte, la statistique à appliquer et le code R associé.</p>
           <ol class="steps">
             <li>Contexte</li>
             <li>Méthode statistique adaptée</li>
             <li>Code R</li>
           </ol>
         </div>
-
-        <div class="album album--object" aria-hidden="true">
-          <div class="bookmock">
-            <div class="bookmock__cover">
-              <p class="bookmock__kicker">Manuscrit en cours</p>
-              <p class="bookmock__title">Statistiques appliquées</p>
-              <p class="bookmock__sub">Contexte · Méthode · Code R</p>
-              <svg class="bookmock__plot" viewBox="0 0 120 70"><path class="bookmock__axis" d="M8 6v56h106"/><path class="bookmock__curve" d="M12 58C34 56 40 18 60 16s26 40 50 42"/><circle cx="24" cy="50" r="2.6"/><circle cx="38" cy="34" r="2.6"/><circle cx="52" cy="20" r="2.6"/><circle cx="70" cy="22" r="2.6"/><circle cx="86" cy="42" r="2.6"/><circle cx="100" cy="54" r="2.6"/></svg>
-              <p class="bookmock__author">L. Codoner</p>
-            </div>
-            <p class="bookmock__note">à suivre…</p>
-          </div>
-        </div>
       </article>
     </section>
 
     <!-- ============ CONTACT ============ -->
-    <section class="chapter" id="contact" aria-labelledby="titre-contact">
-      <article class="step step--last" data-step="contact" data-page="4">
-        <div class="step__text reveal">
+    <section class="chapter chapter--contact" id="contact" aria-labelledby="titre-contact">
+      <div class="contact">
+        <div class="contact__text">
           <header class="chapter__head">
             <p class="eyebrow">Contact</p>
             <h2 id="titre-contact">Travaillons ensemble</h2>
           </header>
-          <p>
-            À l'écoute d'opportunités en tant que chargée d'études en écologie : inventaires
-            naturalistes, suivi et gestion de la biodiversité, analyse de données
-            environnementales. N'hésitez pas à me contacter.
-          </p>
+          <p>À l'écoute d'opportunités en tant que chargée d'études en écologie : inventaires naturalistes, suivi et gestion de la biodiversité, analyse de données environnementales. N'hésitez pas à me contacter.</p>
           <ul class="contact__links">
             <li>
               <!-- Un clic copie l'adresse (sans JavaScript, le lien ouvre la messagerie) -->
@@ -988,7 +1060,20 @@
             </li>
           </ul>
         </div>
-      </article>
+
+        <!-- La carte postale, pour finir -->
+        <div class="postcard" aria-hidden="true">
+          <div class="postcard__message">
+            <p>Au plaisir d'échanger sur vos projets de terrain et d'analyse de données !</p>
+            <p class="postcard__sign">Ludivine</p>
+          </div>
+          <div class="postcard__address">
+            <span class="postcard__stamp"><svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg></span>
+            <span class="postcard__postmark">Lille · 59</span>
+            <p>Ludivine Codoner<br>Lille<br>Hauts-de-France</p>
+          </div>
+        </div>
+      </div>
 
       <footer class="site-footer">
         <div class="footer__inner">
@@ -1007,8 +1092,8 @@
     </section>
   </main>
 
-  <!-- Retour au début du parcours, affiché une fois la page descendue -->
-  <a class="to-top" href="#a-propos" aria-label="Remonter au début du parcours">
+  <!-- Retour au bureau, affiché une fois la page descendue -->
+  <a class="to-top" href="#bibliotheque" aria-label="Remonter à la pile de livres">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
   </a>
 

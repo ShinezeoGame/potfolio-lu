@@ -13,28 +13,32 @@ Site vitrine de Ludivine Codoner, chargée d'études en écologie : parcours uni
 
 Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni étape de compilation. Il s'adapte aux mobiles et utilise une palette sobre : fond crème et beige, texte brun, un accent vert et quelques touches de rose (celui du silène dioïque).
 
-## Le carnet de terrain
+## Le carnet de terrain et les livres
 
 L'accueil est un carnet de terrain fermé, au nom de Ludivine Codoner, avec des post-it qui dépassent, une feuille volante et un ruban marque-page.
 
-1. **Un clic** sur le carnet l'ouvre sur une double page : « Question scientifique : Comment comprendre ce qui nous entoure ? » et « Hypothèse : étudier l'environnement permet de mieux le protéger. », qui s'écrivent à la main. Les autocollants des passions (INPN, jeux de société, photo macro, écriture) se collent dessous, chacun avec sa phrase. C'est le seul endroit où figurent les passions.
-2. **Un clic sur la page, la molette ou la flèche bas** tourne la page. Sur grand écran, le carnet glisse à gauche et ne montre plus que la page de droite, vierge.
-3. **Pendant la lecture**, le carnet suit le défilement et se remplit : chaque description qui arrive au milieu de l'écran fait écrire sa note (dates, diplôme, lieu) et le carnet tourne ses pages d'une partie à l'autre ; le numéro de page est en bas à droite. Chaque description est suivie de son album photo, une rangée de photos qui file jusqu'au bord droit de l'écran.
-4. Les post-it servent de sommaire : celui de la partie en cours ressort, plus coloré. Tout en haut, la molette vers le haut ramène à la double page ; le lien « Refermer le carnet » du pied de page referme le carnet.
+1. **Un clic** sur le carnet l'ouvre sur une double page : « Question scientifique : Comment comprendre ce qui nous entoure ? » et « Hypothèse : étudier l'environnement permet de mieux le protéger. », qui s'écrivent à la main.
+2. **Un clic sur la page, la molette ou la flèche bas** tourne la page : le portrait (photo et chiffres clés en post-it) et le profil.
+3. La page suivante, le carnet **se pose, ouvert à sa dernière page, sur une pile de trois livres** : Formation, Expériences et, en bas, le livre des Passions, plus fin. L'en-tête apparaît alors, avec le menu.
+4. **Un clic sur un livre** l'ouvre par-dessus le bureau, sur sa page de titre et son sommaire :
+   - **Formation** : une double page par année (de la L1 au M2), la description d'un côté et, de l'autre, les stages de l'année avec un lien vers le livre Expériences ;
+   - **Expériences** : une double page par stage ou engagement, la description d'un côté et les photos de l'autre (l'ordre alterne d'une double page à l'autre) ;
+   - **Passions** : les quatre autocollants (INPN, jeux de société, photo macro, écriture) avec leur description.
 
-Les parties sont numérotées (01 Profil, 02 Formation…) et chaque description commence par le même petit dessin que sa note dans la marge du carnet, pour se repérer facilement entre les deux.
+   On tourne les pages avec les flèches à côté du livre, les flèches du clavier, la molette ou en faisant glisser le doigt. Les onglets en haut passent d'un livre à l'autre ; la croix, la touche Échap ou un clic à côté du livre le referment. Une photo s'agrandit d'un clic.
+5. **Sous le bureau**, la page défile vers les compétences, le projet de livre de statistiques et le contact, qui se termine par la carte postale. Tout en haut du bureau, la molette vers le haut relève le carnet ; le lien « Refermer le carnet » du pied de page le referme.
 
-Sur tablette et téléphone, le carnet s'ouvre de la même façon puis s'efface : les descriptions s'enchaînent et les albums deviennent des rangées de photos à faire glisser. Un lien direct vers une partie (par exemple `#contact`) ouvre le site directement à cet endroit. Sans JavaScript, ou si les animations sont réduites dans le système, tout le contenu reste accessible.
+Sur téléphone et tablette en hauteur, le carnet puis les livres se lisent une page à la fois. Un lien direct ouvre le site au bon endroit : `#a-propos` (profil), `#bibliotheque` (la pile), `#formation`, `#experiences`, `#passions`, une année (`#annee-2023`), un stage (`#exp-m1`), `#competences` ou `#contact`. Sans JavaScript, ou si les animations sont réduites dans le système, tout le contenu reste accessible : sans JavaScript, les pages des carnets s'affichent l'une sous l'autre.
 
 Le site ne dépose aucun cookie, n'enregistre rien dans le navigateur et ne fait appel à aucun service tiers (polices hébergées sur le site, pas de mesure d'audience) : aucun bandeau de consentement n'est donc nécessaire. Si un outil de statistiques ou un contenu externe (vidéo, carte…) est ajouté un jour, il faudra mettre à jour `mentions-legales.html` et, selon l'outil, demander le consentement des visiteurs.
 
 ## Structure
 
 ```
-index.html                      Contenu de la page : le carnet, puis toutes les parties
+index.html                      Contenu de la page : le carnet, la pile, les trois livres, compétences et contact
 mentions-legales.html           Mentions légales, cookies et données personnelles
 assets/css/style.css            Mise en forme (couleurs en haut du fichier)
-assets/js/main.js               Carnet (ouverture, pages, écriture), menu mobile, copie de l'e-mail, visionneuse
+assets/js/main.js               Carnet et livres (pages qui tournent, écriture, liseuse), menu mobile, copie de l'e-mail, visionneuse
 assets/img/ludivine-codoner.jpg Photo de l'accueil
 assets/img/favicon.svg          Icône de l'onglet
 assets/img/og-image.jpg         Image d'aperçu pour les réseaux sociaux (1200 × 630 px)
@@ -45,11 +49,12 @@ assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1),
 
 ## Modifier le contenu
 
-Tout le texte se trouve dans `index.html`, partie par partie (`ACCUEIL : LE CARNET DE TERRAIN`, `PROFIL`, `FORMATION`, `STAGES DE RECHERCHE`, `TERRITOIRES & ENGAGEMENT`, `COMPÉTENCES`, `CONTACT`).
+Tout le texte se trouve dans `index.html`, partie par partie (`LE BUREAU : CARNET DE TERRAIN ET PILE DE LIVRES`, `LES LIVRES`, `COMPÉTENCES`, `CONTACT`).
 
-- **Descriptions** : chaque description est un bloc `<article class="step" data-step="…">` qui contient le texte (`step__text`) puis son album (`album`).
-- **Notes du carnet** : elles sont dans l'accueil, sur les pages `data-page="1"` à `data-page="4"`. Chaque note `<li class="entry" data-entry="…">` correspond à la description qui porte le même nom dans `data-step` ; elle s'écrit quand cette description arrive au centre de l'écran. Gardez des notes courtes (trois lignes) pour qu'elles tiennent sur la page. Si une description change de page du carnet, mettez à jour son `data-page`.
-- **Ajouter une photo à un album** : préparez une grande image et une miniature de 440 px de haut (voir ci-dessous), puis copiez un bloc `<li class="print …">` de l'album. La classe indique la forme de la photo : `print--wide` (paysage), `print--portrait` (portrait) ou `print--tall` (très allongée).
+- **Les pages d'un livre** : un livre (`<article class="book tome" id="formation">`, `id="experiences"` ou `id="passions"`) est une suite de feuilles `<div class="leaf">`. Chaque feuille a un recto (`leaf__front`, une page de droite) et un verso (`leaf__back`, la page de gauche de la double page suivante) ; le verso de la couverture (`leaf--cover`) porte la page de titre. Le texte d'une page est dans un bloc `<div class="page__content">`. Pour modifier une description, il suffit de changer le texte dans ce bloc : la taille du texte s'ajuste toute seule si la page est un peu pleine. Pour ajouter une double page, ajoutez une feuille dont le recto et le verso suivent le même modèle, et une ligne dans le sommaire (`<ol class="toc">`) ; les numéros de page se calculent automatiquement.
+- **Liens entre les livres** : un lien `<a href="#exp-m1" data-goto="exp-m1">` ouvre la page qui porte cet `id` (une année `annee-…`, un stage `exp-…`), même dans un autre livre.
+- **Le carnet** : la question et l'hypothèse, le portrait (photo et chiffres clés) et le profil (`id="a-propos"`) sont au début de `index.html`.
+- **Ajouter une photo à un album** : préparez une grande image et une miniature de 440 px de haut (voir ci-dessous), puis copiez un bloc `<li class="print">` de l'album (`<ul class="album-grid">`). La planche se réorganise toute seule (nombre de colonnes, dernière ligne centrée) ; au-delà d'une douzaine de photos, elles deviennent petites.
 
   ```bash
   convert photo.jpg -auto-orient -strip -resize '1600x1600>' -quality 80 assets/img/terrain/nom.webp
@@ -83,7 +88,7 @@ python3 -m http.server 8000
 
 ## Aperçu sur les réseaux sociaux
 
-Lorsqu'un lien vers le site est partagé, LinkedIn, Facebook, WhatsApp ou Discord affichent `assets/img/og-image.jpg` : le carnet fermé entouré des autocollants des passions. Les balises `og:url` et `og:image` en haut de `index.html` contiennent l'adresse complète du site (`https://ludivinecodoner.github.io/`) : si l'adresse change, il faut les mettre à jour. Après une modification, l'outil [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) permet de rafraîchir l'aperçu mis en cache.
+Lorsqu'un lien vers le site est partagé, LinkedIn, Facebook, WhatsApp ou Discord affichent `assets/img/og-image.jpg` : le carnet fermé à côté de la pile de livres. Les balises `og:url` et `og:image` en haut de `index.html` contiennent l'adresse complète du site (`https://ludivinecodoner.github.io/`) : si l'adresse change, il faut les mettre à jour. Après une modification, l'outil [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) permet de rafraîchir l'aperçu mis en cache.
 
 ## Mise en ligne avec GitHub Pages
 
@@ -96,7 +101,7 @@ Chaque nouveau push sur cette branche met le site à jour automatiquement.
 
 ## La police manuscrite
 
-Toutes les écritures « à la main » du site (carnet, double page, post-it, dates, légendes) utilisent **Ludivine Manuscrite**, une police créée à partir de l'alphabet écrit par Ludivine (`assets/fonts/ludivine-manuscrite.woff2` et sa version grasse `ludivine-manuscrite-gras.woff2`).
+Toutes les écritures « à la main » du site (carnet, double page, post-it, années, légendes des photos, notes dans les livres) utilisent **Ludivine Manuscrite**, une police créée à partir de l'alphabet écrit par Ludivine (`assets/fonts/ludivine-manuscrite.woff2` et sa version grasse `ludivine-manuscrite-gras.woff2`).
 
-Les lettres ont été vectorisées depuis une photo : chaque lettre a été suivie le long de son trait, puis retracée avec une épaisseur régulière. Les lettres ont été légèrement harmonisées : même ligne de base, hauteurs rapprochées, bas du D reconstitué (il avait disparu avec la ligne du cahier), O refermé, creux du M marqué et hampe du t un peu allongée pour la lisibilité. Les chiffres, la ponctuation et les accents, absents de l'échantillon, ont été dessinés dans le même style ; ils pourront être remplacés à partir d'une photo de l'écriture de Ludivine (chiffres, ponctuation et lettres accentuées).
+Les lettres ont été vectorisées depuis une photo : chaque lettre a été suivie le long de son trait, lissée, puis retracée avec une épaisseur régulière. Elles ont ensuite été harmonisées pour une écriture plus régulière : même ligne de base, hauteurs et largeurs rapprochées, inclinaison redressée, jambages de même profondeur, bas du D reconstitué (il avait disparu avec la ligne du cahier), O refermé, creux du M marqué, hampe du t un peu allongée et pied du l raccourci pour la lisibilité. Les majuscules A, L et N gardent la forme cursive de l'écriture de Ludivine. Les chiffres, la ponctuation et les accents, absents de l'échantillon, ont été dessinés dans le même style ; ils pourront être remplacés à partir d'une photo de l'écriture de Ludivine (chiffres, ponctuation et lettres accentuées).
 

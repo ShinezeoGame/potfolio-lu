@@ -4,17 +4,22 @@
   const nav = document.getElementById('nav');
   const navToggle = document.querySelector('.nav-toggle');
   const toTop = document.querySelector('.to-top');
+  const lightbox = document.querySelector('.lightbox');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Saut immédiat, même si le défilement doux est activé dans la feuille de style
+  const jumpTo = (top) => window.scrollTo({ top, left: 0, behavior: 'instant' });
 
   /* ---------- Menu mobile ---------- */
 
-  if (nav && navToggle) {
-    const setMenu = (open) => {
-      nav.classList.toggle('is-open', open);
-      navToggle.setAttribute('aria-expanded', String(open));
-      navToggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
-    };
+  const setMenu = (open) => {
+    if (!nav || !navToggle) return;
+    nav.classList.toggle('is-open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+  };
 
+  if (nav && navToggle) {
     navToggle.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
     nav.addEventListener('click', (e) => {
       if (e.target.closest('a')) setMenu(false);
@@ -34,21 +39,10 @@
 
   const onScroll = () => {
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
-    // La flèche apparaît une fois le début du parcours dépassé
     if (toTop) toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.6);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  if (toTop) {
-    toTop.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
-      // Le focus revient au début du parcours pour la navigation au clavier
-      const start = document.getElementById('contenu') || document.querySelector('.brand');
-      if (start) start.focus({ preventScroll: true });
-    });
-  }
 
   /* ---------- Copie de l'adresse e-mail au clic ---------- */
 
@@ -86,7 +80,7 @@
         return;
       }
       link.classList.add('is-copied');
-      if (label) label.textContent = 'Adresse copiée !';
+      if (label) label.textContent = 'Adresse copiée !';
       if (copyStatus) copyStatus.textContent = 'Adresse e-mail copiée dans le presse-papiers.';
       clearTimeout(resetTimer);
       resetTimer = setTimeout(() => {
@@ -97,25 +91,7 @@
     });
   });
 
-  /* ---------- Albums : la molette fait défiler les photos sur petit écran ---------- */
-
-  document.querySelectorAll('.album__prints').forEach((track) => {
-    track.addEventListener('wheel', (e) => {
-      // Sur grand écran, l'album est une colonne qui défile avec la page
-      if (track.scrollWidth - track.clientWidth <= 1) return;
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? track.clientWidth : 1;
-      const atStart = track.scrollLeft <= 0 && e.deltaY < 0;
-      const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1 && e.deltaY > 0;
-      if (atStart || atEnd) return;
-      e.preventDefault();
-      track.scrollLeft += e.deltaY * unit;
-    }, { passive: false });
-  });
-
   /* ---------- Visionneuse plein écran ---------- */
-
-  const lightbox = document.querySelector('.lightbox');
 
   // Sans <dialog> (navigateur ancien), les liens ouvrent simplement la photo
   if (lightbox && typeof lightbox.showModal === 'function') {
@@ -132,19 +108,16 @@
       caption.textContent = link.dataset.caption || '';
     };
 
-    const open = (links, index) => {
-      items = links;
-      show(index);
-      lightbox.showModal();
-    };
-
     // La navigation reste dans l'album d'où la photo a été ouverte
     document.querySelectorAll('[data-gallery]').forEach((gallery) => {
       const links = [...gallery.querySelectorAll('a[data-caption]')];
       links.forEach((link, index) => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          open(links, index);
+          e.stopPropagation();
+          items = links;
+          show(index);
+          lightbox.showModal();
         });
       });
     });
@@ -158,6 +131,8 @@
       if (e.target === lightbox || e.target.classList.contains('lightbox__figure')) lightbox.close();
     });
     lightbox.addEventListener('keydown', (e) => {
+      // Les flèches restent dans la visionneuse, sans tourner les pages du livre en dessous
+      e.stopPropagation();
       if (single()) return;
       if (e.key === 'ArrowLeft') show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
@@ -168,55 +143,113 @@
     }).observe(lightbox, { attributes: true, attributeFilter: ['open'] });
   }
 
+  const lightboxOpen = () => Boolean(lightbox && lightbox.open);
+
   /* ---------- Année du pied de page ---------- */
 
   const year = document.querySelector('[data-year]');
   if (year) year.textContent = new Date().getFullYear();
 
+  /* ---------- Page sans carnet (mentions légales) ---------- */
+
+  const carnetEl = document.querySelector('[data-carnet]');
+
+  if (!carnetEl) {
+    if (toTop) {
+      toTop.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+        const start = document.getElementById('contenu') || document.querySelector('.brand');
+        if (start) start.focus({ preventScroll: true });
+      });
+    }
+    return;
+  }
+
   /* ==========================================================================
-     Le carnet de terrain
+     Les livres : des feuillets recto verso qui tournent autour de la reliure
      ========================================================================== */
 
-  const book = document.querySelector('.book');
-  if (!book) return;
-
-  const main = document.getElementById('contenu');
-  const leaves = [...book.querySelectorAll('.leaf')];
-  const tabs = [...book.querySelectorAll('.tab')];
-  const steps = [...document.querySelectorAll('[data-step]')];
-  const turnButton = book.querySelector('.turn');
-  const openButton = book.querySelector('.book__open');
-  const navLinks = nav ? [...nav.querySelectorAll('a[href^="#"]')] : [];
-  const deskQuery = window.matchMedia('(min-width: 1180px) and (min-height: 600px)');
   const T_BOOK = reduceMotion ? 0 : 1150;
   const T_FLIP = reduceMotion ? 0 : 1100;
-
-  let desk = deskQuery.matches;
-  let state = root.dataset.book;
-  let busy = false;
-  let activeStep = null;
-  let flippedCount = 0;
+  const T_TOME_FLIP = reduceMotion ? 0 : 950;
+  const T_SHIFT = reduceMotion ? 0 : 800;
 
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-  const setState = (next) => {
-    state = next;
-    root.dataset.book = next;
+  // Tant que la page charge, l'adresse attend : sinon le navigateur défilerait jusqu'à l'ancre
+  let loaded = document.readyState === 'complete';
+  let pendingUrl = null;
+  const setUrl = (url) => {
+    if (loaded) history.replaceState(null, '', url);
+    else pendingUrl = url;
   };
 
-  // Les transitions sont coupées le temps d'un changement immédiat
-  const withoutAnimation = (fn) => {
-    root.classList.add('no-anim');
+  // Applique un changement sans transition (arrivée directe, redimensionnement)
+  const instantly = (el, fn) => {
+    el.classList.add('no-anim');
     fn();
-    // Lecture forcée de la mise en page pour appliquer les positions sans transition
-    void book.offsetWidth;
-    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('no-anim')));
+    void el.offsetWidth;
+    el.classList.remove('no-anim');
   };
 
-  const lock = (ms) => {
-    busy = true;
-    setTimeout(() => { busy = false; }, ms);
-  };
+  class Book {
+    constructor(el, flipMs) {
+      this.el = el;
+      this.flipMs = flipMs;
+      this.leaves = [...el.children].filter((child) => child.classList.contains('leaf'));
+      this.count = 0;
+      this.depth();
+    }
+
+    // Les feuilles tournées s'empilent à gauche, les autres à droite
+    depth() {
+      const n = this.leaves.length;
+      this.leaves.forEach((leaf, i) => {
+        leaf.style.setProperty('--z', leaf.classList.contains('is-flipped') ? 10 + i : 10 + n - i);
+      });
+    }
+
+    // Tourne les feuilles pour en laisser `count` à gauche ; renvoie la durée du mouvement
+    flipTo(count, { instant = false, stagger = 140 } = {}) {
+      const changing = this.leaves.filter((leaf, i) => leaf.classList.contains('is-flipped') !== i < count);
+      if (count < this.count) changing.reverse();
+      const quick = instant || reduceMotion;
+      // Plusieurs feuilles d'un coup : elles partent l'une après l'autre, en moins d'une demi-seconde
+      const step = quick ? 0 : Math.min(stagger, 480 / Math.max(1, changing.length - 1));
+      changing.forEach((leaf, k) => {
+        const delay = k * step;
+        leaf.style.transitionDelay = `${delay}ms, ${delay + this.flipMs / 2}ms`;
+        leaf.style.setProperty('--turn-delay', `${delay}ms`);
+        leaf.classList.toggle('is-flipped');
+        if (!quick) {
+          leaf.classList.add('is-turning');
+          clearTimeout(leaf.turnTimer);
+          leaf.turnTimer = setTimeout(() => leaf.classList.remove('is-turning'), delay + this.flipMs + 60);
+        }
+      });
+      this.count = count;
+      this.depth();
+      return changing.length && !quick ? (changing.length - 1) * step + this.flipMs : 0;
+    }
+
+    front(i) {
+      return this.leaves[i] ? this.leaves[i].querySelector(':scope > .leaf__front') : null;
+    }
+
+    back(i) {
+      return this.leaves[i] ? this.leaves[i].querySelector(':scope > .leaf__back') : null;
+    }
+
+    // Seules les pages visibles restent accessibles au clavier et aux lecteurs d'écran
+    showOnly(faces) {
+      this.leaves.forEach((leaf) => {
+        leaf.querySelectorAll(':scope > .leaf__face').forEach((face) => {
+          face.inert = !faces.includes(face);
+        });
+      });
+    }
+  }
 
   /* ---------- Écriture à la main ---------- */
 
@@ -252,21 +285,19 @@
     };
     walk(el, visual);
     el.textContent = '';
-    // Hors des zones déjà masquées, le texte entier reste lisible par les lecteurs d'écran
-    if (!el.closest('[aria-hidden="true"]')) {
-      const spoken = document.createElement('span');
-      spoken.className = 'sr-only';
-      spoken.textContent = label;
-      el.appendChild(spoken);
-      visual.setAttribute('aria-hidden', 'true');
-    }
+    // Le texte entier reste lisible par les lecteurs d'écran
+    const spoken = document.createElement('span');
+    spoken.className = 'sr-only';
+    spoken.textContent = label;
+    el.appendChild(spoken);
+    visual.setAttribute('aria-hidden', 'true');
     el.appendChild(visual);
   };
 
   document.querySelectorAll('[data-write]').forEach(prepareWriting);
 
   // Écrit une suite d'éléments l'un après l'autre ; renvoie l'instant où l'écriture se termine
-  const write = (elements, start = 0, instant = false, pace = 1) => {
+  const write = (elements, start = 0, instant = false) => {
     let t = start;
     elements.forEach((el) => {
       if (el.classList.contains('is-written')) return;
@@ -276,11 +307,10 @@
       }
       el.querySelectorAll('.ch').forEach((ch, i) => {
         ch.style.animationDelay = `${t}ms`;
-        const letter = ch.textContent;
         // Un rythme un peu irrégulier, des pauses après la ponctuation et entre les mots
-        t += (15 + ((i * 7) % 11)) * pace;
-        if (/[,.;:!?]/.test(letter)) t += 90 * pace;
-        if (!ch.nextElementSibling) t += 24 * pace;
+        t += 15 + ((i * 7) % 11);
+        if (/[,.;:!?]/.test(ch.textContent)) t += 90;
+        if (!ch.nextElementSibling) t += 24;
       });
       el.classList.add('is-written');
       t += 100;
@@ -288,396 +318,845 @@
     return t;
   };
 
-  /* ---------- Feuillets qui tournent ---------- */
+  /* ==========================================================================
+     Mesures selon la taille de la fenêtre
+     ========================================================================== */
 
-  // Les feuilles tournées s'empilent à gauche, les autres à droite
-  const updateDepth = () => {
-    const n = leaves.length;
-    leaves.forEach((leaf, i) => {
-      leaf.style.setProperty('--z', leaf.classList.contains('is-flipped') ? 10 + i : 10 + n - i);
-    });
-  };
+  const carnet = new Book(carnetEl, T_FLIP);
+  const openButton = carnetEl.querySelector('.book__open');
+  const pileWrap = document.querySelector('.pile-wrap');
+  const spines = [...document.querySelectorAll('.spine')];
+  const deskMore = document.querySelector('.desk__more');
+  const chapters = [...document.querySelectorAll('.chapter')];
+  const skip = document.querySelector('.skip-link');
+  const profil = document.getElementById('a-propos');
+  const portrait = carnetEl.querySelector('.page__content--portrait');
+  const turnButtons = [...carnetEl.querySelectorAll('[data-next]')];
 
-  const flipTo = (count, { instant = false } = {}) => {
-    const changing = leaves.filter((leaf, i) => leaf.classList.contains('is-flipped') !== i < count);
-    if (count < flippedCount) changing.reverse();
-    changing.forEach((leaf, n) => {
-      const delay = instant || reduceMotion ? 0 : n * 140;
-      leaf.style.transitionDelay = `${delay}ms, ${delay + T_FLIP / 2}ms`;
-      leaf.style.setProperty('--turn-delay', `${delay}ms`);
-      leaf.classList.toggle('is-flipped');
-      if (!instant && !reduceMotion) {
-        leaf.classList.add('is-turning');
-        setTimeout(() => leaf.classList.remove('is-turning'), delay + T_FLIP + 60);
-      }
-    });
-    flippedCount = count;
-    updateDepth();
-    return changing.length;
-  };
+  const reader = document.querySelector('[data-reader]');
+  const readerBooks = reader ? [...reader.querySelectorAll('.reader__books [data-open]')] : [];
+  const prevButton = reader ? reader.querySelector('.reader__prev') : null;
+  const nextButton = reader ? reader.querySelector('.reader__next') : null;
+  const counter = reader ? reader.querySelector('.reader__count') : null;
 
-  /* ---------- Mesures selon la taille de la fenêtre ---------- */
+  const setPx = (el, name, value) => el.style.setProperty(name, `${Math.round(value * 100) / 100}px`);
 
-  const setVar = (name, value) => root.style.setProperty(name, `${value}px`);
-
+  let narrow = false;
+  let M = null;
 
   const layout = () => {
     const vw = root.clientWidth;
     const vh = window.innerHeight;
-    desk = deskQuery.matches;
+    narrow = vw < 880 || vh < 520;
+    root.dataset.mode = narrow ? 'single' : 'double';
 
-    // Largeur d'une page : la double page doit tenir à l'écran
-    let pw = desk
-      ? Math.min(vw * 0.36, (vh - 190) / 1.42, 560)
-      : Math.min((vw - 28) / 2, (vh - (vh < 600 ? 70 : 300)) / 1.42, 420);
-    pw = Math.max(pw, 110);
+    // Le carnet : la double page doit tenir à l'écran ; sur petit écran, une page à la fois
+    const pw = narrow
+      ? Math.max(200, Math.min(vw - 24, (vh - 110) / 1.42, 520))
+      : Math.min(vw * 0.44, (vh - 120) / 1.42, 560);
     const ph = pw * 1.42;
     const u = pw / 100;
+    setPx(root, '--pw', pw);
+    setPx(root, '--ph', ph);
+    setPx(root, '--u', u);
 
-    // Fermé, le carnet est un peu agrandi sur petit écran
-    const sClosed = desk ? 1 : Math.max(1, Math.min(1.75, (vw - 90) / pw, (vh * 0.64) / ph));
-    const xClosed = vw / 2 - (pw * sClosed) / 2;
-    const yClosed = (vh - ph * sClosed) / 2 - (desk ? 24 : 28);
-    const xOpen = vw / 2;
-    const yOpen = (vh - ph) / 2 - (desk ? 24 : 0);
-
-    // Pendant la lecture : la page de droite seule, à gauche de l'écran
-    let sRead = 1;
-    let xRead = -2.6 * pw;
-    let yRead = yOpen;
-    let column = 0;
-    if (desk) {
-      const pr = Math.min(vw * 0.26, (vh - 96) / 1.42, 470);
-      sRead = pr / pw;
-      xRead = 26;
-      yRead = (vh - ph * sRead) / 2;
-      column = xRead + pr + 40 * u * sRead + 44;
-    }
-
-    setVar('--pw', pw);
-    setVar('--ph', ph);
-    setVar('--u', u);
-    setVar('--x-closed', xClosed);
-    setVar('--y-closed', yClosed);
-    root.style.setProperty('--s-closed', sClosed);
-    setVar('--x-open', xOpen);
-    setVar('--y-open', yOpen);
-    setVar('--x-read', xRead);
-    setVar('--y-read', yRead);
-    root.style.setProperty('--s-read', sRead);
-    setVar('--nb-col', column);
-    setVar('--sf-x', xOpen - pw);
-    setVar('--sf-y', yOpen);
-    setVar('--sf-w', pw * 2);
-    setVar('--sf-h', ph);
-    setVar('--hint-closed-y', Math.min(vh - 44, yClosed + (ph + 10 * u) * sClosed + 14));
-    // Petite double page : les autocollants se rangent au-dessus et au-dessous, s'il y a la place
-    const outside = !desk && (vh - ph) / 2 >= 190;
-    root.classList.toggle('stickers-out', outside);
-    setVar('--hint-open-y', desk || !outside ? Math.min(vh - 48, yOpen + ph + 26) : vh - 56);
-
-  };
-
-  /* ---------- Étapes du parcours ---------- */
-
-  const entries = [...book.querySelectorAll('[data-entry]')];
-  const entryOf = (step) => book.querySelector(`[data-entry="${step.dataset.step}"]`);
-
-  const pageCount = (step) => {
-    if (state === 'closed') return 0;
-    if (state === 'open') return 1;
-    // Couverture et hypothèse, plus les pages déjà remplies
-    return desk ? Number(step.dataset.page) + 1 : 2;
-  };
-
-  const setActive = (step, { instant = false } = {}) => {
-    activeStep = step;
-    const index = steps.indexOf(step);
-    const page = Number(step.dataset.page);
-    const turned = flipTo(pageCount(step), { instant });
-
-    // Les notes s'écrivent jusqu'à l'étape lue ; celles des pages précédentes sont déjà là
-    let t = instant ? 0 : turned ? T_FLIP * 0.6 : 150;
-    const fresh = new Set();
-    steps.slice(0, index + 1).forEach((s) => {
-      const entry = entryOf(s);
-      if (!entry || entry.classList.contains('is-written')) return;
-      const leaf = entry.closest('.leaf');
-      const parts = [...entry.querySelectorAll('[data-write]')];
-      const title = leaf.querySelector('.page__title');
-      if (title && !title.classList.contains('is-written')) parts.unshift(title);
-      const now = instant || Number(s.dataset.page) < page || !desk;
-      entry.style.setProperty('--entry-delay', `${now ? 0 : t}ms`);
-      t = write(parts, t, now);
-      entry.classList.add('is-written');
-      fresh.add(entry);
-    });
-
-    const current = entryOf(step);
-    if (current && !fresh.has(current)) current.style.setProperty('--entry-delay', '0ms');
-    entries.forEach((entry) => entry.classList.toggle('is-current', entry === current));
-
-    const chapter = step.closest('.chapter');
-    const id = chapter ? chapter.id : '';
-    tabs.forEach((tab) => tab.classList.toggle('is-active', tab.dataset.chapter === id));
-    navLinks.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`));
-  };
-
-  const stepObserver = new IntersectionObserver((list) => {
-    if (state !== 'reading') return;
-    list.forEach((item) => {
-      if (item.isIntersecting && item.target !== activeStep) setActive(item.target);
-    });
-  }, { rootMargin: '-48% 0px -50% 0px' });
-  steps.forEach((step) => stepObserver.observe(step));
-
-  /* ---------- Apparition des descriptions et des photos ---------- */
-
-  document.querySelectorAll('.print').forEach((print) => print.classList.add('reveal'));
-  const revealed = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((list) => {
-    list.forEach((item) => {
-      if (item.isIntersecting && state === 'reading') {
-        item.target.classList.add('is-visible');
-        revealObserver.unobserve(item.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-
-  const watchReveal = () => revealed.forEach((el) => {
-    if (!el.classList.contains('is-visible')) {
-      revealObserver.unobserve(el);
-      revealObserver.observe(el);
-    }
-  });
-
-  /* ---------- Ouvrir, lire, refermer ---------- */
-
-  const spread = {
-    question: [...book.querySelectorAll('.leaf--cover [data-write]')],
-    hypothesis: [...book.querySelectorAll('.leaf--hypo [data-write]')],
-    passions: [...document.querySelectorAll('.stickers [data-write]')],
-  };
-
-  const writeSpread = (instant = false) => {
-    const end = write(spread.question, instant ? 0 : 750, instant);
-    const final = write(spread.hypothesis, instant ? 0 : end + 250, instant);
-    // Les phrases des passions s'écrivent à côté de leur autocollant, juste après qu'il est collé
-    spread.passions.forEach((el, i) => write([el], instant ? 0 : 1500 + i * 200, instant, 0.45));
-    setTimeout(() => book.classList.add('is-drawn'), instant ? 0 : final);
-  };
-
-  const openBook = () => {
-    if (state !== 'closed' || busy) return;
-    lock(T_BOOK * 0.8);
-    setState('open');
-    flipTo(1);
-    writeSpread();
-    setTimeout(() => turnButton.focus({ preventScroll: true }), T_BOOK * 0.6);
-  };
-
-  // Le carnet glisse à gauche (ou s'efface sur petit écran) et le parcours apparaît
-  const readBook = ({ instant = false, target = null, force = false } = {}) => {
-    if ((state === 'reading' && !force) || (busy && !instant)) return;
-    const go = () => {
-      setState('reading');
-      writeSpread(true);
-      // Arrivée directe : on se place d'abord sur la partie demandée
-      if (target && instant) target.scrollIntoView();
-      setActive(target ? target.closest('[data-step]') || target.querySelector('[data-step]') || steps[0] : steps[0], { instant });
-      watchReveal();
+    const cy = vh / 2 - 16;
+    // Position du bas de la reliure (origine des transformations) pour un livre centré en cy
+    const at = (spineX, s) => ({ x: spineX, y: cy + (s * ph) / 2 - ph, s, rx: 0, rz: 0 });
+    const sClosed = narrow ? Math.min(1, (vw - 48) / pw, (vh * 0.78) / ph) : 0.8;
+    const sDouble = Math.min(1, (vw - 20) / (2 * pw));
+    const views = {
+      closed: at(vw / 2 - (sClosed * pw) / 2, sClosed),
+      question: at(vw / 2, sDouble),
+      portrait: at(vw / 2 + pw / 2, 1),
+      profil: narrow ? at(vw / 2 - pw / 2, 1) : at(vw / 2, sDouble),
     };
 
-    if (instant) {
-      withoutAnimation(go);
+    // Sur le bureau : le carnet ouvert, couché sur la pile de livres
+    const headerH = header ? header.offsetHeight || 64 : 64;
+    const top = headerH + 14;
+    const bottom = vh - 62;
+    const tilt = 56;
+    const P = 1800;
+    const piece = (w) => {
+      const s = (0.9 * w) / (2 * pw);
+      const sh = s * ph;
+      const rad = (tilt * Math.PI) / 180;
+      const lying = (sh * Math.cos(rad) * P) / (P + sh * Math.sin(rad));
+      return { s, lying, h: lying + 0.267 * w + 46 };
+    };
+    let pileW = Math.min(narrow ? vw - 40 : vw * 0.5, 760);
+    let c = piece(pileW);
+    if (c.h > bottom - top) {
+      pileW *= (bottom - top) / c.h;
+      c = piece(pileW);
+    }
+    const pileTop = top + (bottom - top - c.h) / 2 + c.lying;
+    views.desk = { x: vw / 2, y: pileTop + c.s * u * 0.6 - ph, s: c.s, rx: tilt, rz: -2.5 };
+    setPx(root, '--pile-w', pileW);
+    setPx(root, '--pile-x', vw / 2 - pileW / 2);
+    setPx(root, '--pile-y', pileTop);
+
+    // Indications sous le carnet
+    setPx(root, '--hint-closed-y', Math.min(vh - 44, cy + (sClosed * ph) / 2 + 2 * u * sClosed + 16));
+    const openBottom = narrow ? cy + ph / 2 : cy + (sDouble * ph) / 2;
+    setPx(root, '--hint-open-y', Math.min(vh - 44, openBottom + 18));
+
+    // Les livres de la pile, ouverts dans la liseuse
+    const topBar = 64;
+    const bottomBar = narrow ? 70 : 54;
+    const availH = vh - topBar - bottomBar;
+    let tpw;
+    let tph;
+    if (narrow) {
+      tpw = Math.max(220, Math.min(vw - 24, 560));
+      tph = Math.min(availH, tpw * 1.9);
     } else {
-      window.scrollTo(0, 0);
-      lock(T_BOOK + 80);
-      root.classList.add('is-turning');
-      setTimeout(() => root.classList.remove('is-turning'), T_BOOK);
-      go();
+      tpw = Math.min((vw - 160) / 2, availH / 1.3, 620);
+      tph = tpw * 1.3;
     }
-    topSince = Date.now() + T_BOOK;
-    if (target && !instant) {
-      setTimeout(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }), T_BOOK);
+    const tfs = narrow
+      ? Math.max(14, Math.min(16.5, tpw * 0.037))
+      : Math.max(12.5, Math.min(17.5, tpw * 0.0285));
+    setPx(root, '--tpw', tpw);
+    setPx(root, '--tph', tph);
+    setPx(root, '--tu', tpw / 100);
+    setPx(root, '--tfs', tfs);
+    setPx(root, '--ty', topBar + (availH - tph) / 2);
+
+    M = { vw, vh, views };
+  };
+
+  /* ---------- Ajustement des pages : le texte se resserre un peu s'il manque de place ---------- */
+
+  const fitPage = (content, min) => {
+    content.style.setProperty('--fit', '1');
+    content.classList.remove('is-overflow');
+    let f = 1;
+    while (content.scrollHeight > content.clientHeight + 1 && f > min) {
+      f = Math.round((f - 0.03) * 100) / 100;
+      content.style.setProperty('--fit', String(f));
     }
-    // Le contenu devient visible au milieu de la transition : il peut alors recevoir le focus
-    setTimeout(() => main.focus({ preventScroll: true }), instant ? 0 : 650);
+    content.classList.toggle('is-overflow', content.scrollHeight > content.clientHeight + 1);
   };
 
-  const backToSpread = () => {
-    if (state !== 'reading' || busy) return;
-    lock(T_BOOK + 80);
-    window.scrollTo(0, 0);
-    setState('open');
-    flipTo(1);
-    entries.forEach((entry) => entry.classList.remove('is-current'));
-    tabs.forEach((tab) => tab.classList.remove('is-active'));
-    turnButton.focus({ preventScroll: true });
-  };
-
-  const closeBook = () => {
-    if (busy) return;
-    lock(T_BOOK + 80);
-    window.scrollTo(0, 0);
-    setState('closed');
-    flipTo(0);
-    openButton.focus({ preventScroll: true });
-  };
-
-  openButton.addEventListener('click', openBook);
-
-  // Un clic n'importe où sur la double page tourne la page
-  book.addEventListener('click', (e) => {
-    if (state === 'open' && !e.target.closest('.tab')) readBook();
-  });
-
-  // Les post-it mènent directement à une partie, même carnet fermé
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', (e) => {
-      const target = document.querySelector(tab.getAttribute('href'));
-      if (!target) return;
-      e.preventDefault();
-      if (state === 'reading') {
-        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-        history.replaceState(null, '', tab.getAttribute('href'));
-      } else {
-        readBook({ target, instant: state === 'closed' });
+  // Planches photos : le nombre de colonnes dépend de la place, la dernière ligne est centrée
+  const layoutGrid = (grid) => {
+    const items = [...grid.children];
+    const n = items.length;
+    const w = grid.clientWidth;
+    const h = grid.clientHeight;
+    if (!n || !w || !h) return;
+    let cols = 1;
+    let best = Infinity;
+    for (let c = 1; c <= Math.min(4, n); c += 1) {
+      const r = Math.ceil(n / c);
+      const ratio = w / c / (h / r);
+      const score = Math.abs(Math.log(ratio / 1.15)) + (c * r - n) * 0.06;
+      if (score < best) {
+        best = score;
+        cols = c;
       }
-    });
-  });
+    }
+    const rows = Math.ceil(n / cols);
+    grid.style.setProperty('--cols2', String(cols * 2));
+    grid.style.setProperty('--rows', String(rows));
+    grid.toggleAttribute('data-dense', h / rows < 150);
+    items.forEach((item) => { item.style.gridColumnStart = ''; });
+    const last = n - (rows - 1) * cols;
+    if (last < cols) items[n - last].style.gridColumnStart = String(cols - last + 1);
+  };
 
-  // « Aller au contenu » : on passe directement à la lecture
-  const skip = document.querySelector('.skip-link');
-  if (skip) {
-    skip.addEventListener('click', (e) => {
-      if (state === 'reading') return;
-      e.preventDefault();
-      readBook({ instant: true });
+  const fitAll = () => {
+    document.querySelectorAll('.album-grid').forEach(layoutGrid);
+    document.querySelectorAll('.tome .page__content').forEach((content) => {
+      if (!content.classList.contains('page__content--photos')) fitPage(content, narrow ? 0.9 : 0.82);
+    });
+    if (profil) fitPage(profil, 0.84);
+  };
+
+  /* ==========================================================================
+     Le carnet : fermé, question et hypothèse, (portrait,) profil, puis posé sur la pile
+     ========================================================================== */
+
+  const FLIPS = { closed: 0, question: 1, portrait: 2, profil: 2, desk: 2 };
+  // Sur petit écran, le portrait et le profil sont deux étapes : une page à la fois
+  const order = () => (narrow
+    ? ['closed', 'question', 'portrait', 'profil', 'desk']
+    : ['closed', 'question', 'profil', 'desk']);
+
+  let scene = root.dataset.scene || 'closed';
+  let busy = false;
+  let busyTimer;
+  let readerOpen = false;
+
+  const lock = (ms) => {
+    busy = true;
+    clearTimeout(busyTimer);
+    busyTimer = setTimeout(() => { busy = false; }, ms);
+  };
+
+  const placeCarnet = () => {
+    const v = M.views[scene] || M.views.profil;
+    setPx(carnetEl, '--bx', v.x);
+    setPx(carnetEl, '--by', v.y);
+    carnetEl.style.setProperty('--bs', String(Math.round(v.s * 10000) / 10000));
+    carnetEl.style.setProperty('--brx', `${v.rx}deg`);
+    carnetEl.style.setProperty('--brz', `${v.rz}deg`);
+  };
+
+  const carnetFaces = () => {
+    switch (scene) {
+      case 'closed': return [carnet.front(0)];
+      case 'question': return [carnet.back(0), carnet.front(1)];
+      case 'portrait': return [carnet.back(1)];
+      case 'profil': return narrow ? [carnet.front(2)] : [carnet.back(1), carnet.front(2)];
+      default: return [];
+    }
+  };
+
+  // Ce qui n'est pas à l'écran sort du parcours au clavier et des lecteurs d'écran
+  const syncInert = () => {
+    const beforeDesk = scene !== 'desk';
+    [header, toTop, ...chapters, pileWrap, deskMore].forEach((el) => {
+      if (el) el.inert = readerOpen || beforeDesk;
+    });
+    if (skip) skip.inert = readerOpen;
+    carnetEl.inert = readerOpen;
+    if (reader) reader.inert = !readerOpen;
+    carnet.showOnly(carnetFaces());
+    if (openButton) {
+      openButton.setAttribute('aria-label', scene === 'desk'
+        ? 'Reprendre le carnet de terrain et relire le profil'
+        : 'Ouvrir le carnet de terrain');
+    }
+  };
+
+  const spread = {
+    question: [...carnetEl.querySelectorAll('.leaf--cover [data-write]')],
+    hypothesis: carnet.leaves[1] ? [...carnet.leaves[1].querySelectorAll('.leaf__front [data-write]')] : [],
+  };
+
+  const writeSpread = (instant) => {
+    const end = write(spread.question, instant ? 0 : 750, instant);
+    const final = write(spread.hypothesis, instant ? 0 : end + 250, instant);
+    setTimeout(() => carnetEl.classList.add('is-drawn'), instant ? 0 : final);
+  };
+
+  const sceneUrl = (name) => {
+    if (name === 'profil' || name === 'portrait') return '#a-propos';
+    if (name === 'desk') return '#bibliotheque';
+    return location.pathname + location.search;
+  };
+
+  const focusScene = () => {
+    const targets = {
+      closed: openButton,
+      question: turnButtons[0],
+      portrait,
+      profil,
+      desk: spines[0],
+    };
+    if (targets[scene]) targets[scene].focus({ preventScroll: true });
+  };
+
+  const setScene = (name, { instant = false, focus = true, url = true } = {}) => {
+    if (!order().includes(name)) name = 'profil';
+    if (!instant && (busy || name === scene)) return;
+    const before = scene;
+    if (name !== 'desk' && window.scrollY > 0) jumpTo(0);
+    scene = name;
+    root.dataset.scene = name;
+
+    const go = () => {
+      carnet.flipTo(FLIPS[name], { instant });
+      placeCarnet();
+      syncInert();
+    };
+    if (instant) {
+      instantly(root, go);
+    } else {
+      go();
+      lock(T_BOOK + 60);
+    }
+    if (FLIPS[name] >= 1) writeSpread(instant || before !== 'closed');
+    if (url) setUrl(sceneUrl(name));
+    if (focus) setTimeout(focusScene, instant ? 0 : T_BOOK * 0.6);
+  };
+
+  const forward = () => {
+    const list = order();
+    const i = list.indexOf(scene);
+    if (i >= 0 && i < list.length - 1) setScene(list[i + 1]);
+  };
+
+  const backward = () => {
+    const list = order();
+    const i = list.indexOf(scene);
+    if (i > 0) setScene(list[i - 1]);
+  };
+
+  const nudge = () => {
+    if (carnetEl.classList.contains('is-nudged')) return;
+    carnetEl.classList.add('is-nudged');
+    setTimeout(() => carnetEl.classList.remove('is-nudged'), 700);
+  };
+
+  // Ouvrir le carnet, ou le reprendre une fois posé sur la pile
+  if (openButton) {
+    openButton.addEventListener('click', () => {
+      if (scene === 'closed') setScene('question');
+      else if (scene === 'desk') setScene('profil');
     });
   }
 
-  document.querySelectorAll('[data-close-book]').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeBook();
+  // Un clic sur la double page tourne la page (sauf sur un lien ou une photo)
+  carnetEl.addEventListener('click', (e) => {
+    if (!['question', 'portrait', 'profil'].includes(scene)) return;
+    if (e.target.closest('a, button')) return;
+    if (String(window.getSelection ? window.getSelection() : '').trim()) return;
+    forward();
+  });
+
+  turnButtons.forEach((button) => button.addEventListener('click', forward));
+
+  /* ==========================================================================
+     La liseuse : Formation, Expériences et Passions
+     ========================================================================== */
+
+  const tomes = new Map();
+  document.querySelectorAll('[data-tome]').forEach((el) => {
+    const book = new Book(el, T_TOME_FLIP);
+    el.setAttribute('tabindex', '-1');
+    tomes.set(el.id, { el, book, spreads: book.leaves.length - 1 });
+  });
+  const tomeOrder = [...tomes.keys()];
+
+  // Numéros de page, de la page de titre à la dernière page écrite
+  tomes.forEach((tome) => {
+    let n = 0;
+    tome.book.leaves.forEach((leaf, i) => {
+      [i > 0 ? tome.book.front(i) : null, tome.book.back(i)].forEach((face) => {
+        const page = face && face.querySelector(':scope > .page');
+        if (!page || page.classList.contains('page--blank')) return;
+        n += 1;
+        page.dataset.num = String(n);
+        const num = document.createElement('span');
+        num.className = 'page__num';
+        num.setAttribute('aria-hidden', 'true');
+        num.textContent = String(n);
+        page.appendChild(num);
+      });
     });
   });
 
-  // Molette : tourner la page, et revenir à la double page tout en haut (grand écran)
-  let topSince = 0;
+  // Le sommaire indique la page de chaque partie
+  document.querySelectorAll('.toc a[data-goto]').forEach((link) => {
+    const target = document.getElementById(link.dataset.goto);
+    const page = target && target.closest('.page');
+    if (page && page.dataset.num) link.dataset.page = page.dataset.num;
+  });
+
+  const tomeOf = (el) => {
+    const host = el && el.closest('[data-tome]');
+    return host ? tomes.get(host.id) : null;
+  };
+
+  // Double page (et côté, en page seule) où se trouve un élément
+  const locate = (tome, el) => {
+    const face = el && el !== tome.el ? el.closest('.leaf__face') : null;
+    if (!face) return { spread: 1, side: 0 };
+    const index = tome.book.leaves.indexOf(face.parentElement);
+    const isFront = face.classList.contains('leaf__front');
+    if (index <= 0 && isFront) return { spread: 1, side: 0 };
+    const at = isFront ? index : index + 1;
+    return { spread: Math.max(1, Math.min(tome.spreads, at)), side: isFront ? 1 : 0 };
+  };
+
+  let current = null;
+  let view = { spread: 1, side: 0 };
+  let opener = null;
+  let savedScroll = 0;
+  let readerBusy = false;
+  let readerTimer;
+
+  const readerLock = (ms) => {
+    readerBusy = true;
+    clearTimeout(readerTimer);
+    readerTimer = setTimeout(() => { readerBusy = false; }, ms);
+  };
+
+  const nextTomeId = () => (current ? tomeOrder[tomeOrder.indexOf(current.el.id) + 1] : null);
+
+  const updateControls = () => {
+    if (!current || !counter) return;
+    const { spread: s, side } = view;
+    const atStart = s === 1 && (!narrow || side === 0);
+    const atEnd = s === current.spreads && (!narrow || side === 1);
+    const following = nextTomeId();
+    const focused = document.activeElement;
+    prevButton.disabled = atStart;
+    nextButton.disabled = atEnd && !following;
+    // Un bouton désactivé perd le focus : il passe à l'autre bouton
+    if (focused === prevButton && prevButton.disabled) nextButton.focus();
+    if (focused === nextButton && nextButton.disabled) prevButton.focus();
+    nextButton.setAttribute('aria-label', atEnd && following
+      ? `Livre suivant : ${tomes.get(following).el.getAttribute('aria-label').replace('Livre : ', '')}`
+      : 'Page suivante');
+    counter.innerHTML = narrow
+      ? `<span class="sr-only">Page </span>${(s - 1) * 2 + side + 1} / ${current.spreads * 2}`
+      : `<span class="sr-only">Double page </span>${s} / ${current.spreads}`;
+    readerBooks.forEach((link) => link.setAttribute('aria-current', String(link.dataset.open === current.el.id)));
+  };
+
+  // Place le livre ouvert (reliure au centre, ou la page lue au centre) ; seules ses pages visibles restent accessibles
+  const setView = (tome, s, side) => {
+    view = { spread: s, side: narrow ? side : 0 };
+    tome.el.style.setProperty('--shift', narrow ? (view.side === 0 ? '0.5' : '-0.5') : '0');
+    tome.el.classList.remove('is-shut');
+    const left = tome.book.back(s - 1);
+    const right = tome.book.front(s);
+    const shown = narrow ? [view.side === 0 ? left : right] : [left, right];
+    tome.book.showOnly(shown.filter(Boolean));
+    updateControls();
+    // L'adresse suit la lecture : une année, un stage…
+    const idOf = (face) => {
+      const content = face && face.querySelector('.page__content[id]');
+      return content ? content.id : null;
+    };
+    const id = s === 1 ? tome.el.id : shown.map(idOf).find(Boolean) || idOf(left) || idOf(right) || tome.el.id;
+    setUrl(`#${id}`);
+  };
+
+  // Livre refermé et rangé, prêt à être rouvert depuis sa couverture
+  const shut = (tome) => {
+    instantly(tome.el, () => {
+      tome.el.classList.remove('is-open');
+      tome.el.classList.add('is-shut');
+      tome.book.flipTo(0, { instant: true });
+      tome.book.showOnly([tome.book.front(0)]);
+      tome.el.style.setProperty('--shift', '-0.5');
+      tome.el.style.setProperty('--ts', '0.9');
+    });
+  };
+
+  const goTo = (s, side = 0) => {
+    if (!current) return;
+    const duration = current.book.flipTo(s, { stagger: 110 });
+    setView(current, s, side);
+    readerLock(Math.max(duration, T_SHIFT, 200) + 40);
+  };
+
+  const openTome = (id, { target = null, instant = false } = {}) => {
+    const tome = tomes.get(id);
+    if (!tome || readerBusy) return;
+    const place = locate(tome, target);
+
+    if (current === tome) {
+      goTo(place.spread, place.side);
+      return;
+    }
+
+    const previous = current;
+    current = tome;
+    if (!readerOpen) {
+      opener = document.activeElement;
+      savedScroll = window.scrollY;
+    }
+    readerOpen = true;
+    root.classList.add('reader-open');
+    if (scene !== 'desk') setScene('desk', { instant: true, focus: false, url: false });
+    syncInert();
+
+    if (previous) {
+      previous.el.classList.remove('is-open');
+      previous.el.style.setProperty('--ts', '0.92');
+      setTimeout(() => { if (current !== previous) shut(previous); }, 360);
+    }
+
+    if (instant || reduceMotion) {
+      instantly(tome.el, () => {
+        tome.el.style.setProperty('--ts', '1');
+        tome.el.classList.add('is-open');
+        tome.book.flipTo(place.spread, { instant: true });
+        setView(tome, place.spread, place.side);
+      });
+      tome.el.focus({ preventScroll: true });
+      return;
+    }
+
+    // Le livre arrive fermé au milieu de l'écran, puis s'ouvre à la bonne page
+    shut(tome);
+    updateControls();
+    readerLock(2000);
+    setTimeout(() => {
+      tome.el.classList.add('is-open');
+      tome.el.style.setProperty('--ts', '1');
+      tome.el.focus({ preventScroll: true });
+      setTimeout(() => {
+        if (current !== tome) return;
+        readerBusy = false;
+        goTo(place.spread, place.side);
+      }, 420);
+    }, previous ? 300 : 60);
+  };
+
+  const closeReader = () => {
+    if (!readerOpen || !current) return;
+    const tome = current;
+    tome.el.classList.remove('is-open');
+    tome.el.style.setProperty('--ts', '0.92');
+    root.classList.remove('reader-open');
+    readerOpen = false;
+    current = null;
+    readerBusy = false;
+    syncInert();
+    if (window.scrollY !== savedScroll) jumpTo(savedScroll);
+    setTimeout(() => { if (current !== tome) shut(tome); }, 460);
+    setUrl('#bibliotheque');
+    const spine = spines.find((s) => s.dataset.open === tome.el.id);
+    const back = opener && opener !== document.body && document.contains(opener) ? opener : spine;
+    if (back) back.focus({ preventScroll: true });
+    opener = null;
+  };
+
+  const next = () => {
+    if (!current || readerBusy) return;
+    const { spread: s, side } = view;
+    if (narrow && side === 0) goTo(s, 1);
+    else if (s < current.spreads) goTo(s + 1, 0);
+    else if (nextTomeId()) openTome(nextTomeId());
+  };
+
+  const prev = () => {
+    if (!current || readerBusy) return;
+    const { spread: s, side } = view;
+    if (narrow && side === 1) goTo(s, 0);
+    else if (s > 1) goTo(s - 1, 1);
+  };
+
+  if (reader) {
+    prevButton.addEventListener('click', prev);
+    nextButton.addEventListener('click', next);
+    reader.querySelectorAll('[data-close-reader]').forEach((el) => el.addEventListener('click', closeReader));
+
+    // Molette : une page à la fois, sauf dans une page qui défile
+    let hold = false;
+    let quiet;
+    let sum = 0;
+    reader.addEventListener('wheel', (e) => {
+      if (!readerOpen || lightboxOpen()) return;
+      const dy = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      const scroller = e.target.closest('.page__content.is-overflow');
+      if (scroller) {
+        const canDown = scroller.scrollTop + scroller.clientHeight < scroller.scrollHeight - 1;
+        const canUp = scroller.scrollTop > 0;
+        if ((dy > 0 && canDown) || (dy < 0 && canUp)) return;
+      }
+      e.preventDefault();
+      // Tant que la molette (ou son élan) continue, une seule page tourne
+      clearTimeout(quiet);
+      quiet = setTimeout(() => { hold = false; sum = 0; }, 220);
+      if (hold || readerBusy) return;
+      sum += dy;
+      if (Math.abs(sum) < 24) return;
+      hold = true;
+      if (sum > 0) next();
+      else prev();
+      sum = 0;
+    }, { passive: false });
+
+    // Glisser du doigt vers la gauche ou vers la droite
+    let touch = null;
+    reader.addEventListener('touchstart', (e) => {
+      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
+    reader.addEventListener('touchend', (e) => {
+      if (!touch || !readerOpen) return;
+      const dx = e.changedTouches[0].clientX - touch.x;
+      const dy = e.changedTouches[0].clientY - touch.y;
+      touch = null;
+      if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+      if (dx < 0) next();
+      else prev();
+    }, { passive: true });
+  }
+
+  /* ==========================================================================
+     Liens, adresse de la page et navigation
+     ========================================================================== */
+
+  // Ouvrir un livre : dos de la pile, menu, onglets de la liseuse
+  document.querySelectorAll('[data-open]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      openTome(link.dataset.open);
+    });
+  });
+
+  // Sommaires et fiches : aller à une année, à un stage (éventuellement dans l'autre livre)
+  document.querySelectorAll('[data-goto]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const target = document.getElementById(link.dataset.goto);
+      const tome = tomeOf(target);
+      if (!tome) return;
+      e.preventDefault();
+      openTome(tome.el.id, { target });
+    });
+  });
+
+  // Profil : le carnet se relève, ouvert à cette page
+  document.querySelectorAll('a[href="#a-propos"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (readerOpen) closeReader();
+      setScene('profil');
+    });
+  });
+
+  // Compétences, contact : le carnet est posé, puis la page défile jusqu'à la partie
+  document.querySelectorAll('a[href="#competences"], a[href="#contact"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      if (readerOpen) closeReader();
+      const wasDesk = scene === 'desk';
+      if (!wasDesk) setScene('desk', { instant: true, focus: false });
+      target.scrollIntoView({ behavior: wasDesk && !reduceMotion ? 'smooth' : 'instant' });
+      setUrl(link.getAttribute('href'));
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    });
+  });
+
+  // « Aller au contenu » et flèche de retour : la pile de livres
+  const toDesk = (e) => {
+    e.preventDefault();
+    if (readerOpen) closeReader();
+    if (scene !== 'desk') {
+      setScene('desk', { instant: true });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    setUrl('#bibliotheque');
+    if (spines[0]) spines[0].focus({ preventScroll: true });
+  };
+  if (skip) skip.addEventListener('click', toDesk);
+  if (toTop) toTop.addEventListener('click', toDesk);
+
+  // « Refermer le carnet »
+  document.querySelectorAll('[data-close-book]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (readerOpen) closeReader();
+      jumpTo(0);
+      setScene('closed');
+    });
+  });
+
+  // Arrivée par une adresse (ou changement d'adresse) : la bonne étape, le bon livre, la bonne page
+  const route = (hash, { instant = true } = {}) => {
+    let id = '';
+    try {
+      id = decodeURIComponent((hash || '').replace(/^#/, ''));
+    } catch (err) {
+      id = '';
+    }
+    const target = id ? document.getElementById(id) : null;
+    if (!target || id === 'accueil') {
+      setScene('closed', { instant, focus: false, url: false });
+      setUrl(location.pathname + location.search);
+      jumpTo(0);
+      return;
+    }
+    if (id === 'a-propos') {
+      setScene('profil', { instant, focus: false });
+      jumpTo(0);
+      return;
+    }
+    setScene('desk', { instant, focus: false, url: false });
+    const tome = tomeOf(target);
+    if (tome) openTome(tome.el.id, { target, instant });
+    else setUrl(`#${id}`);
+    settleScroll(target);
+  };
+
+  // Le navigateur fait défiler la page jusqu'à l'ancre : seules les parties sous le bureau le demandent
+  const settleScroll = (target) => {
+    if (target && target.closest('.chapter') && scene === 'desk' && !readerOpen) target.scrollIntoView({ behavior: 'instant' });
+    else jumpTo(0);
+  };
+
+  // L'adresse d'arrivée, mise de côté avant l'affichage (voir l'en-tête de index.html)
+  const arrival = root.dataset.hash || location.hash;
+  root.removeAttribute('data-hash');
+
+  window.addEventListener('load', () => {
+    let target = null;
+    try {
+      target = arrival.length > 1 ? document.getElementById(decodeURIComponent(arrival.slice(1))) : null;
+    } catch (err) {
+      target = null;
+    }
+    settleScroll(target);
+    setTimeout(() => {
+      loaded = true;
+      if (pendingUrl !== null) history.replaceState(null, '', pendingUrl);
+      pendingUrl = null;
+    }, 0);
+  });
+
+  window.addEventListener('hashchange', () => {
+    const hash = location.hash;
+    if (readerOpen) closeReader();
+    route(hash, { instant: true });
+  });
+
+  /* ---------- Molette, clavier et doigt sur le carnet ---------- */
+
+  let hold = false;
+  let quiet;
+  let sum = 0;
   let upwards = 0;
-  let upwardsTimer;
+  let topSince = Date.now();
 
   window.addEventListener('scroll', () => {
     if (window.scrollY > 0) topSince = 0;
     else if (!topSince) topSince = Date.now();
-    // Tout en bas de la page, la dernière partie est celle qu'on lit
-    const last = steps[steps.length - 1];
-    const bottom = window.scrollY + window.innerHeight >= root.scrollHeight - 4;
-    if (state === 'reading' && bottom && activeStep !== last) setActive(last);
   }, { passive: true });
-
-  const nudge = () => {
-    if (book.classList.contains('is-nudged')) return;
-    book.classList.add('is-nudged');
-    setTimeout(() => book.classList.remove('is-nudged'), 700);
-  };
 
   window.addEventListener('wheel', (e) => {
-    if (busy || (lightbox && lightbox.open)) return;
-    if (state === 'closed' && Math.abs(e.deltaY) > 2) nudge();
-    else if (state === 'open' && e.deltaY > 2) readBook();
-    else if (state === 'reading' && desk && e.deltaY < 0 && window.scrollY <= 0 && topSince && Date.now() - topSince > 400) {
-      upwards += -e.deltaY;
-      clearTimeout(upwardsTimer);
-      upwardsTimer = setTimeout(() => { upwards = 0; }, 300);
-      if (upwards > 60) {
-        upwards = 0;
-        backToSpread();
+    if (readerOpen || lightboxOpen()) return;
+    clearTimeout(quiet);
+    quiet = setTimeout(() => { hold = false; sum = 0; upwards = 0; }, 220);
+
+    if (scene === 'desk') {
+      // Tout en haut du bureau, remonter encore relève le carnet
+      if (e.deltaY < 0 && window.scrollY <= 0 && topSince && Date.now() - topSince > 400 && !busy && !hold) {
+        upwards += -e.deltaY;
+        if (upwards > 80) {
+          hold = true;
+          upwards = 0;
+          setScene('profil');
+        }
       }
+      return;
     }
+
+    if (hold || busy) return;
+    sum += e.deltaY;
+    if (Math.abs(sum) < 24) return;
+    hold = true;
+    if (sum > 0) forward();
+    else if (scene === 'closed') nudge();
+    else backward();
+    sum = 0;
   }, { passive: true });
 
-  // Au clavier : flèche bas, page suivante ou espace
   document.addEventListener('keydown', (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
-    const forward = ['ArrowDown', 'PageDown', ' ', 'Spacebar'].includes(e.key);
-    if (!forward || !e.target.closest || e.target.closest('input, textarea, select')) return;
-    // Sur un lien ou un bouton, la barre d'espace garde son rôle habituel
-    if ((e.key === ' ' || e.key === 'Spacebar') && e.target.closest('a, button')) return;
-    if (state === 'closed') {
+    if (e.altKey || e.ctrlKey || e.metaKey || lightboxOpen()) return;
+    if (e.target.closest && e.target.closest('input, textarea, select')) return;
+
+    if (readerOpen) {
+      const keys = {
+        Escape: closeReader,
+        ArrowRight: next,
+        PageDown: next,
+        ArrowLeft: prev,
+        PageUp: prev,
+        Home: () => { if (!readerBusy && current) goTo(1, 0); },
+        End: () => { if (!readerBusy && current) goTo(current.spreads, 1); },
+      };
+      if (keys[e.key]) {
+        e.preventDefault();
+        keys[e.key]();
+      }
+      return;
+    }
+
+    if (scene === 'desk') return;
+    const onControl = e.target.closest && e.target.closest('a, button');
+    const space = e.key === ' ' || e.key === 'Spacebar';
+    if (['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.key) || (space && !onControl)) {
       e.preventDefault();
-      openBook();
-    } else if (state === 'open') {
+      forward();
+    } else if (['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key)) {
       e.preventDefault();
-      readBook();
+      backward();
     }
   });
 
-  // Sur écran tactile : glisser vers le haut tourne la page
+  // Sur écran tactile : glisser vers le haut avance, vers le bas revient
   let touchY = null;
-  window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
-  window.addEventListener('touchmove', (e) => {
-    if (touchY === null || state !== 'open') return;
-    if (e.touches[0].clientY - touchY < -40) {
-      touchY = null;
-      readBook();
-    }
+  window.addEventListener('touchstart', (e) => {
+    touchY = readerOpen || scene === 'desk' ? null : e.touches[0].clientY;
   }, { passive: true });
-  window.addEventListener('touchend', () => { touchY = null; }, { passive: true });
+  window.addEventListener('touchend', (e) => {
+    if (touchY === null || busy) return;
+    const dy = e.changedTouches[0].clientY - touchY;
+    touchY = null;
+    if (dy < -45) forward();
+    else if (dy > 45) backward();
+  }, { passive: true });
 
   // Textes adaptés aux écrans tactiles
   if (window.matchMedia('(hover: none)').matches) {
-    const hintOpen = document.querySelector('[data-hint-open]');
-    const hintTurn = document.querySelector('[data-hint-turn]');
-    if (hintOpen) hintOpen.textContent = 'Touchez le carnet pour l’ouvrir';
-    if (hintTurn) hintTurn.textContent = 'Touchez la page ou faites glisser vers le haut';
+    const hints = {
+      '[data-hint-open]': 'Touchez le carnet pour l’ouvrir',
+      '[data-hint-turn]': 'Touchez la page ou faites glisser vers le haut',
+      '[data-hint-pile]': 'Touchez un livre pour l’ouvrir',
+    };
+    Object.entries(hints).forEach(([selector, text]) => {
+      const el = document.querySelector(selector);
+      if (el) el.textContent = text;
+    });
   }
 
   // La page de gauche est datée du jour de la visite
-  const today = book.querySelector('[data-today]');
+  const today = carnetEl.querySelector('[data-today]');
   if (today) {
     const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
     today.textContent = `Lille, le ${date}`;
   }
 
+  if (portrait) portrait.setAttribute('tabindex', '-1');
+  if (profil) profil.setAttribute('tabindex', '-1');
+
   /* ---------- Redimensionnement ---------- */
 
   let resizeFrame;
-  const onResize = () => {
+  let fitTimer;
+  window.addEventListener('resize', () => {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(() => {
-      const wasDesk = desk;
-      withoutAnimation(() => {
+      const wasNarrow = narrow;
+      instantly(root, () => {
         layout();
-        if (activeStep && state === 'reading') flipTo(pageCount(activeStep), { instant: true });
+        // Le portrait n'est une étape à part que sur petit écran
+        if (!order().includes(scene)) {
+          scene = 'profil';
+          root.dataset.scene = scene;
+        }
+        carnet.flipTo(FLIPS[scene], { instant: true });
+        placeCarnet();
+        syncInert();
+        if (current) setView(current, view.spread, wasNarrow !== narrow ? 0 : view.side);
       });
-      // En changeant de disposition, on garde sous les yeux la partie qu'on lisait
-      if (wasDesk !== desk && activeStep && state === 'reading') activeStep.scrollIntoView();
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fitAll, 120);
     });
-  };
-  window.addEventListener('resize', onResize);
-
+  });
 
   /* ---------- Départ ---------- */
 
-  // Première mise en place sans transition : le carnet apparaît directement fermé, à sa place
-  withoutAnimation(() => {
+  instantly(root, () => {
     layout();
-    updateDepth();
+    tomes.forEach(shut);
+    syncInert();
   });
-
-  if (state === 'reading') {
-    // Arrivée par un lien vers une section : carnet déjà ouvert à la bonne page
-    let target = null;
-    try {
-      target = document.querySelector(decodeURIComponent(location.hash));
-    } catch (err) {
-      target = null;
-    }
-    readBook({ instant: true, target, force: true });
-  }
-
+  fitAll();
+  route(arrival, { instant: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
   requestAnimationFrame(() => root.classList.add('is-ready'));
 })();
