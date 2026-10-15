@@ -147,22 +147,6 @@
           open(links, index);
         });
       });
-
-      // Grand écran : au-delà de cinq photos, une pile invite à voir les suivantes
-      const list = gallery.querySelector('.album__prints');
-      if (!list || links.length < 7) return;
-      const first = links[5];
-      const pile = document.createElement('li');
-      pile.className = 'print print--pile';
-      pile.setAttribute('aria-hidden', 'true');
-      const rest = links.length - 5;
-      pile.innerHTML = `<a href="${first.href}" tabindex="-1"><img src="${first.querySelector('img').src}" alt=""><span class="print__more">+ ${rest} photos</span><span class="print__cap">Voir la suite de l'album</span></a>`;
-      pile.querySelector('a').addEventListener('click', (e) => {
-        e.preventDefault();
-        open(links, 5);
-      });
-      list.appendChild(pile);
-      gallery.classList.add('has-pile');
     });
 
     const single = () => items.length < 2;
@@ -282,7 +266,7 @@
   document.querySelectorAll('[data-write]').forEach(prepareWriting);
 
   // Écrit une suite d'éléments l'un après l'autre ; renvoie l'instant où l'écriture se termine
-  const write = (elements, start = 0, instant = false) => {
+  const write = (elements, start = 0, instant = false, pace = 1) => {
     let t = start;
     elements.forEach((el) => {
       if (el.classList.contains('is-written')) return;
@@ -294,9 +278,9 @@
         ch.style.animationDelay = `${t}ms`;
         const letter = ch.textContent;
         // Un rythme un peu irrégulier, des pauses après la ponctuation et entre les mots
-        t += 15 + ((i * 7) % 11);
-        if (/[,.;:!?]/.test(letter)) t += 90;
-        if (!ch.nextElementSibling) t += 24;
+        t += (15 + ((i * 7) % 11)) * pace;
+        if (/[,.;:!?]/.test(letter)) t += 90 * pace;
+        if (!ch.nextElementSibling) t += 24 * pace;
       });
       el.classList.add('is-written');
       t += 100;
@@ -336,17 +320,6 @@
 
   const setVar = (name, value) => root.style.setProperty(name, `${value}px`);
 
-  const stickyBlocks = [...document.querySelectorAll('.step__text, .album')];
-
-  // Sur grand écran, un bloc plus court que la fenêtre reste centré pendant que son voisin défile
-  const updateSticky = () => {
-    const vh = window.innerHeight;
-    stickyBlocks.forEach((el) => {
-      const fits = desk && el.offsetHeight < vh - 60 && !el.closest('.step--wide');
-      el.classList.toggle('is-sticky', fits);
-      if (fits) el.style.setProperty('--stick', `${Math.max(24, (vh - el.offsetHeight) / 2)}px`);
-    });
-  };
 
   const layout = () => {
     const vw = root.clientWidth;
@@ -378,7 +351,7 @@
       sRead = pr / pw;
       xRead = 26;
       yRead = (vh - ph * sRead) / 2;
-      column = xRead + pr + 27 * u * sRead + 40;
+      column = xRead + pr + 40 * u * sRead + 44;
     }
 
     setVar('--pw', pw);
@@ -399,12 +372,10 @@
     setVar('--sf-h', ph);
     setVar('--hint-closed-y', Math.min(vh - 44, yClosed + (ph + 10 * u) * sClosed + 14));
     // Petite double page : les autocollants se rangent au-dessus et au-dessous, s'il y a la place
-    const sticker = Math.min(118, Math.max(76, vw * 0.21));
-    const outside = !desk && (vh - ph) / 2 >= sticker + 70;
+    const outside = !desk && (vh - ph) / 2 >= 190;
     root.classList.toggle('stickers-out', outside);
     setVar('--hint-open-y', desk || !outside ? Math.min(vh - 48, yOpen + ph + 26) : vh - 56);
 
-    updateSticky();
   };
 
   /* ---------- Étapes du parcours ---------- */
@@ -485,11 +456,14 @@
   const spread = {
     question: [...book.querySelectorAll('.leaf--cover [data-write]')],
     hypothesis: [...book.querySelectorAll('.leaf--hypo [data-write]')],
+    passions: [...document.querySelectorAll('.stickers [data-write]')],
   };
 
   const writeSpread = (instant = false) => {
     const end = write(spread.question, instant ? 0 : 750, instant);
     const final = write(spread.hypothesis, instant ? 0 : end + 250, instant);
+    // Les phrases des passions s'écrivent à côté de leur autocollant, juste après qu'il est collé
+    spread.passions.forEach((el, i) => write([el], instant ? 0 : 1500 + i * 200, instant, 0.45));
     setTimeout(() => book.classList.add('is-drawn'), instant ? 0 : final);
   };
 
@@ -598,6 +572,10 @@
   window.addEventListener('scroll', () => {
     if (window.scrollY > 0) topSince = 0;
     else if (!topSince) topSince = Date.now();
+    // Tout en bas de la page, la dernière partie est celle qu'on lit
+    const last = steps[steps.length - 1];
+    const bottom = window.scrollY + window.innerHeight >= root.scrollHeight - 4;
+    if (state === 'reading' && bottom && activeStep !== last) setActive(last);
   }, { passive: true });
 
   const nudge = () => {
@@ -681,13 +659,6 @@
   };
   window.addEventListener('resize', onResize);
 
-  if ('ResizeObserver' in window) {
-    const sizes = new ResizeObserver(() => {
-      cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(updateSticky);
-    });
-    stickyBlocks.forEach((el) => sizes.observe(el));
-  }
 
   /* ---------- Départ ---------- */
 

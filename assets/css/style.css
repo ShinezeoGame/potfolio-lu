@@ -54,7 +54,7 @@
   --maxw: 1120px;
   --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --font-hand: "Ludivine Manuscrite", "Segoe Print", "Bradley Hand", cursive;
 
   /* Mouvements du carnet */
   --ease-book: cubic-bezier(0.5, 0.05, 0.2, 1);
@@ -69,7 +69,9 @@
   color-scheme: light;
 }
 
-/* ---------- Polices (hébergées sur le site, licence SIL OFL 1.1) ---------- */
+/* ---------- Polices hébergées sur le site ----------
+   Fraunces et Inter : licence SIL OFL 1.1.
+   Ludivine Manuscrite : créée à partir de l'écriture de Ludivine Codoner. */
 
 @font-face {
   font-family: "Fraunces";
@@ -88,11 +90,19 @@
 }
 
 @font-face {
-  font-family: "Caveat";
+  font-family: "Ludivine Manuscrite";
   font-style: normal;
-  font-weight: 400 700;
+  font-weight: 400;
   font-display: swap;
-  src: url("../fonts/caveat-latin.woff2") format("woff2");
+  src: url("../fonts/ludivine-manuscrite.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Ludivine Manuscrite";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/ludivine-manuscrite-gras.woff2") format("woff2");
 }
 
 /* ---------- Base ---------- */
@@ -727,26 +737,29 @@ html:not(.js) .book__shadow {
 
 .tab {
   --tab: var(--postit-sage);
-  --tx: calc(var(--u) * -17);
+  --tx: calc(var(--u) * -23);
   position: absolute;
   top: var(--top);
   left: calc(var(--u) * -10);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: calc(var(--u) * 32);
+  width: calc(var(--u) * 38);
   height: calc(var(--u) * 8.4);
   padding-right: calc(var(--u) * 2.6);
   border-radius: 0 calc(var(--u) * 1) calc(var(--u) * 1) 0;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent 30%), var(--tab);
   box-shadow: calc(var(--u) * 0.3) calc(var(--u) * 0.4) calc(var(--u) * 0.8) rgba(60, 40, 20, 0.16);
   color: var(--ink);
-  font-size: calc(var(--u) * 4.4);
-  font-weight: 600;
+  font-size: calc(var(--u) * 4.2);
+  font-weight: 400;
   line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
   transform: translateX(var(--tx)) rotate(var(--rot, 0deg));
-  transition: transform 0.6s var(--ease-book) var(--tab-delay, 0s), background-color 0.2s ease;
+  transition:
+    transform 0.6s var(--ease-book) var(--tab-delay, 0s),
+    height 0.3s ease, margin 0.3s ease, font-size 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
 }
 
 .tab span {
@@ -754,12 +767,15 @@ html:not(.js) .book__shadow {
   transition: opacity 0.4s ease;
 }
 
-.tab:nth-child(1) { --top: 9%; --tab: var(--postit-rose); --rot: -1deg; --tab-delay: 0.05s; }
-.tab:nth-child(2) { --top: 22%; --tab: var(--postit-sage); --rot: 1deg; --tab-delay: 0.1s; }
-.tab:nth-child(3) { --top: 35%; --tab: var(--postit-sand); --rot: -0.5deg; --tab-delay: 0.15s; }
-.tab:nth-child(4) { --top: 48%; --tab: var(--postit-rose); --rot: 1.2deg; --tab-delay: 0.2s; }
-.tab:nth-child(5) { --top: 61%; --tab: var(--postit-sage); --rot: -1deg; --tab-delay: 0.25s; }
-.tab:nth-child(6) { --top: 74%; --tab: var(--postit-sand); --rot: 0.6deg; --tab-delay: 0.3s; }
+.tab:nth-child(3n+1) { --tab: var(--postit-rose); --tab-strong: #eda7bf; }
+.tab:nth-child(3n+2) { --tab: var(--postit-sage); --tab-strong: #c6d79c; }
+.tab:nth-child(3n+3) { --tab: var(--postit-sand); --tab-strong: #edcf86; }
+.tab:nth-child(1) { --top: 9%; --rot: -1deg; --tab-delay: 0.05s; }
+.tab:nth-child(2) { --top: 22%; --rot: 1deg; --tab-delay: 0.1s; }
+.tab:nth-child(3) { --top: 35%; --rot: -0.5deg; --tab-delay: 0.15s; }
+.tab:nth-child(4) { --top: 48%; --rot: 1.2deg; --tab-delay: 0.2s; }
+.tab:nth-child(5) { --top: 61%; --rot: -1deg; --tab-delay: 0.25s; }
+.tab:nth-child(6) { --top: 74%; --rot: 0.6deg; --tab-delay: 0.3s; }
 
 /* Pendant la lecture, les post-it sortent davantage et montrent leur titre */
 html[data-book="reading"] .tab {
@@ -771,8 +787,28 @@ html[data-book="reading"] .tab span {
   transition-delay: 0.5s;
 }
 
-html[data-book="reading"] .tab.is-active {
+html[data-book="reading"] .tab {
+  color: var(--ink-soft);
+}
+
+html[data-book="reading"] .tab:hover {
   --tx: calc(var(--u) * 3);
+  color: var(--ink);
+}
+
+/* La partie en cours de lecture : post-it plus coloré, plus grand, qui sort davantage */
+html[data-book="reading"] .tab.is-active {
+  --tx: calc(var(--u) * 9);
+  --rot: 0deg;
+  z-index: 2;
+  height: calc(var(--u) * 10);
+  margin-top: calc(var(--u) * -0.8);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.05), transparent 30%), var(--tab-strong);
+  box-shadow:
+    calc(var(--u) * 0.5) calc(var(--u) * 0.8) calc(var(--u) * 1.6) rgba(60, 40, 20, 0.28),
+    inset calc(var(--u) * -0.6) 0 0 rgba(255, 255, 255, 0.35);
+  color: var(--ink);
+  font-size: calc(var(--u) * 4.8);
   font-weight: 700;
 }
 
@@ -1094,23 +1130,8 @@ html:not([data-book="closed"]) .book__open {
   margin: 0;
   color: var(--ink);
   font-size: calc(var(--u) * 9);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.08;
-}
-
-.spread__arrow {
-  position: absolute;
-  top: 47%;
-  right: calc(var(--u) * 3);
-  width: calc(var(--u) * 24);
-  fill: none;
-  stroke: var(--ink-soft);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 160;
-  stroke-dashoffset: 160;
-  transition: stroke-dashoffset 0.9s ease;
 }
 
 .spread__underline {
@@ -1126,9 +1147,7 @@ html:not([data-book="closed"]) .book__open {
   transition: stroke-dashoffset 0.9s ease;
 }
 
-.is-drawn .spread__arrow,
 .is-drawn .spread__underline,
-html:not(.js) .spread__arrow,
 html:not(.js) .spread__underline {
   stroke-dashoffset: 0;
 }
@@ -1154,7 +1173,7 @@ html:not(.js) .spread__underline {
   right: calc(var(--u) * 13);
   bottom: calc(var(--u) * 5);
   font-size: calc(var(--u) * 4.6);
-  font-weight: 600;
+  font-weight: 400;
   white-space: nowrap;
 }
 
@@ -1214,7 +1233,7 @@ html:not([data-book="open"]) .turn {
   color: var(--muted);
   font-family: var(--font-hand);
   font-size: clamp(1.25rem, 1.5vw, 1.55rem);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.1;
   text-align: center;
   opacity: 0;
@@ -1263,78 +1282,104 @@ html:not(.js) .intro__hint {
   display: none;
 }
 
-/* ---------- Autocollants des passions ---------- */
+/* ---------- Passions : autocollants et phrases sur la double page ---------- */
+
+.stickers__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
 .sticker {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: var(--st, 120px);
-  text-align: center;
+  align-items: flex-start;
+  gap: var(--st-gap, 14px);
 }
 
 .sticker svg {
-  width: 100%;
+  width: var(--st, 76px);
   height: auto;
+  flex: none;
   overflow: visible;
+  transform: rotate(var(--sr, 0deg));
 }
 
-.sticker__cap {
-  display: block;
-  width: max-content;
-  max-width: calc(var(--st, 120px) * 1.5);
-  margin-top: 0.15em;
+.sticker__text {
+  margin: 0;
   color: var(--ink);
   font-family: var(--font-hand);
-  font-size: var(--st-font, 1.25rem);
-  font-weight: 700;
-  line-height: 1;
+  font-size: var(--st-font, 1.1rem);
+  line-height: 1.18;
+  text-align: left;
+  -webkit-hyphens: manual;
+  hyphens: manual;
 }
 
-.sticker__cap small {
+.sticker__text strong {
   display: block;
-  margin-top: 0.15em;
-  color: var(--ink-soft);
-  font-size: 0.8em;
-  font-weight: 600;
+  margin-bottom: 0.12em;
+  font-size: 1.16em;
+  font-weight: 700;
 }
 
+/* Sans JavaScript : les passions s'affichent sous le carnet */
 .stickers {
-  display: none;
+  max-width: 760px;
+  margin: 40px auto 0;
 }
 
+html:not(.js) .stickers__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* Avec JavaScript : posées sur la double page ouverte */
 .js .stickers {
   position: absolute;
   top: var(--sf-y);
   left: var(--sf-x);
-  display: block;
   width: var(--sf-w);
   height: var(--sf-h);
+  max-width: none;
+  margin: 0;
 }
 
 .stickers .sticker {
-  --st: calc(var(--u) * 23);
-  --st-font: calc(var(--u) * 4.6);
+  --st: calc(var(--u) * 15);
+  --st-gap: calc(var(--u) * 3);
+  --st-font: calc(var(--u) * 3.9);
+}
+
+.js .stickers .sticker {
   position: absolute;
   top: var(--sy);
   left: var(--sx);
+  width: 40%;
   opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.js .stickers .sticker svg {
   transform: rotate(var(--sr)) scale(0.3);
-  transition: transform 0.3s ease, opacity 0.2s ease;
+  transition: transform 0.3s ease;
 }
 
 html[data-book="open"] .stickers .sticker {
   opacity: 1;
-  transform: rotate(var(--sr)) scale(1);
-  transition:
-    transform 0.55s cubic-bezier(0.3, 1.5, 0.5, 1) var(--sd),
-    opacity 0.2s ease var(--sd);
+  transition: opacity 0.2s ease var(--sd);
 }
 
-.sticker--inpn { --sx: 4%; --sy: 55%; --sr: -8deg; --sd: 1.5s; }
-.sticker--jeux { --sx: 25.5%; --sy: 63%; --sr: 6deg; --sd: 1.7s; }
-.sticker--macro { --sx: 55.5%; --sy: 59%; --sr: -5deg; --sd: 1.9s; }
-.sticker--ecriture { --sx: 76%; --sy: 44%; --sr: 7deg; --sd: 2.1s; }
+html[data-book="open"] .stickers .sticker svg {
+  transform: rotate(var(--sr)) scale(1);
+  transition: transform 0.55s cubic-bezier(0.3, 1.5, 0.5, 1) var(--sd);
+}
+
+/* Les deux passions de gauche sous la question, les deux de droite sous l'hypothèse */
+.sticker--inpn { --sx: 5%; --sy: 44%; --sr: -8deg; --sd: 1.3s; }
+.sticker--jeux { --sx: 5%; --sy: 66%; --sr: 6deg; --sd: 1.5s; }
+.sticker--macro { --sx: 54.5%; --sy: 46%; --sr: -5deg; --sd: 1.7s; }
+.sticker--ecriture { --sx: 54.5%; --sy: 61%; --sr: 7deg; --sd: 1.9s; }
 
 /* ---------- Écriture progressive ---------- */
 
@@ -1388,8 +1433,6 @@ html[data-book="open"] .stickers .sticker {
 }
 
 .page__runner {
-  display: flex;
-  justify-content: space-between;
   margin: 0 0 calc(var(--u) * 5);
   color: var(--ink-soft);
   font-family: var(--font-sans);
@@ -1400,10 +1443,19 @@ html[data-book="open"] .stickers .sticker {
   opacity: 0.75;
 }
 
+.page__number {
+  position: absolute;
+  right: calc(var(--u) * 7);
+  bottom: calc(var(--u) * 5);
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: calc(var(--u) * 4.4);
+}
+
 .page__title {
   margin: 0 0 calc(var(--u) * 5);
   color: var(--ink);
-  font-size: calc(var(--u) * 8.4);
+  font-size: calc(var(--u) * 6.8);
   font-weight: 700;
   line-height: 1;
 }
@@ -1446,8 +1498,8 @@ html[data-book="open"] .stickers .sticker {
 
 .entry__date {
   color: var(--ink-soft);
-  font-size: calc(var(--u) * 4.9);
-  font-weight: 600;
+  font-size: calc(var(--u) * 4.4);
+  font-weight: 400;
 }
 
 .entry--rose .entry__date,
@@ -1457,24 +1509,28 @@ html[data-book="open"] .stickers .sticker {
 
 .entry__title {
   color: var(--ink);
-  font-size: calc(var(--u) * 6.8);
+  font-size: calc(var(--u) * 6);
   font-weight: 700;
 }
 
 .entry__place {
   color: var(--ink-soft);
-  font-size: calc(var(--u) * 5.4);
+  font-size: calc(var(--u) * 4.8);
+}
+
+.entry__place--mail {
+  font-size: calc(var(--u) * 4.2);
 }
 
 .entry__line {
   color: var(--ink);
-  font-size: calc(var(--u) * 5.8);
-  font-weight: 600;
+  font-size: calc(var(--u) * 5.2);
+  font-weight: 700;
 }
 
 .entry__line--soft {
   color: var(--ink-soft);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* L'étape lue en ce moment est surlignée */
@@ -1524,9 +1580,14 @@ html.is-turning {
   overflow: hidden;
 }
 
+.journal {
+  counter-reset: chapitre;
+}
+
 .chapter {
   max-width: 760px;
   margin-inline: auto;
+  counter-increment: chapitre;
 }
 
 /* Sous l'en-tête fixe des petits écrans */
@@ -1535,12 +1596,28 @@ html.is-turning {
   scroll-margin-top: 64px;
 }
 
+/* Un trait plein entre les parties, un trait pointillé entre les descriptions */
 .chapter + .chapter {
-  margin-top: clamp(40px, 8vw, 72px);
+  margin-top: clamp(24px, 5vw, 48px);
+  padding-top: clamp(40px, 7vw, 72px);
+  border-top: 1px solid var(--line);
+}
+
+.step + .step {
+  border-top: 1px dashed var(--line);
 }
 
 .chapter__head {
-  margin-bottom: clamp(36px, 6vw, 56px);
+  margin-bottom: clamp(30px, 5vw, 44px);
+}
+
+/* Numéro de partie devant l'intitulé : 01, 02… */
+.chapter__head .eyebrow::before {
+  content: counter(chapitre, decimal-leading-zero);
+  margin-right: 0.75em;
+  padding-right: 0.75em;
+  border-right: 1px solid color-mix(in srgb, var(--rose) 45%, transparent);
+  color: var(--rose);
 }
 
 .chapter__head h2 {
@@ -1555,24 +1632,33 @@ html.is-turning {
 }
 
 .step {
-  padding-block: clamp(36px, 7vw, 64px);
+  padding-block: clamp(36px, 6vw, 60px);
 }
 
 .step:first-child {
-  padding-top: clamp(56px, 10vw, 96px);
+  padding-top: 0;
 }
 
 .step__meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 16px;
-  margin: 0 0 10px;
+  align-items: center;
+  gap: 2px 14px;
+  margin: 0 0 12px;
   color: var(--muted);
   font-family: var(--font-hand);
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.35rem;
+  font-weight: 400;
   line-height: 1.1;
+}
+
+/* Le même petit dessin que dans la marge du carnet */
+.step__icon {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  margin-right: -2px;
+  transform: rotate(-6deg);
 }
 
 .step__kicker {
@@ -1797,38 +1883,6 @@ html.is-turning {
   font-weight: 500;
 }
 
-/* Passions */
-.passions {
-  display: grid;
-  gap: 18px;
-}
-
-.passions li {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.passions__icon {
-  width: 54px;
-  height: 54px;
-  flex: none;
-}
-
-.passions span {
-  color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.55;
-}
-
-.passions strong {
-  display: block;
-  color: var(--text);
-  font-family: var(--font-serif);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
 /* Compétences : fiches bristol */
 .skills {
   display: grid;
@@ -1970,20 +2024,39 @@ a.contact__link:not(.contact__link--main):hover {
   stroke-linejoin: round;
 }
 
-/* ---------- Albums ---------- */
+/* ---------- Albums ----------
+   Sous chaque description, une rangée de photos sur une bande de papier kraft :
+   elle part de l'alignement du texte et file jusqu'au bord droit de l'écran. */
 
 .album {
+  --album-pad: clamp(16px, 5vw, 40px);
   position: relative;
-  margin-top: 30px;
+  margin-top: 34px;
+  margin-right: calc(-1 * var(--album-pad));
+}
+
+/* La bande de kraft, fixe derrière les photos qui défilent */
+.album[data-gallery]:not(.album--portrait)::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  border-radius: 6px 0 0 6px;
+  background-color: var(--kraft);
+  background-image: radial-gradient(rgba(120, 90, 50, 0.08) 1px, transparent 1px);
+  background-size: 7px 7px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 24px -14px rgba(60, 40, 20, 0.4);
 }
 
 .album__title {
   position: relative;
   z-index: 3;
-  margin: 0 0 -14px 14px;
+  margin: 0 0 -10px 16px;
   color: var(--ink);
   font-family: var(--font-hand);
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -1991,37 +2064,22 @@ a.contact__link:not(.contact__link--main):hover {
 /* Le titre est écrit sur un morceau de ruban adhésif */
 .album__title span {
   display: inline-block;
-  padding: 6px 16px 7px;
+  padding: 6px 14px 7px;
   background: var(--tape);
   box-shadow: 0 1px 2px rgba(60, 40, 20, 0.12);
-  transform: rotate(-2.5deg);
+  transform: rotate(-2deg);
 }
 
-/* Une rangée de photos qui sort de l'écran à droite, à faire glisser */
 .album__prints {
   position: relative;
-  z-index: 0;
+  z-index: 1;
   display: flex;
-  gap: 20px;
-  margin-right: calc(-1 * clamp(16px, 5vw, 40px));
-  padding: 34px clamp(16px, 5vw, 40px) 30px 18px;
+  gap: 18px;
+  padding: 30px var(--album-pad) 22px 18px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
   scrollbar-color: var(--sand) transparent;
-}
-
-/* La page de l'album, en papier kraft */
-.album__prints::before {
-  content: "";
-  position: absolute;
-  inset: 12px 0 8px;
-  z-index: -1;
-  border-radius: 6px 0 0 6px;
-  background-color: var(--kraft);
-  background-image: radial-gradient(rgba(120, 90, 50, 0.08) 1px, transparent 1px);
-  background-size: 7px 7px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 24px -14px rgba(60, 40, 20, 0.4);
 }
 
 .print {
@@ -2032,14 +2090,14 @@ a.contact__link:not(.contact__link--main):hover {
   transform: rotate(var(--r));
 }
 
-.print:nth-child(4n+2) { --r: 1.8deg; }
-.print:nth-child(4n+3) { --r: -0.8deg; }
-.print:nth-child(4n+4) { --r: 2.4deg; }
+.print:nth-child(4n+2) { --r: 1.6deg; }
+.print:nth-child(4n+3) { --r: -0.7deg; }
+.print:nth-child(4n+4) { --r: 2.2deg; }
 
 .print a {
   display: block;
   width: min-content;
-  padding: 8px 8px 0;
+  padding: 7px 7px 0;
   border-radius: 2px;
   background: #fffdf8;
   box-shadow: var(--shadow-print);
@@ -2057,12 +2115,12 @@ a.contact__link:not(.contact__link--main):hover {
 .print::before {
   content: "";
   position: absolute;
-  top: -11px;
+  top: -10px;
   left: 50%;
   z-index: 2;
-  width: 70px;
-  height: 22px;
-  margin-left: -35px;
+  width: 62px;
+  height: 20px;
+  margin-left: -31px;
   background: var(--tape);
   box-shadow: 0 1px 2px rgba(60, 40, 20, 0.1);
   transform: rotate(calc(var(--r) * -2.5));
@@ -2073,26 +2131,26 @@ a.contact__link:not(.contact__link--main):hover {
   display: block;
   width: auto;
   max-width: none;
-  height: 200px;
+  height: var(--print-h, 168px);
   background: var(--bg-alt);
 }
 
 .print__cap {
   display: block;
-  padding: 7px 2px 10px;
+  padding: 6px 2px 9px;
   color: var(--ink);
   font-family: var(--font-hand);
-  font-size: 1.12rem;
-  font-weight: 600;
-  line-height: 1.05;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.1;
   text-align: center;
 }
 
-/* Les photos se posent une à une sur la page de l'album */
+/* Les photos se posent une à une sur la bande */
 .js .print.reveal {
   opacity: 0;
-  transform: translateY(40px) rotate(calc(var(--r) * 3));
-  transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+  transform: translateY(30px) rotate(calc(var(--r) * 3));
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1);
 }
 
 .js .print.reveal.is-visible {
@@ -2100,88 +2158,45 @@ a.contact__link:not(.contact__link--main):hover {
   transform: rotate(var(--r));
 }
 
-/* Pile des photos suivantes : grand écran seulement, elle ouvre la visionneuse */
-.print--pile {
-  display: none;
-}
-
-.print--pile a {
-  position: relative;
-  box-shadow:
-    5px 5px 0 -1px #fffdf8, 5px 5px 0 0 rgba(60, 40, 20, 0.14),
-    10px 9px 0 -1px #fffdf8, 10px 9px 0 0 rgba(60, 40, 20, 0.14),
-    var(--shadow-print);
-}
-
-.print--pile img {
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  filter: saturate(0.85) brightness(0.92);
-}
-
-.print__more {
-  position: absolute;
-  inset: 8px 8px auto;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 4 / 3;
-  color: #fffdf8;
-  font-family: var(--font-hand);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  text-shadow: 0 1px 6px rgba(30, 20, 10, 0.55);
-  background: rgba(40, 32, 20, 0.28);
-}
-
-/* Portrait de la présentation et chiffres clés en post-it */
-.album--portrait .album__prints,
-.album--portrait .album__prints::before {
-  overflow: visible;
+/* Présentation : le portrait et les chiffres clés en post-it, côte à côte */
+.album--portrait {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 30px;
+  margin-right: 0;
 }
 
 .album--portrait .album__prints {
-  justify-content: center;
-  margin-right: 0;
-  padding-right: 18px;
+  padding: 14px 0 0 6px;
+  overflow: visible;
 }
 
-.album--portrait .print img {
-  height: 300px;
-}
-
-.album--portrait .print__cap {
-  font-size: 1.25rem;
-}
-
-.album--portrait .album__prints::before {
-  display: none;
+.album--portrait .print {
+  --print-h: 230px;
 }
 
 .facts {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 8px;
+  gap: 12px;
 }
 
 .fact {
   display: grid;
+  align-content: start;
   gap: 2px;
-  width: 150px;
-  min-height: 120px;
-  padding: 14px 14px 16px;
+  width: 140px;
+  min-height: 116px;
+  padding: 12px 13px 14px;
   background: var(--postit-sage);
   box-shadow: 0 1px 1px rgba(60, 40, 20, 0.08), 0 8px 14px -8px rgba(60, 40, 20, 0.35);
   transform: rotate(-2deg);
-  align-content: start;
 }
 
 .fact:nth-child(2) {
   background: var(--postit-rose);
-  transform: rotate(1.6deg) translateY(10px);
+  transform: rotate(1.6deg) translateY(8px);
 }
 
 .fact:nth-child(3) {
@@ -2192,7 +2207,7 @@ a.contact__link:not(.contact__link--main):hover {
 .fact__value {
   color: var(--ink);
   font-family: var(--font-hand);
-  font-size: 1.85rem;
+  font-size: 1.6rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -2203,118 +2218,11 @@ a.contact__link:not(.contact__link--main):hover {
   line-height: 1.35;
 }
 
-/* Les autocollants des passions, rassemblés */
-.album__stickers {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 26px 18px;
-  justify-items: center;
-  padding: 10px 0;
-}
-
-.album__stickers .sticker {
-  --st: min(150px, 38vw);
-  --st-font: 1.3rem;
-}
-
-.album__stickers .sticker:nth-child(1) { transform: rotate(-6deg); }
-.album__stickers .sticker:nth-child(2) { transform: rotate(5deg) translateY(24px); }
-.album__stickers .sticker:nth-child(3) { transform: rotate(4deg); }
-.album__stickers .sticker:nth-child(4) { transform: rotate(-5deg) translateY(24px); }
-
-/* Objets de l'album : étiquette de collection, livre, carte postale */
+/* Le livre en cours d'écriture, sous sa description */
 .album--object {
   display: flex;
-  justify-content: center;
-  padding: 22px 0;
-}
-
-.specimen {
-  position: relative;
-  width: min(100%, 330px);
-  padding: 26px 26px 22px;
-  border: 1px solid rgba(47, 42, 34, 0.25);
-  background: #fffdf6;
-  box-shadow: var(--shadow-print), inset 0 0 0 5px #fffdf6, inset 0 0 0 6px rgba(47, 42, 34, 0.35);
-  transform: rotate(-2deg);
-}
-
-.specimen::before {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  width: 84px;
-  height: 24px;
-  margin-left: -42px;
-  background: var(--tape);
-  transform: rotate(3deg);
-}
-
-.specimen--alt {
-  transform: rotate(1.8deg);
-}
-
-.specimen--sun {
-  transform: rotate(-1.2deg);
-}
-
-.specimen__doodle {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  width: 52px;
-  height: 52px;
-}
-
-.specimen__head {
-  margin: 0 0 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(47, 42, 34, 0.25);
-  color: var(--primary-strong);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.specimen__fields {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-}
-
-.specimen__fields div {
-  display: grid;
-  grid-template-columns: 82px 1fr;
-  align-items: baseline;
-  border-bottom: 1px dotted rgba(47, 42, 34, 0.25);
-}
-
-.specimen__fields dt {
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.specimen__fields dd {
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.45rem;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.specimen__foot {
-  margin: 14px 0 0;
-  color: var(--muted);
-  font-family: var(--font-serif);
-  font-size: 0.92rem;
-  font-style: italic;
-  text-align: center;
+  padding: 10px 0 10px 8px;
+  margin-right: 0;
 }
 
 .bookmock {
@@ -2324,8 +2232,8 @@ a.contact__link:not(.contact__link--main):hover {
 
 .bookmock__cover {
   position: relative;
-  width: 230px;
-  min-height: 310px;
+  width: 200px;
+  min-height: 270px;
   padding: 30px 24px 24px 34px;
   border-radius: 3px 10px 10px 3px;
   background:
@@ -2404,99 +2312,6 @@ a.contact__link:not(.contact__link--main):hover {
   font-size: 1.35rem;
   font-weight: 700;
   transform: rotate(8deg);
-}
-
-.postcard {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: min(100%, 400px);
-  min-height: 240px;
-  padding: 22px;
-  background: #fffdf6;
-  box-shadow: var(--shadow-print);
-  transform: rotate(2deg);
-}
-
-.postcard__message {
-  padding-right: 18px;
-  border-right: 1px solid var(--line);
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.3rem;
-  font-weight: 600;
-  line-height: 1.15;
-}
-
-.journal .postcard p {
-  margin: 0 0 12px;
-  text-align: left;
-  -webkit-hyphens: manual;
-  hyphens: manual;
-}
-
-.postcard__sign {
-  color: var(--rose);
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.postcard__address {
-  position: relative;
-  padding: 92px 0 0 18px;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.3rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.postcard__address p {
-  margin: 0;
-  background: repeating-linear-gradient(transparent 0 26px, var(--line) 26px 27px);
-}
-
-/* Timbre aux bords dentelés */
-.postcard__stamp {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 64px;
-  padding: 4px;
-  background: linear-gradient(var(--primary-soft), var(--primary-soft)) content-box, #f4ecda;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    radial-gradient(circle 2.6px, transparent 96%, #000) -4px -4px / 8px 8px;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    radial-gradient(circle 2.6px, transparent 96%, #000) -4px -4px / 8px 8px;
-}
-
-.postcard__stamp svg {
-  width: 34px;
-  height: 34px;
-  --accent: var(--rose);
-}
-
-.postcard__postmark {
-  position: absolute;
-  top: 26px;
-  right: 34px;
-  display: grid;
-  place-items: center;
-  width: 66px;
-  height: 66px;
-  border: 1.5px solid rgba(47, 42, 34, 0.45);
-  border-radius: 50%;
-  color: rgba(47, 42, 34, 0.6);
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transform: rotate(-14deg);
 }
 
 /* ---------- Mentions légales ---------- */
@@ -2693,7 +2508,7 @@ a.contact__link:not(.contact__link--main):hover {
   color: #fffaf1;
   font-family: var(--font-hand);
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
 }
 
@@ -2796,20 +2611,25 @@ body:has(.lightbox[open]) {
    Petits écrans : autocollants autour du carnet ouvert
    ========================================================================== */
 
-/* Quand la double page est petite (téléphone), les autocollants se placent au-dessus et au-dessous */
+/* Quand la double page est petite (téléphone), les passions se placent au-dessus et au-dessous */
 .stickers-out .stickers .sticker {
-  --st: clamp(76px, 21vw, 118px);
-  --st-font: clamp(0.95rem, 3.4vw, 1.2rem);
+  --st: clamp(48px, 14vw, 64px);
+  --st-gap: 6px;
+  --st-font: clamp(0.82rem, 3.3vw, 0.95rem);
+  flex-direction: column;
+  width: 47%;
 }
 
-.stickers-out .sticker--inpn { --sx: 3%; --sy: calc(-1 * var(--st) - 54px); --sr: -7deg; }
-.stickers-out .sticker--jeux { --sx: 55%; --sy: calc(-1 * var(--st) - 66px); --sr: 6deg; }
-.stickers-out .sticker--macro { --sx: 6%; --sy: calc(100% + 24px); --sr: 5deg; }
-.stickers-out .sticker--ecriture { --sx: 56%; --sy: calc(100% + 14px); --sr: -6deg; }
-
-.stickers-out .sticker__cap small {
-  font-size: 0.78em;
+.stickers-out .stickers .sticker--inpn,
+.stickers-out .stickers .sticker--jeux {
+  top: auto;
+  bottom: calc(100% + 14px);
 }
+
+.stickers-out .sticker--inpn { --sx: 0%; --sr: -7deg; }
+.stickers-out .sticker--jeux { --sx: 53%; --sr: 6deg; }
+.stickers-out .sticker--macro { --sx: 0%; --sy: calc(100% + 18px); --sr: 5deg; }
+.stickers-out .sticker--ecriture { --sx: 53%; --sy: calc(100% + 18px); --sr: -6deg; }
 
 @media (max-width: 1179px), (max-height: 599px) {
   /* Pendant la lecture, le carnet s'éclipse : le parcours prend toute la largeur */
@@ -2826,7 +2646,7 @@ body:has(.lightbox[open]) {
   }
 }
 
-/* Écrans bas (téléphone à l'horizontale) : pas de place pour les autocollants */
+/* Écrans bas (téléphone à l'horizontale) : pas de place pour les passions sur la double page */
 @media (max-height: 599px) {
   .js .stickers {
     display: none;
@@ -2834,15 +2654,11 @@ body:has(.lightbox[open]) {
 }
 
 /* ==========================================================================
-   Grand écran : carnet à gauche, description au centre, album à droite
+   Grand écran : le carnet à gauche, la lecture à droite
+   Chaque description est suivie de son album, sans colonne qui laisserait des vides.
    ========================================================================== */
 
 @media (min-width: 1180px) and (min-height: 600px) {
-  .js {
-    --album-w: clamp(280px, 24vw, 520px);
-    --col-gap: clamp(36px, 4vw, 80px);
-  }
-
   .js .site-header {
     display: none;
   }
@@ -2860,170 +2676,36 @@ body:has(.lightbox[open]) {
   .js .chapter {
     max-width: none;
     margin: 0;
+    padding-right: clamp(32px, 5vw, 96px);
   }
 
-  .js .step {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--album-w);
-    align-items: start;
-    column-gap: var(--col-gap);
-    min-height: 100vh;
-    padding-block: 12vh;
+  .js .chapter:first-child {
+    padding-top: 12vh;
   }
 
-  .js .step:first-child {
-    padding-top: 14vh;
+  .js .chapter:last-child {
+    padding-bottom: 8vh;
   }
 
   .js .step__text {
-    justify-self: center;
-    width: 100%;
-    max-width: 620px;
-  }
-
-  .js .step--wide {
-    grid-template-columns: minmax(0, 1fr);
-    padding-right: var(--col-gap);
+    max-width: 680px;
   }
 
   .js .step--wide .step__text {
-    justify-self: start;
-    max-width: 1040px;
+    max-width: 980px;
   }
 
-  /* Un bloc plus court que l'écran reste visible pendant que son voisin défile */
-  .js .is-sticky {
-    position: sticky;
-    top: var(--stick, 10vh);
-  }
-
+  /* L'album file jusqu'au bord droit de l'écran */
   .js .album {
-    margin-top: 0;
-  }
-
-  /* Album en colonne : les photos alternent et sortent du cadre à droite */
-  .js .album__prints {
-    display: block;
-    margin-right: 0;
-    padding: 40px 0 70px;
-    overflow: visible;
-  }
-
-  .js .album__prints::before {
-    inset: 0 -60px 0 -18px;
-    border-radius: 8px 0 0 8px;
-    transform: rotate(-0.8deg);
+    --album-pad: clamp(32px, 5vw, 96px);
   }
 
   .js .print {
-    --w: 80%;
-    width: var(--w);
-  }
-
-  .js .print + .print {
-    margin-top: 18px;
-  }
-
-  /* Une photo sur deux est décalée et dépasse du bord de l'écran */
-  .js .print:nth-child(odd) {
-    margin-left: 2%;
-  }
-
-  /* Au-delà de cinq photos, les suivantes attendent dans une pile */
-  .js .album.has-pile .print:nth-child(n+6):not(.print--pile) {
-    display: none;
-  }
-
-  .js .print--pile {
-    --w: 58%;
-    display: block;
-  }
-
-  .js .album .print--pile {
-    margin-left: 10%;
-  }
-
-  .js .print--pile a {
-    padding: 10px 10px 0;
-  }
-
-  .js .print--pile .print__more {
-    inset: 10px 10px auto;
-  }
-
-  .js .print:nth-child(even) {
-    margin-left: calc(100% - var(--w) + 9%);
-  }
-
-  /* La légende reste dans la partie visible de la photo */
-  .js .print:nth-child(even) .print__cap {
-    padding-right: 14%;
-  }
-
-  .js .print--portrait {
-    --w: 60%;
-  }
-
-  .js .print--tall {
-    --w: 48%;
-  }
-
-  .js .print a {
-    width: 100%;
-    padding: 10px 10px 0;
-  }
-
-  .js .print img {
-    width: 100%;
-    height: auto;
-  }
-
-  .js .print__cap {
-    padding: 9px 4px 12px;
-    font-size: 1.22rem;
-  }
-
-  .js .album--portrait .album__prints {
-    padding-top: 0;
+    --print-h: 178px;
   }
 
   .js .album--portrait .print {
-    width: 78%;
-    margin-left: 6%;
-  }
-
-  .js .album--portrait .facts {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 0;
-    margin-top: -26px;
-    padding-left: 2%;
-  }
-
-  .js .album--portrait .fact {
-    flex: none;
-    width: 128px;
-    min-height: 118px;
-  }
-
-  .js .album--portrait .fact + .fact {
-    margin-left: -10px;
-  }
-
-  .js .album--object {
-    justify-content: flex-start;
-    padding: 8vh 0 0 4%;
-  }
-
-  .js .album__stickers .sticker {
-    --st: min(150px, 11vw);
-  }
-}
-
-/* Écrans très larges : le carnet garde une taille de lecture confortable */
-@media (min-width: 1700px) and (min-height: 600px) {
-  .js .step__text {
-    max-width: 660px;
+    --print-h: 250px;
   }
 }
 
@@ -3060,6 +2742,7 @@ body:has(.lightbox[open]) {
   }
 
   .stickers .sticker,
+  .stickers .sticker svg,
   .entry__doodle,
   .tab,
   .tab span {

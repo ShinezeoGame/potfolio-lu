@@ -17,10 +17,12 @@ Le site est entièrement statique (HTML, CSS, JavaScript), sans dépendance ni �
 
 L'accueil est un carnet de terrain fermé, au nom de Ludivine Codoner, avec des post-it qui dépassent, une feuille volante et un ruban marque-page.
 
-1. **Un clic** sur le carnet l'ouvre sur une double page : « Question scientifique : Comment comprendre ce qui nous entoure ? » et « Hypothèse : étudier l'environnement permet de mieux le protéger. », qui s'écrivent à la main. Les autocollants des passions (INPN, jeux de société, photo macro, écriture) se collent autour.
+1. **Un clic** sur le carnet l'ouvre sur une double page : « Question scientifique : Comment comprendre ce qui nous entoure ? » et « Hypothèse : étudier l'environnement permet de mieux le protéger. », qui s'écrivent à la main. Les autocollants des passions (INPN, jeux de société, photo macro, écriture) se collent dessous, chacun avec sa phrase. C'est le seul endroit où figurent les passions.
 2. **Un clic sur la page, la molette ou la flèche bas** tourne la page. Sur grand écran, le carnet glisse à gauche et ne montre plus que la page de droite, vierge.
-3. **Pendant la lecture**, le carnet suit le défilement et se remplit : chaque description qui arrive au centre fait écrire sa note (dates, diplôme, lieu) et le carnet tourne ses pages d'une partie à l'autre. À droite, chaque description a son album photo, qui dépasse du bord de l'écran.
-4. Les post-it servent de sommaire. Tout en haut, la molette vers le haut ramène à la double page ; le lien « Refermer le carnet » du pied de page referme le carnet.
+3. **Pendant la lecture**, le carnet suit le défilement et se remplit : chaque description qui arrive au milieu de l'écran fait écrire sa note (dates, diplôme, lieu) et le carnet tourne ses pages d'une partie à l'autre ; le numéro de page est en bas à droite. Chaque description est suivie de son album photo, une rangée de photos qui file jusqu'au bord droit de l'écran.
+4. Les post-it servent de sommaire : celui de la partie en cours ressort, plus coloré. Tout en haut, la molette vers le haut ramène à la double page ; le lien « Refermer le carnet » du pied de page referme le carnet.
+
+Les parties sont numérotées (01 Profil, 02 Formation…) et chaque description commence par le même petit dessin que sa note dans la marge du carnet, pour se repérer facilement entre les deux.
 
 Sur tablette et téléphone, le carnet s'ouvre de la même façon puis s'efface : les descriptions s'enchaînent et les albums deviennent des rangées de photos à faire glisser. Un lien direct vers une partie (par exemple `#contact`) ouvre le site directement à cet endroit. Sans JavaScript, ou si les animations sont réduites dans le système, tout le contenu reste accessible.
 
@@ -38,7 +40,7 @@ assets/img/favicon.svg          Icône de l'onglet
 assets/img/og-image.jpg         Image d'aperçu pour les réseaux sociaux (1200 × 630 px)
 assets/img/terrain/             Photos des stages et du bénévolat (grand format + miniatures « -min » de 440 px de haut)
 assets/docs/                    Documents consultables (attestation, poster de L3)
-assets/fonts/                   Polices Fraunces, Inter et Caveat, l'écriture manuscrite (licence SIL OFL 1.1)
+assets/fonts/                   Polices Fraunces et Inter (licence SIL OFL 1.1), et la police manuscrite de Ludivine
 ```
 
 ## Modifier le contenu
@@ -47,7 +49,7 @@ Tout le texte se trouve dans `index.html`, partie par partie (`ACCUEIL : LE CARN
 
 - **Descriptions** : chaque description est un bloc `<article class="step" data-step="…">` qui contient le texte (`step__text`) puis son album (`album`).
 - **Notes du carnet** : elles sont dans l'accueil, sur les pages `data-page="1"` à `data-page="4"`. Chaque note `<li class="entry" data-entry="…">` correspond à la description qui porte le même nom dans `data-step` ; elle s'écrit quand cette description arrive au centre de l'écran. Gardez des notes courtes (trois lignes) pour qu'elles tiennent sur la page. Si une description change de page du carnet, mettez à jour son `data-page`.
-- **Ajouter une photo à un album** : préparez une grande image et une miniature de 440 px de haut (voir ci-dessous), puis copiez un bloc `<li class="print …">` de l'album. La classe indique la forme de la photo : `print--wide` (paysage), `print--portrait` (portrait) ou `print--tall` (très allongée). Sur grand écran, au-delà de cinq photos, les suivantes sont rangées dans une pile « + N photos » qui ouvre la visionneuse.
+- **Ajouter une photo à un album** : préparez une grande image et une miniature de 440 px de haut (voir ci-dessous), puis copiez un bloc `<li class="print …">` de l'album. La classe indique la forme de la photo : `print--wide` (paysage), `print--portrait` (portrait) ou `print--tall` (très allongée).
 
   ```bash
   convert photo.jpg -auto-orient -strip -resize '1600x1600>' -quality 80 assets/img/terrain/nom.webp
@@ -91,3 +93,10 @@ Lorsqu'un lien vers le site est partagé, LinkedIn, Facebook, WhatsApp ou Discor
 4. Après une ou deux minutes, le site est accessible à l'adresse `https://ludivinecodoner.github.io/` (le dépôt doit s'appeler exactement `ludivinecodoner.github.io`).
 
 Chaque nouveau push sur cette branche met le site à jour automatiquement.
+
+## La police manuscrite
+
+Toutes les écritures « à la main » du site (carnet, double page, post-it, dates, légendes) utilisent **Ludivine Manuscrite**, une police créée à partir de l'alphabet écrit par Ludivine (`assets/fonts/ludivine-manuscrite.woff2` et sa version grasse `ludivine-manuscrite-gras.woff2`).
+
+Les lettres ont été vectorisées depuis une photo : chaque lettre a été suivie le long de son trait, puis retracée avec une épaisseur régulière. Les lettres ont été légèrement harmonisées : même ligne de base, hauteurs rapprochées, bas du D reconstitué (il avait disparu avec la ligne du cahier), O refermé, creux du M marqué et hampe du t un peu allongée pour la lisibilité. Les chiffres, la ponctuation et les accents, absents de l'échantillon, ont été dessinés dans le même style ; ils pourront être remplacés à partir d'une photo de l'écriture de Ludivine (chiffres, ponctuation et lettres accentuées).
+

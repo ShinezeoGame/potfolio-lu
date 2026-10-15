@@ -22,7 +22,8 @@
 
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <!-- Polices hébergées sur le site : aucune requête vers un service tiers -->
-  <link rel="preload" href="assets/fonts/caveat-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/ludivine-manuscrite.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/ludivine-manuscrite-gras.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
@@ -120,7 +121,6 @@
             <p class="page__date" data-today>Lille, Hauts-de-France</p>
             <p class="spread__label" data-write>Question scientifique :</p>
             <p class="spread__text" data-write>Comment comprendre ce qui nous entoure ?</p>
-            <svg class="spread__arrow" viewBox="0 0 120 40" aria-hidden="true"><path d="M4 30c26-20 64-26 104-12M96 8l13 10-15 7"/></svg>
           </div>
         </div>
       </div>
@@ -142,27 +142,24 @@
       <!-- Pages du carnet qui se remplissent pendant la lecture (résumé visuel, masqué aux lecteurs d'écran) -->
       <div class="leaf" data-page="1">
         <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__runner"><span>Carnet de terrain · L. Codoner</span><span>p. 1</span></p>
+          <p class="page__number">p. 1</p>
+          <p class="page__runner">Carnet de terrain · L. Codoner</p>
           <p class="page__title" data-write>Profil &amp; formation</p>
           <ol class="entries">
             <li class="entry entry--id" data-entry="profil">
               <span class="entry__line" data-write>Observatrice : Ludivine Codoner</span>
               <span class="entry__line entry__line--soft" data-write>Lille, Hauts-de-France</span>
             </li>
-            <li class="entry entry--id" data-entry="passions">
-              <span class="entry__line" data-write>Hors terrain : INPN, jeux,</span>
-              <span class="entry__line entry__line--soft" data-write>photo macro, écriture</span>
-            </li>
             <li class="entry" data-entry="master">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-wave"/></svg>
               <span class="entry__date" data-write>2024 – 2026 · Bac+5</span>
-              <span class="entry__title" data-write>Master BEE, parcours FOGEM</span>
+              <span class="entry__title" data-write>Master BEE · FOGEM</span>
               <span class="entry__place" data-write>Université de Lille</span>
             </li>
             <li class="entry" data-entry="licence">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-seedling"/></svg>
               <span class="entry__date" data-write>2021 – 2024 · Bac+3</span>
-              <span class="entry__title" data-write>Licence SV, parcours BOP</span>
+              <span class="entry__title" data-write>Licence SV · BOP</span>
               <span class="entry__place" data-write>Université de Lille</span>
             </li>
           </ol>
@@ -172,25 +169,26 @@
 
       <div class="leaf" data-page="2">
         <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__runner"><span>Carnet de terrain · L. Codoner</span><span>p. 2</span></p>
+          <p class="page__number">p. 2</p>
+          <p class="page__runner">Carnet de terrain · L. Codoner</p>
           <p class="page__title" data-write>Stages de recherche</p>
           <ol class="entries">
             <li class="entry" data-entry="m2">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-dune"/></svg>
               <span class="entry__date" data-write>2026 · 6 mois</span>
               <span class="entry__title" data-write>Stage M2 : UMR BIOGECO</span>
-              <span class="entry__place" data-write>INRAE – Université de Bordeaux</span>
+              <span class="entry__place" data-write>INRAE, Bordeaux</span>
             </li>
             <li class="entry" data-entry="m1">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-mussel"/></svg>
               <span class="entry__date" data-write>2025 · 2 mois</span>
-              <span class="entry__title" data-write>Stage M1 : LOG (UMR 8187)</span>
+              <span class="entry__title" data-write>Stage M1 : LOG</span>
               <span class="entry__place" data-write>Station marine de Wimereux</span>
             </li>
             <li class="entry" data-entry="l3">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-flower"/></svg>
               <span class="entry__date" data-write>2024 · 2 mois</span>
-              <span class="entry__title" data-write>Stage L3 : EEP (UMR 8198)</span>
+              <span class="entry__title" data-write>Stage L3 : EEP</span>
               <span class="entry__place" data-write>Université de Lille</span>
             </li>
           </ol>
@@ -200,7 +198,8 @@
 
       <div class="leaf" data-page="3">
         <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__runner"><span>Carnet de terrain · L. Codoner</span><span>p. 3</span></p>
+          <p class="page__number">p. 3</p>
+          <p class="page__runner">Carnet de terrain · L. Codoner</p>
           <p class="page__title" data-write>Territoires &amp; engagement</p>
           <ol class="entries">
             <li class="entry" data-entry="armentieres">
@@ -213,7 +212,7 @@
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-sun"/></svg>
               <span class="entry__date" data-write>2022 – 2023 · 2 mois</span>
               <span class="entry__title" data-write>Animatrice écologie</span>
-              <span class="entry__place" data-write>Centre de loisirs d'Armentières</span>
+              <span class="entry__place" data-write>Centre de loisirs, Armentières</span>
             </li>
             <li class="entry entry--rose" data-entry="benevolat">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-heart"/></svg>
@@ -228,26 +227,27 @@
 
       <div class="leaf" data-page="4">
         <div class="leaf__face leaf__front page page--right page--journal" aria-hidden="true">
-          <p class="page__runner"><span>Carnet de terrain · L. Codoner</span><span>p. 4</span></p>
+          <p class="page__number">p. 4</p>
+          <p class="page__runner">Carnet de terrain · L. Codoner</p>
           <p class="page__title" data-write>Compétences &amp; contact</p>
           <ol class="entries">
             <li class="entry" data-entry="competences">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-chart"/></svg>
               <span class="entry__date" data-write>Outils</span>
-              <span class="entry__title" data-write>R, RStudio, Positron, QGIS</span>
-              <span class="entry__place" data-write>Espagnol B1 · anglais B1</span>
+              <span class="entry__title" data-write>R · RStudio · Positron</span>
+              <span class="entry__place" data-write>QGIS · espagnol et anglais B1</span>
             </li>
             <li class="entry" data-entry="livre">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-book"/></svg>
               <span class="entry__date" data-write>En cours</span>
-              <span class="entry__title" data-write>Un livre de statistiques</span>
+              <span class="entry__title" data-write>Livre de statistiques</span>
               <span class="entry__place" data-write>appliquées, avec le code R</span>
             </li>
             <li class="entry entry--conclusion" data-entry="contact">
               <svg class="entry__doodle" viewBox="0 0 48 48"><use href="#icon-letter"/></svg>
               <span class="entry__date" data-write>Conclusion</span>
-              <span class="entry__title" data-write>Hypothèse à vérifier ensemble !</span>
-              <span class="entry__place" data-write>ludivine.codoner.pro@gmail.com</span>
+              <span class="entry__title" data-write>À vérifier ensemble !</span>
+              <span class="entry__place entry__place--mail" data-write>ludivine.codoner.pro@gmail.com</span>
             </li>
           </ol>
         </div>
@@ -256,25 +256,28 @@
 
     </div>
 
-    <!-- Autocollants des passions, collés sur la double page à l'ouverture -->
-    <ul class="stickers" aria-hidden="true">
-      <li class="sticker sticker--inpn">
-        <svg viewBox="0 0 120 120"><use href="#doodle-inpn" filter="url(#sticker-cut)"/></svg>
-        <span class="sticker__cap">Bénévole INPN<small>inventaire des espèces</small></span>
-      </li>
-      <li class="sticker sticker--jeux">
-        <svg viewBox="0 0 120 120"><use href="#doodle-jeux" filter="url(#sticker-cut)"/></svg>
-        <span class="sticker__cap">Jeux de société<small>création d'un jeu pour sensibiliser</small></span>
-      </li>
-      <li class="sticker sticker--macro">
-        <svg viewBox="0 0 120 120"><use href="#doodle-macro" filter="url(#sticker-cut)"/></svg>
-        <span class="sticker__cap">Photo macro<small>faune et pollinisateurs</small></span>
-      </li>
-      <li class="sticker sticker--ecriture">
-        <svg viewBox="0 0 120 120"><use href="#doodle-ecriture" filter="url(#sticker-cut)"/></svg>
-        <span class="sticker__cap">Écriture<small>participation à un concours de nouvelles</small></span>
-      </li>
-    </ul>
+    <!-- Passions : autocollants et phrases écrites sur la double page à l'ouverture -->
+    <section class="stickers" aria-labelledby="titre-passions">
+      <h2 class="sr-only" id="titre-passions">En dehors du terrain</h2>
+      <ul class="stickers__list">
+        <li class="sticker sticker--inpn">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-inpn" filter="url(#sticker-cut)"/></svg>
+          <p class="sticker__text" data-write><strong>Bénévole à l'INPN</strong> Inventaire National du Patrimoine Naturel : je participe à l'inventaire des espèces.</p>
+        </li>
+        <li class="sticker sticker--jeux">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-jeux" filter="url(#sticker-cut)"/></svg>
+          <p class="sticker__text" data-write><strong>Jeux de société</strong> Création en cours d'un jeu de société sur l'écologie, pour sensibiliser tout en jouant.</p>
+        </li>
+        <li class="sticker sticker--macro">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-macro" filter="url(#sticker-cut)"/></svg>
+          <p class="sticker__text" data-write><strong>Photographie macro</strong> La faune et les pollinisateurs.</p>
+        </li>
+        <li class="sticker sticker--ecriture">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-ecriture" filter="url(#sticker-cut)"/></svg>
+          <p class="sticker__text" data-write><strong>Écriture de nouvelles</strong> Participation au concours de nouvelles étudiant organisé par le Crous, sur le thème « Fierté ».</p>
+        </li>
+      </ul>
+    </section>
 
     <p class="intro__hint intro__hint--open" aria-hidden="true">
       <svg viewBox="0 0 40 40"><path d="M8 34c2-12 10-21 24-25M24 6l9 3-4 9"/></svg>
@@ -345,39 +348,6 @@
           </ul>
         </div>
       </article>
-
-      <article class="step" data-step="passions" data-page="1">
-        <div class="step__text reveal">
-          <h3 class="step__title">En dehors du terrain</h3>
-          <ul class="passions">
-            <li>
-              <svg class="passions__icon" viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-inpn"/></svg>
-              <span><strong>Bénévole à l'INPN</strong>Inventaire National du Patrimoine Naturel : je participe à l'inventaire des espèces</span>
-            </li>
-            <li>
-              <svg class="passions__icon" viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-jeux"/></svg>
-              <span><strong>Jeux de société</strong>Création en cours d'un jeu de société sur l'écologie, pour sensibiliser tout en jouant</span>
-            </li>
-            <li>
-              <svg class="passions__icon" viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-macro"/></svg>
-              <span><strong>Photographie macro</strong>La faune et les pollinisateurs</span>
-            </li>
-            <li>
-              <svg class="passions__icon" viewBox="0 0 120 120" aria-hidden="true"><use href="#doodle-ecriture"/></svg>
-              <span><strong>Écriture de nouvelles</strong>Participation au concours de nouvelles étudiant organisé par le Crous, sur le thème « Fierté »</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="album album--stickers" aria-hidden="true">
-          <ul class="album__stickers">
-            <li class="sticker"><svg viewBox="0 0 120 120"><use href="#doodle-inpn" filter="url(#sticker-cut)"/></svg><span class="sticker__cap">Bénévole INPN<small>inventaire des espèces</small></span></li>
-            <li class="sticker"><svg viewBox="0 0 120 120"><use href="#doodle-jeux" filter="url(#sticker-cut)"/></svg><span class="sticker__cap">Jeux de société<small>création d'un jeu pour sensibiliser</small></span></li>
-            <li class="sticker"><svg viewBox="0 0 120 120"><use href="#doodle-macro" filter="url(#sticker-cut)"/></svg><span class="sticker__cap">Photo macro<small>faune et pollinisateurs</small></span></li>
-            <li class="sticker"><svg viewBox="0 0 120 120"><use href="#doodle-ecriture" filter="url(#sticker-cut)"/></svg><span class="sticker__cap">Écriture<small>concours de nouvelles du Crous</small></span></li>
-          </ul>
-        </div>
-      </article>
     </section>
 
     <!-- ============ FORMATION ============ -->
@@ -392,14 +362,9 @@
               Biologie des Organismes et des Populations (BOP).
             </p>
           </header>
-          <p class="step__meta"><span class="step__kicker">2024 – 2026</span><span>Bac+5</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">2024 – 2026</span><span>Bac+5</span></p>
           <h3 class="step__title">Master Biodiversité, Écologie, Évolution (BEE)</h3>
           <p class="step__sub">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</p>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Université de Lille</span></p>
-          <ol class="steps">
-            <li>Master 1 BEE</li>
-            <li>Master 2 FOGEM</li>
-          </ol>
           <p>
             Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et
             à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi
@@ -411,33 +376,13 @@
             <a href="#exp-m2">Stage de M2 : diversité des communautés dunaires →</a>
           </div>
         </div>
-
-        <div class="album album--object" aria-hidden="true">
-          <div class="specimen">
-            <svg class="specimen__doodle" viewBox="0 0 48 48"><use href="#icon-wave"/></svg>
-            <p class="specimen__head">Université de Lille</p>
-            <dl class="specimen__fields">
-              <div><dt>Diplôme</dt><dd>Master BEE</dd></div>
-              <div><dt>Parcours</dt><dd>FOGEM</dd></div>
-              <div><dt>Période</dt><dd>2024 – 2026</dd></div>
-              <div><dt>Niveau</dt><dd>Bac+5</dd></div>
-            </dl>
-            <p class="specimen__foot">Écosystèmes marins &amp; côtiers</p>
-          </div>
-        </div>
       </article>
 
       <article class="step" data-step="licence" data-page="1">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">2021 – 2024</span><span>Bac+3</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">2021 – 2024</span><span>Bac+3</span></p>
           <h3 class="step__title">Licence Sciences de la Vie (SV)</h3>
           <p class="step__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
-          <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Université de Lille</span></p>
-          <ol class="steps">
-            <li>Portail Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</li>
-            <li>Sciences de la Vie (SV)</li>
-            <li>Biologie des Organismes et des Populations (BOP)</li>
-          </ol>
           <p>
             Des bases solides en biologie des organismes, écologie et évolution, avec une
             orientation vers l'étude des populations et de leurs interactions avec le milieu.
@@ -446,20 +391,6 @@
             <p class="step__links-label">Stages associés</p>
             <a href="#exp-armentieres">Stages de L2/L3 : inventaires et Atlas de la Biodiversité Communale →</a>
             <a href="#exp-l3">Stage de L3 : pollinisation de <em>Silene dioica</em> →</a>
-          </div>
-        </div>
-
-        <div class="album album--object" aria-hidden="true">
-          <div class="specimen specimen--alt">
-            <svg class="specimen__doodle" viewBox="0 0 48 48"><use href="#icon-seedling"/></svg>
-            <p class="specimen__head">Université de Lille</p>
-            <dl class="specimen__fields">
-              <div><dt>Diplôme</dt><dd>Licence SV</dd></div>
-              <div><dt>Parcours</dt><dd>BOP</dd></div>
-              <div><dt>Période</dt><dd>2021 – 2024</dd></div>
-              <div><dt>Niveau</dt><dd>Bac+3</dd></div>
-            </dl>
-            <p class="specimen__foot">Organismes &amp; populations</p>
           </div>
         </div>
       </article>
@@ -478,7 +409,7 @@
               collectivité, du jeune public et <strong>un engagement bénévole à l'étranger</strong>.
             </p>
           </header>
-          <p class="step__meta"><span class="step__kicker">Master 2 · 2026</span><span>6 mois</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-dune"/></svg><span class="step__kicker">Master 2 · 2026</span><span>6 mois</span></p>
           <h3 class="step__title">Corrélation entre diversité spécifique et diversité génétique des communautés végétales dunaires</h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>UMR BIOGECO · INRAE – Université de Bordeaux</span></p>
           <p>
@@ -547,7 +478,7 @@
 
       <article class="step" id="exp-m1" data-step="m1" data-page="2">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">Master 1 · 2025</span><span>2 mois</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-mussel"/></svg><span class="step__kicker">Master 1 · 2025</span><span>2 mois</span></p>
           <h3 class="step__title">Comportement d'agrégation de la moule commune (<em>Mytilus edulis</em>) en période de reproduction</h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire d'Océanologie et de Géosciences (LOG, UMR 8187) · Station Marine de Wimereux</span></p>
           <p>
@@ -617,7 +548,7 @@
 
       <article class="step" id="exp-l3" data-step="l3" data-page="2">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">Licence 3 · 2024</span><span>2 mois</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg><span class="step__kicker">Licence 3 · 2024</span><span>2 mois</span></p>
           <h3 class="step__title">Dimorphisme sexuel et taux de visite des pollinisateurs chez <em>Silene dioica</em></h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Laboratoire Écologie, Évolution et Paléontologie (EEP, UMR 8198 CNRS) · Université de Lille</span></p>
           <p>
@@ -724,7 +655,7 @@
             <p class="eyebrow">Expériences · Territoires &amp; engagement</p>
             <h2 id="titre-engagement">Au service des territoires et du public</h2>
           </header>
-          <p class="step__meta"><span class="step__kicker">Licence 2 / 3 · 2023 – 2024</span><span>2 stages d'un mois</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg><span class="step__kicker">Licence 2 / 3 · 2023 – 2024</span><span>2 stages d'un mois</span></p>
           <h3 class="step__title">Service Nature en Ville</h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Ville d'Armentières</span></p>
           <ul class="step__list">
@@ -810,7 +741,7 @@
 
       <article class="step" data-step="animatrice" data-page="3">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">2022 – 2023</span><span>2 mois</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg><span class="step__kicker">2022 – 2023</span><span>2 mois</span></p>
           <h3 class="step__title">Animatrice écologie et environnement</h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Centre de loisirs d'Armentières</span></p>
           <ul class="step__list">
@@ -818,25 +749,11 @@
             <li>Création de supports pédagogiques</li>
           </ul>
         </div>
-
-        <div class="album album--object" aria-hidden="true">
-          <div class="specimen specimen--sun">
-            <svg class="specimen__doodle" viewBox="0 0 48 48"><use href="#icon-sun"/></svg>
-            <p class="specimen__head">Centre de loisirs</p>
-            <dl class="specimen__fields">
-              <div><dt>Mission</dt><dd>Animatrice</dd></div>
-              <div><dt>Lieu</dt><dd>Armentières</dd></div>
-              <div><dt>Période</dt><dd>2022 – 2023</dd></div>
-              <div><dt>Public</dt><dd>Enfants</dd></div>
-            </dl>
-            <p class="specimen__foot">Sensibilisation à l'environnement</p>
-          </div>
-        </div>
       </article>
 
       <article class="step accent-rose" id="exp-benevolat" data-step="benevolat" data-page="3">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">Bénévolat international · 2026</span><span>Du 1<sup>er</sup> au 16 septembre</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-heart"/></svg><span class="step__kicker">Bénévolat international · 2026</span><span>Du 1<sup>er</sup> au 16 septembre</span></p>
           <h3 class="step__title">Chantier « Green Beats »</h3>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span>Penàguila, province d'Alicante (Espagne)</span></p>
           <p class="step__org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg><span>Corps européen de solidarité · Solidarités Jeunesses</span></p>
@@ -1006,7 +923,7 @@
 
       <article class="step" data-step="livre" data-page="4">
         <div class="step__text reveal">
-          <p class="step__meta"><span class="step__kicker">Projet en cours</span></p>
+          <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-book"/></svg><span class="step__kicker">Projet en cours</span></p>
           <h3 class="step__title">J'écris un livre de statistiques appliquées</h3>
           <p>
             Un guide pratique pour choisir la bonne méthode statistique selon la situation
@@ -1070,20 +987,6 @@
               </p>
             </li>
           </ul>
-        </div>
-
-        <div class="album album--object" aria-hidden="true">
-          <div class="postcard">
-            <div class="postcard__message">
-              <p>Au plaisir d'échanger sur vos projets de terrain et d'analyse de données !</p>
-              <p class="postcard__sign">Ludivine</p>
-            </div>
-            <div class="postcard__address">
-              <span class="postcard__stamp"><svg viewBox="0 0 48 48"><use href="#icon-flower"/></svg></span>
-              <span class="postcard__postmark">Lille · 59</span>
-              <p>Ludivine Codoner<br>Lille<br>Hauts-de-France</p>
-            </div>
-          </div>
         </div>
       </article>
 
