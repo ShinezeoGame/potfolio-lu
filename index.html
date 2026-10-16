@@ -91,6 +91,8 @@
         <div class="book__shadow" aria-hidden="true"></div>
         <div class="book__back" aria-hidden="true"></div>
         <div class="book__edges" aria-hidden="true"></div>
+        <!-- Épaisseur du carnet : la tranche des pages et la couverture, vues de face -->
+        <span class="book__depth" aria-hidden="true"></span>
         <!-- Feuille volante glissée entre deux pages, ruban marque-page et post-it qui dépassent -->
         <div class="book__sheet" aria-hidden="true"><span>relevés de terrain</span></div>
         <span class="book__ribbon" aria-hidden="true"></span>
@@ -237,7 +239,7 @@
                   <svg class="title-page__doodle" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg>
                   <h2 class="title-page__title">Formation</h2>
                   <p class="title-page__sub">Université de Lille · 2021 – 2026</p>
-                  <p class="title-page__note">Une licence en Sciences de la Vie, puis un master Biodiversité, Écologie, Évolution : une double page par année.</p>
+
                 </div>
               </div>
             </div>
@@ -248,22 +250,21 @@
                 <div class="page__content page__content--toc">
                   <p class="memo-head">Sommaire</p>
                   <ol class="toc">
-                    <li><a href="#annee-2021" data-goto="annee-2021"><span class="toc__kicker">2021 – 2022</span><span class="toc__title">Licence 1 · Portail Sciences de la Vie, de la Terre et de l'Environnement</span></a></li>
-                    <li><a href="#annee-2022" data-goto="annee-2022"><span class="toc__kicker">2022 – 2023</span><span class="toc__title">Licence 2 · Licence Sciences de la Vie</span></a></li>
-                    <li><a href="#annee-2023" data-goto="annee-2023"><span class="toc__kicker">2023 – 2024</span><span class="toc__title">Licence 3 · Parcours Biologie des Organismes et des Populations</span></a></li>
-                    <li><a href="#annee-2024" data-goto="annee-2024"><span class="toc__kicker">2024 – 2025</span><span class="toc__title">Master 1 · Master Biodiversité, Écologie, Évolution</span></a></li>
-                    <li><a href="#annee-2025" data-goto="annee-2025"><span class="toc__kicker">2025 – 2026</span><span class="toc__title">Master 2 · Parcours Fonctionnement et Gestion des Écosystèmes Marins</span></a></li>
+                    <li><a href="#licence" data-goto="licence"><span class="toc__kicker">2021 – 2024</span><span class="toc__title">Licence Sciences de la Vie</span></a></li>
+                    <li><a href="#master" data-goto="master"><span class="toc__kicker">2024 – 2026</span><span class="toc__title">Master Biodiversité, Écologie, Évolution</span></a></li>
                   </ol>
                 </div>
               </div>
             </div>
             <div class="leaf__face leaf__back">
               <div class="page page--left">
-                <div class="page__content" id="annee-2021">
-                  <p class="page__year">2021 – 2022</p>
-                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">Licence 1</span></p>
-                  <h3 class="step__title">Portail Sciences de la Vie, de la Terre et de l'Environnement (SVTE)</h3>
-                  <p>Un portail commun aux sciences de la vie, de la Terre et de l'environnement, pour poser des bases larges avant de choisir sa voie.</p>
+                <div class="page__content" id="licence">
+                  <p class="page__year">2021 – 2024</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">Licence</span><span>Bac+3</span></p>
+                  <h3 class="step__title">Licence Sciences de la Vie</h3>
+                  <p class="step__sub">Parcours Biologie des Organismes et des Populations (BOP)</p>
+                  <p>Des bases larges en sciences de la vie, de la Terre et de l'environnement, puis des bases solides en biologie des organismes, en écologie et en évolution, avec une orientation vers l'étude des populations et de leurs interactions avec le milieu.</p>
+                  <p class="step__stamp"><span class="step__stamp-label">Diplômée licence</span><span class="step__stamp-year">2024</span></p>
                 </div>
               </div>
             </div>
@@ -271,16 +272,8 @@
           <div class="leaf">
             <div class="leaf__face leaf__front">
               <div class="page page--right">
-                <div class="page__content page__content--doodle">
-                  <svg class="doodle-page__sun" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg>
-                  <p class="doodle-page__note">Là où tout a commencé : les premières graines du parcours.</p>
-                </div>
-              </div>
-            </div>
-            <div class="leaf__face leaf__back">
-              <div class="page page--left">
                 <div class="page__content page__content--memo">
-                  <p class="memo-head">Cette année-là</p>
+                  <p class="memo-head">Pendant la licence</p>
                   <ul class="memos">
                     <li class="memo">
                       <span class="memo__thumb memo__thumb--doodle"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-sun"/></svg></span>
@@ -289,48 +282,6 @@
                         <span class="memo__title">Animatrice écologie et environnement</span>
                         <span class="memo__desc">Centre de loisirs d'Armentières</span>
                         <a class="memo__link" href="#exp-animatrice" data-goto="exp-animatrice">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="leaf">
-            <div class="leaf__face leaf__front">
-              <div class="page page--right">
-                <div class="page__content" id="annee-2022">
-                  <p class="page__year">2022 – 2023</p>
-                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-seedling"/></svg><span class="step__kicker">Licence 2</span></p>
-                  <h3 class="step__title">Licence Sciences de la Vie (SV)</h3>
-                  <p>Le choix des sciences de la vie : des bases solides en biologie des organismes, en écologie et en évolution.</p>
-                </div>
-              </div>
-            </div>
-            <div class="leaf__face leaf__back">
-              <div class="page page--left">
-                <div class="page__content" id="annee-2023">
-                  <p class="page__year">2023 – 2024</p>
-                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-flower"/></svg><span class="step__kicker">Licence 3</span></p>
-                  <h3 class="step__title">Parcours Biologie des Organismes et des Populations (BOP)</h3>
-                  <p>Une orientation vers l'étude des populations et de leurs interactions avec le milieu. Licence Sciences de la Vie obtenue en 2024.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="leaf">
-            <div class="leaf__face leaf__front">
-              <div class="page page--right">
-                <div class="page__content page__content--memo">
-                  <p class="memo-head">Cette année-là</p>
-                  <ul class="memos">
-                    <li class="memo">
-                      <span class="memo__thumb"><img src="assets/img/terrain/l3-tente-silenes-min.webp" alt="" loading="lazy"></span>
-                      <span class="memo__text">
-                        <span class="memo__kicker">Stage de L3 · 2024</span>
-                        <span class="memo__title">Pollinisateurs et <em>Silene dioica</em></span>
-                        <span class="memo__desc">Laboratoire EEP, Université de Lille</span>
-                        <a class="memo__link" href="#exp-l3" data-goto="exp-l3">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
                       </span>
                     </li>
                     <li class="memo">
@@ -342,6 +293,15 @@
                         <a class="memo__link" href="#exp-armentieres" data-goto="exp-armentieres">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
                       </span>
                     </li>
+                    <li class="memo">
+                      <span class="memo__thumb"><img src="assets/img/terrain/l3-tente-silenes-min.webp" alt="" loading="lazy"></span>
+                      <span class="memo__text">
+                        <span class="memo__kicker">Stage de L3 · 2024</span>
+                        <span class="memo__title">Pollinisateurs et <em>Silene dioica</em></span>
+                        <span class="memo__desc">Laboratoire EEP, Université de Lille</span>
+                        <a class="memo__link" href="#exp-l3" data-goto="exp-l3">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
+                      </span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -349,7 +309,7 @@
             <div class="leaf__face leaf__back">
               <div class="page page--left">
                 <div class="page__content page__content--memo">
-                  <p class="memo-head">Cette année-là</p>
+                  <p class="memo-head">Pendant le master</p>
                   <ul class="memos">
                     <li class="memo">
                       <span class="memo__thumb"><img src="assets/img/terrain/m1-marquage-bigorneaux-min.webp" alt="" loading="lazy"></span>
@@ -360,40 +320,6 @@
                         <a class="memo__link" href="#exp-m1" data-goto="exp-m1">Voir dans le livre Expériences <span aria-hidden="true">→</span></a>
                       </span>
                     </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="leaf">
-            <div class="leaf__face leaf__front">
-              <div class="page page--right">
-                <div class="page__content" id="annee-2024">
-                  <p class="page__year">2024 – 2025</p>
-                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">Master 1</span></p>
-                  <h3 class="step__title">Master Biodiversité, Écologie, Évolution (BEE)</h3>
-                  <p>Première année du master, et premier pas vers les écosystèmes marins avec un stage de recherche à la station marine de Wimereux.</p>
-                </div>
-              </div>
-            </div>
-            <div class="leaf__face leaf__back">
-              <div class="page page--left">
-                <div class="page__content" id="annee-2025">
-                  <p class="page__year">2025 – 2026</p>
-                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">Master 2</span></p>
-                  <h3 class="step__title">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</h3>
-                  <p>Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi de la biodiversité.</p>
-                  <p class="step__stamp">Diplômée en 2026</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="leaf">
-            <div class="leaf__face leaf__front">
-              <div class="page page--right">
-                <div class="page__content page__content--memo">
-                  <p class="memo-head">Cette année-là</p>
-                  <ul class="memos">
                     <li class="memo">
                       <span class="memo__thumb"><img src="assets/img/terrain/m2-flore-equipe-min.webp" alt="" loading="lazy"></span>
                       <span class="memo__text">
@@ -404,6 +330,20 @@
                       </span>
                     </li>
                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leaf">
+            <div class="leaf__face leaf__front">
+              <div class="page page--right">
+                <div class="page__content" id="master">
+                  <p class="page__year">2024 – 2026</p>
+                  <p class="step__meta"><svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-wave"/></svg><span class="step__kicker">Master</span><span>Bac+5</span></p>
+                  <h3 class="step__title">Master Biodiversité, Écologie, Évolution</h3>
+                  <p class="step__sub">Parcours Fonctionnement et Gestion des Écosystèmes Marins (FOGEM)</p>
+                  <p>Une formation consacrée au fonctionnement des écosystèmes marins et côtiers et à leur gestion, de l'écologie des communautés aux outils d'analyse et de suivi de la biodiversité.</p>
+                  <p class="step__stamp"><span class="step__stamp-label">Diplômée master</span><span class="step__stamp-year">2026</span></p>
                 </div>
               </div>
             </div>
@@ -432,7 +372,7 @@
                   <svg class="title-page__doodle" viewBox="0 0 48 48" aria-hidden="true"><use href="#icon-butterfly"/></svg>
                   <h2 class="title-page__title">Expériences</h2>
                   <p class="title-page__sub">Stages de recherche · territoires · engagement</p>
-                  <p class="title-page__note">Une double page par stage ou engagement : la description d'un côté, les photos de l'autre.</p>
+
                 </div>
               </div>
             </div>

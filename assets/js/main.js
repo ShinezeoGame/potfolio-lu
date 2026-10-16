@@ -193,6 +193,82 @@
     el.classList.remove('no-anim');
   };
 
+  /* ---------- Pages souples : la feuille se plie depuis le coin du bas ----------
+     Vue de dessus, une page qui tourne est une feuille pliée : la partie déjà soulevée
+     est le reflet du verso par rapport à la ligne de pli. Le coin du bas mène le
+     mouvement, en décrivant un arc, et la ligne de pli balaie la page jusqu'à la reliure. */
+
+  const canFold = !reduceMotion && window.CSS && CSS.supports('clip-path', 'polygon(0 0, 1px 0, 0 1px)');
+  const FOLD_LIFT = 0.3;   // hauteur à laquelle le coin se soulève, en largeur de page
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - ((-2 * t + 2) ** 3) / 2);
+
+  // Garde la partie d'un polygone où keep(point) >= 0
+  const clipHalf = (pts, keep) => {
+    const out = [];
+    pts.forEach((a, i) => {
+      const b = pts[(i + 1) % pts.length];
+      const va = keep(a);
+      const vb = keep(b);
+      if (va >= 0) out.push(a);
+      if ((va >= 0) !== (vb >= 0)) {
+        const t = va / (va - vb);
+        out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
+      }
+    });
+    return out;
+  };
+
+  const polygon = (pts) => (pts.length > 2
+    ? `polygon(${pts.map((p) => `${p[0].toFixed(1)}px ${p[1].toFixed(1)}px`).join(', ')})`
+    : 'polygon(0 0, 0 0, 0 0)');
+
+  // Dégradé dont le bord (pos0) suit la ligne de pli ; direction (gx, gy) vers l'intérieur
+  const shade = (W, H, gx, gy, sCenter, stops) => {
+    const angle = Math.atan2(gx, -gy);
+    const length = Math.abs(W * Math.sin(angle)) + Math.abs(H * Math.cos(angle));
+    const pos0 = length / 2 - sCenter;
+    const list = stops.map(([color, at]) => `${color} ${(pos0 + at).toFixed(1)}px`).join(', ');
+    return `linear-gradient(${((angle * 180) / Math.PI).toFixed(2)}deg, ${list})`;
+  };
+
+  const drawFold = (fold, theta) => {
+    const { W, H, front, back } = fold;
+    // Ordre d'empilement : avant la mi-course, la première feuille partie reste au-dessus des suivantes ;
+    // une fois passée de l'autre côté, elle se pose dessous (les suivantes atterrissent sur elle)
+    const crossed = fold.target ? theta > Math.PI / 2 : theta < Math.PI / 2;
+    const z = String(fold.base + (crossed ? fold.k : 2 * fold.len - fold.k));
+    if (fold.leaf.style.zIndex !== z) fold.leaf.style.zIndex = z;
+    const cx = W * Math.cos(theta);
+    const cy = H - FOLD_LIFT * W * Math.sin(theta);
+    let nx = W - cx;
+    let ny = H - cy;
+    const len = Math.hypot(nx, ny) || 1e-6;
+    nx /= len;
+    ny /= len;
+    const mx = (W + cx) / 2;
+    const my = (H + cy) / 2;
+    // > 0 : partie de la feuille déjà repliée
+    const side = (x, y) => (x - mx) * nx + (y - my) * ny;
+    const rect = [[0, 0], [W, 0], [W, H], [0, H]];
+    front.style.clipPath = polygon(clipHalf(rect, (p) => -side(p[0], p[1])));
+    back.style.clipPath = polygon(clipHalf(rect, (p) => side(W - p[0], p[1])));
+    // Le verso (u, y) s'affiche au reflet, par le pli, du point (W - u, y) de la feuille
+    const nm = nx * mx + ny * my;
+    back.style.transform = `matrix(${2 * nx * nx - 1}, ${2 * nx * ny}, ${-2 * nx * ny}, ${1 - 2 * ny * ny}, ${W * (1 - 2 * nx * nx) + 2 * nm * nx}, ${-2 * nx * ny * W + 2 * nm * ny})`;
+    // Ombre au creux du pli, reflet plus clair vers le bord libre ; ombre portée sur la partie restée à plat
+    const k = Math.sin(theta).toFixed(3);
+    back.style.setProperty('--shade', shade(W, H, -nx, ny, side(W / 2, H / 2), [
+      [`rgba(60, 40, 20, ${0.3 * k})`, 0],
+      [`rgba(60, 40, 20, ${0.07 * k})`, W * 0.1],
+      [`rgba(255, 255, 255, ${0.2 * k})`, W * 0.32],
+      ['rgba(255, 255, 255, 0)', W * 0.62],
+    ]));
+    front.style.setProperty('--shade', shade(W, H, -nx, -ny, -side(W / 2, H / 2), [
+      [`rgba(60, 40, 20, ${0.24 * k})`, 0],
+      ['rgba(60, 40, 20, 0)', W * 0.14],
+    ]));
+  };
+
   class Book {
     constructor(el, flipMs) {
       this.el = el;
@@ -210,15 +286,80 @@
       });
     }
 
+    // Feuille en train de se plier : on la pose tout de suite là où elle allait
+    settle(leaf) {
+      const fold = leaf.fold;
+      if (!fold) return;
+      cancelAnimationFrame(fold.frame);
+      leaf.fold = null;
+      instantly(leaf, () => {
+        leaf.classList.toggle('is-flipped', fold.target);
+        leaf.classList.remove('is-folding');
+        leaf.style.zIndex = '';
+        [fold.front, fold.back].forEach((face) => {
+          face.style.clipPath = '';
+          face.style.transform = '';
+          face.style.transformOrigin = '';
+          face.style.removeProperty('--shade');
+        });
+        this.depth();
+      });
+    }
+
+    // Une feuille de papier qui tourne en se pliant
+    fold(leaf, target, delay, order) {
+      const fold = {
+        leaf,
+        target,
+        ...order,
+        W: leaf.offsetWidth,
+        H: leaf.offsetHeight,
+        front: leaf.querySelector(':scope > .leaf__front'),
+        back: leaf.querySelector(':scope > .leaf__back'),
+        frame: 0,
+      };
+      leaf.fold = fold;
+      const from = target ? 0.002 : Math.PI - 0.002;
+      const to = target ? Math.PI - 0.002 : 0.002;
+      instantly(leaf, () => {
+        leaf.classList.add('is-folding');
+        fold.back.style.transformOrigin = '0 0';
+        drawFold(fold, from);
+      });
+      let start = null;
+      const step = (now) => {
+        if (leaf.fold !== fold) return;
+        if (start === null) start = now + delay;
+        const t = Math.min(1, Math.max(0, (now - start) / this.flipMs));
+        drawFold(fold, from + (to - from) * easeInOut(t));
+        if (t < 1) fold.frame = requestAnimationFrame(step);
+        else this.settle(leaf);
+      };
+      fold.frame = requestAnimationFrame(step);
+    }
+
     // Tourne les feuilles pour en laisser `count` à gauche ; renvoie la durée du mouvement
     flipTo(count, { instant = false, stagger = 140 } = {}) {
-      const changing = this.leaves.filter((leaf, i) => leaf.classList.contains('is-flipped') !== i < count);
-      if (count < this.count) changing.reverse();
       const quick = instant || reduceMotion;
+      if (quick) this.leaves.forEach((leaf) => this.settle(leaf));
+      // Une feuille en train de se plier compte déjà comme tournée (ou non) ; si elle doit repartir, elle se pose d'abord
+      const state = (leaf) => (leaf.fold ? leaf.fold.target : leaf.classList.contains('is-flipped'));
+      const changing = this.leaves.filter((leaf, i) => state(leaf) !== i < count);
+      changing.forEach((leaf) => this.settle(leaf));
+      if (count < this.count) changing.reverse();
       // Plusieurs feuilles d'un coup : elles partent l'une après l'autre, en moins d'une demi-seconde
       const step = quick ? 0 : Math.min(stagger, 480 / Math.max(1, changing.length - 1));
+      const n = this.leaves.length;
       changing.forEach((leaf, k) => {
         const delay = k * step;
+        const target = !leaf.classList.contains('is-flipped');
+        // Les couvertures sont rigides : elles pivotent ; les pages, souples, se plient
+        if (!quick && canFold && !leaf.classList.contains('leaf--cover')) {
+          this.fold(leaf, target, delay, { k, len: changing.length, base: 20 + 2 * n });
+          return;
+        }
+        // Couverture qui s'ouvre : au-dessus de tout pendant la première moitié du mouvement
+        if (!quick && target) instantly(leaf, () => leaf.style.setProperty('--z', '300'));
         leaf.style.transitionDelay = `${delay}ms, ${delay + this.flipMs / 2}ms`;
         leaf.style.setProperty('--turn-delay', `${delay}ms`);
         leaf.classList.toggle('is-flipped');
@@ -347,12 +488,13 @@
   const layout = () => {
     const vw = root.clientWidth;
     const vh = window.innerHeight;
-    narrow = vw < 880 || vh < 520;
+    // Petit écran, ou écran en hauteur (téléphone, tablette, moniteur vertical) : une page à la fois
+    narrow = vw < 880 || vh < 520 || vh > vw * 1.3;
     root.dataset.mode = narrow ? 'single' : 'double';
 
     // Le carnet : la double page doit tenir à l'écran ; sur petit écran, une page à la fois
     const pw = narrow
-      ? Math.max(200, Math.min(vw - 24, (vh - 110) / 1.42, 520))
+      ? Math.max(200, Math.min(vw - 24, (vh - 110) / 1.42, 640))
       : Math.min(vw * 0.44, (vh - 120) / 1.42, 560);
     const ph = pw * 1.42;
     const u = pw / 100;
@@ -376,14 +518,16 @@
     const headerH = header ? header.offsetHeight || 64 : 64;
     const top = headerH + 14;
     const bottom = vh - 62;
-    const tilt = 56;
+    // Le carnet est relevé (presque de face) ; sa tranche (5,6 u d'épaisseur) repose sur le livre du dessus
+    const tilt = 28;
     const P = 1800;
     const piece = (w) => {
       const s = (0.9 * w) / (2 * pw);
       const sh = s * ph;
       const rad = (tilt * Math.PI) / 180;
       const lying = (sh * Math.cos(rad) * P) / (P + sh * Math.sin(rad));
-      return { s, lying, h: lying + 0.267 * w + 46 };
+      const edge = s * 5.6 * u * Math.cos(rad);
+      return { s, lying, edge, h: lying + edge + 0.252 * w + 46 };
     };
     let pileW = Math.min(narrow ? vw - 40 : vw * 0.5, 760);
     let c = piece(pileW);
@@ -391,8 +535,8 @@
       pileW *= (bottom - top) / c.h;
       c = piece(pileW);
     }
-    const pileTop = top + (bottom - top - c.h) / 2 + c.lying;
-    views.desk = { x: vw / 2, y: pileTop + c.s * u * 0.6 - ph, s: c.s, rx: tilt, rz: -2.5 };
+    const pileTop = top + (bottom - top - c.h) / 2 + c.lying + c.edge;
+    views.desk = { x: vw / 2, y: pileTop - c.edge + 1 - ph, s: c.s, rx: tilt, rz: -2 };
     setPx(root, '--pile-w', pileW);
     setPx(root, '--pile-x', vw / 2 - pileW / 2);
     setPx(root, '--pile-y', pileTop);
@@ -409,14 +553,14 @@
     let tpw;
     let tph;
     if (narrow) {
-      tpw = Math.max(220, Math.min(vw - 24, 560));
+      tpw = Math.max(220, Math.min(vw - 24, 680));
       tph = Math.min(availH, tpw * 1.9);
     } else {
       tpw = Math.min((vw - 160) / 2, availH / 1.3, 620);
       tph = tpw * 1.3;
     }
     const tfs = narrow
-      ? Math.max(14, Math.min(16.5, tpw * 0.037))
+      ? Math.max(14, Math.min(18, tpw * 0.037))
       : Math.max(12.5, Math.min(17.5, tpw * 0.0285));
     setPx(root, '--tpw', tpw);
     setPx(root, '--tph', tph);

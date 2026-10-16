@@ -725,6 +725,55 @@ html[data-scene="desk"] .carnet .book__shadow {
     calc(var(--u) * 0.75) calc(var(--u) * 0.6) 0 #ded2b9;
 }
 
+/* Épaisseur du carnet : sous le bas des pages, la tranche (feuilles serrées) puis la couverture */
+.book__depth {
+  --depth: calc(var(--u) * 4.2);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: calc(var(--u) * -1.6);
+  z-index: 3;
+  height: var(--depth);
+  border-radius: 0 0 calc(var(--u) * 1.4) calc(var(--u) * 1.4);
+  background:
+    linear-gradient(to top, #22321b 0, var(--cover-dark) 8%, var(--cover-dark) 30%, #1b2815 30%, #1b2815 35%, transparent 35%),
+    linear-gradient(90deg, rgba(40, 28, 15, 0.22), rgba(40, 28, 15, 0) 6%, rgba(40, 28, 15, 0) 94%, rgba(40, 28, 15, 0.22)),
+    repeating-linear-gradient(to bottom, #f8f1e1 0, #f8f1e1 1.4px, #d6c8ad 1.4px, #d6c8ad 2.2px);
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.2) rgba(50, 35, 20, 0.25);
+  transition: left var(--t-book) var(--ease-book), height var(--t-book) var(--ease-book);
+}
+
+/* Ouvert, la tranche court sous les deux pages et se creuse au niveau de la reliure */
+html[data-scene]:not([data-scene="closed"]) .carnet .book__depth {
+  left: calc(var(--pw) * -1 - var(--u) * 1.6);
+}
+
+.book__depth::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 30%;
+  left: 50%;
+  width: 12%;
+  background: radial-gradient(closest-side, rgba(40, 28, 15, 0.42), rgba(40, 28, 15, 0));
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity var(--t-book) ease;
+}
+
+html[data-scene]:not([data-scene="closed"]) .carnet .book__depth::after {
+  opacity: 1;
+}
+
+/* Posé sur la pile et vu un peu de dessus, la tranche se voit davantage */
+html[data-scene="desk"] .carnet .book__depth {
+  --depth: calc(var(--u) * 5.6);
+}
+
+html:not(.js) .book__depth {
+  display: none;
+}
+
 /* Feuille volante glissée entre deux pages */
 .book__sheet {
   position: absolute;
@@ -806,6 +855,27 @@ html[data-scene="desk"] .carnet .book__shadow {
 
 .leaf.is-flipped {
   transform: rotateY(-180deg);
+}
+
+/* Page en train de se plier (tracé par le script) : vue de dessus, sans rotation 3D */
+.leaf.is-folding {
+  transform: none;
+  transition: none;
+  filter: drop-shadow(0 0 calc(var(--u) * 1.3) rgba(50, 35, 20, 0.24));
+}
+
+.leaf.is-folding > .leaf__face {
+  will-change: clip-path, transform;
+}
+
+.leaf.is-folding > .leaf__face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  background: var(--shade, none);
+  pointer-events: none;
 }
 
 /* Avant que le script ne règle l'ordre d'empilement, la couverture est au-dessus */
@@ -1493,7 +1563,7 @@ html[data-scene="desk"] .pile-wrap {
 .spine {
   --c: var(--tome-formation);
   --c-dark: var(--tome-formation-dark);
-  --h: 0.095;
+  --h: 0.08;
   --off: 0%;
   --rot: 0deg;
   --pull: 0px;
@@ -2071,16 +2141,6 @@ html.reader-open .reader__books {
   text-transform: uppercase;
 }
 
-.title-page__note {
-  max-width: 17em;
-  margin: 2.2em auto 0;
-  color: var(--ink);
-  font-family: var(--font-hand);
-  font-size: 1.35em;
-  line-height: 1.2;
-  transform: rotate(-1.5deg);
-}
-
 /* Sommaire */
 .toc {
   display: grid;
@@ -2138,7 +2198,7 @@ html.reader-open .reader__books {
 .memo {
   position: relative;
   display: grid;
-  grid-template-columns: 36% 1fr;
+  grid-template-columns: min(36%, 8em) 1fr;
   gap: 0.9em;
   align-items: center;
   padding: 0.8em;
@@ -2489,6 +2549,15 @@ html.reader-open .reader__books {
   line-height: 1.2;
 }
 
+.step__sub {
+  margin: -0.25em 0 0.85em;
+  color: var(--muted);
+  font-family: var(--font-serif);
+  font-size: 1.04em;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 .step__org {
   display: flex;
   align-items: flex-start;
@@ -2635,20 +2704,58 @@ html.reader-open .reader__books {
   font-weight: 500;
 }
 
-/* Tampon « Diplômée » */
+/* Tampon « Diplômée … » : double cadre, lettres capitales, encre irrégulière
+   (un grain qui laisse passer le papier, plus pâle d'un côté), posé un peu de travers */
 .step__stamp {
+  --stamp-ink: #b5324e;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   align-self: flex-start;
-  margin: 0.8em 0 0;
-  padding: 0.1em 0.55em 0.15em;
-  border: 2px solid var(--rose);
-  border-radius: 6px;
-  color: var(--rose);
-  font-family: var(--font-hand);
-  font-size: 1.55em;
+  gap: 0.32em;
+  margin: 1.3em 0 0.3em 0.5em;
+  padding: 0.62em 1.15em 0.55em;
+  border: 0.17em solid var(--stamp-ink);
+  border-radius: 0.4em;
+  outline: 0.07em solid var(--stamp-ink);
+  outline-offset: -0.45em;
+  color: var(--stamp-ink);
+  font-family: var(--font-serif);
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  opacity: 0.94;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -5.5 0 0 0 3.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(100deg, #000 40%, rgba(0, 0, 0, 0.72));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -5.5 0 0 0 3.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(100deg, #000 40%, rgba(0, 0, 0, 0.72));
+  -webkit-mask-size: 180px 120px, 100% 100%;
+  mask-size: 180px 120px, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.step__stamp-label {
+  font-size: 1.2em;
   font-weight: 700;
-  line-height: 1.1;
-  transform: rotate(-4deg);
-  opacity: 0.88;
+  letter-spacing: 0.12em;
+}
+
+.step__stamp-year {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-sans);
+  font-size: 0.74em;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+}
+
+.step__stamp-year::before,
+.step__stamp-year::after {
+  content: "";
+  width: 1.8em;
+  height: 0.1em;
+  background: currentColor;
 }
 
 .steps {
